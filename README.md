@@ -29,12 +29,15 @@ Real captures from the local production build:
 
 | Capability | Typical scope |
 | --- | --- |
-| Software development | Custom applications, internal tools and maintenance |
-| Web development | Corporate websites, commerce, WordPress and technical SEO |
-| AI integration | Scoped model API prototypes, evaluation and human review |
-| Business automation | Data processing, reporting and provider-dependent messaging integrations |
-| Backend engineering | REST APIs, databases, authentication and third-party connectivity |
-| Digital and educational services | Programming tutoring, documentation and technical skills support |
+| Software development | Custom desktop and web applications, internal tools and maintenance |
+| Web development | Websites, commerce, WordPress and technical SEO |
+| AI integration | Model API prototypes, document processing and human review |
+| API engineering and automation | REST APIs, databases, webhooks and business workflows |
+| Graphics and digital design | Branding materials, campaign creatives and UI design |
+| Writing and documentation | Editing, reports, software writing and handover guides |
+| Technology training | Programming, databases, APIs and practical project guidance |
+
+Focused engagements start at **$100 USD**. **$100–$10,000+** is an indicative range, not a ceiling. Quotes depend on scope, complexity and delivery requirements.
 
 ## Selected work
 
@@ -46,7 +49,7 @@ Real captures from the local production build:
 | [Contact Book Pro](https://github.com/FEMZYKENTLTD/Contact_Book_Pro) | Go application, storage code and UI captures | Contact entry, search and recovery |
 | [Stock Analysis JavaFX App](https://github.com/FEMZYKENTLTD/stock-analysis-javafx) | JavaFX source and five application captures | Interactive calculations on manually entered prices |
 
-The portfolio features 16 genuine application screenshots across these five projects. See [asset provenance](public/projects/README.txt). No public live demo was verified. FEMZYK MARKET is excluded from the featured gallery because the inspected checkout had no suitable UI capture. The About page summarises the separately reviewed CAC and SMEDAN documents without publishing the originals or personal details.
+The portfolio features 16 genuine application screenshots across these five projects. See [asset provenance](public/projects/README.txt). The Fleet project’s separate web edition is linked from its case study; the publicly accessible landing page was verified, not its authenticated workflows. FEMZYK MARKET is excluded from the featured gallery because the inspected checkout had no suitable UI capture. The About page summarises the separately reviewed CAC and SMEDAN documents using redacted images of the supplied certificates; the original PDFs and sensitive details are not published.
 
 ## Architecture
 
@@ -93,9 +96,9 @@ npm run test:smoke -- --unconfigured
 | Environment variable | Scope | Setup |
 | --- | --- | --- |
 | `WEB3FORMS_ACCESS_KEY` | Server only | Create an access key for the approved business inbox and store it in `.env.local` or the hosting dashboard. Replace any prior `NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY` deployment setting; rotate a previously public key as appropriate. |
-| `NEXT_PUBLIC_SITE_URL` | Public | Set the verified production HTTPS origin, without a route or query. Leave blank for local development. |
+| `NEXT_PUBLIC_SITE_URL` | Public | Override the production HTTPS origin if the public domain changes. The existing Vercel production domain is the default; leave blank for local development. |
 
-The server accepts bounded JSON, validates it again, rejects honeypot entries and cross-site browser POSTs, and times out the provider call. Success means Web3Forms accepted the submission; inbox delivery is a separate check. On failure, the form retains the visitor’s details and shows direct contact alternatives. No site database is used.
+The quote form includes country, a project title and reference URL where applicable, a USD budget range and delivery timeline. The server accepts bounded JSON, validates it again, rejects honeypot entries and cross-site browser POSTs, and times out the provider call. Success means Web3Forms accepted the submission; inbox delivery is a separate check. On failure, the form retains the visitor’s details and shows direct contact alternatives. No site database is used.
 
 **Why not Supabase?** No eligible project was visible in the connected account, and inbox delivery does not require an enquiry database. Using Web3Forms avoids adding a database, access policies, retention jobs and a separate email sender. Confirm the provider's current terms, quotas and retention before launch. Enable platform-level rate limiting for `/api/enquiry` where available; the honeypot and provider filtering are not a distributed rate limiter. Do not add enquiry payloads to logs or ask visitors for passwords or sensitive records.
 

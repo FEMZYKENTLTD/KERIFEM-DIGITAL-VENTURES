@@ -11,7 +11,7 @@ export default function PortfolioPage() {
       <Intro
         label="SELECTED WORK"
         title="Explore the work behind the claims"
-        copy="Public source projects spanning education, commerce and AI-assisted reporting. Links point to source repositories, not production demos."
+        copy="Explore education software, fleet operations, document processing and desktop applications through real project captures and case studies."
       />
       <div className="kv-bottom">
         <Work expanded />

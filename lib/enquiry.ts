@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { BUDGET_OPTIONS, CONTACT_METHODS, SERVICE_OPTIONS } from './content';
+import { BUDGET_OPTIONS, CONTACT_METHODS, SERVICE_OPTIONS, TIMELINES } from './content';
 export const MIN_MESSAGE = 20;
 export const MAX_MESSAGE = 4000;
 
@@ -28,6 +28,19 @@ export const schema = z
       .min(7, 'Add a phone or WhatsApp number we can reach you on.')
       .max(24, 'That number looks too long — include the country code only.')
       .regex(/^\+?[\d][\d\s\-()]*$/, 'Use digits, spaces, +, - or ( ) only.'),
+    country: z.string().trim().min(2, 'Enter your country.').max(100),
+    projectTitle: z.string().trim().max(160).optional(),
+    timeline: oneOf(TIMELINES, 'Select a preferred timeline.'),
+    reference: z
+      .string()
+      .trim()
+      .max(500)
+      .refine(
+        (value) =>
+          !value || (/^https?:\/\//i.test(value) && z.string().url().safeParse(value).success),
+        'Enter a valid http or https link.',
+      )
+      .optional(),
     service: oneOf(SERVICE_OPTIONS, 'Select the service you need.'),
     message: z
       .string()

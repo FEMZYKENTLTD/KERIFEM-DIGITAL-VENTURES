@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { schema, MIN_MESSAGE, MAX_MESSAGE, type FormValues } from '@/lib/enquiry';
 import { AlertTriangle, Check, Loader2, Send } from 'lucide-react';
 
-import { BUDGET_OPTIONS, CONTACT_METHODS, SERVICE_OPTIONS } from '@/lib/content';
+import { BUDGET_OPTIONS, CONTACT_METHODS, SERVICE_OPTIONS, TIMELINES } from '@/lib/content';
 import { CONTACT } from '@/lib/site';
 import { cn } from '@/lib/utils';
 
@@ -18,6 +18,10 @@ const EMPTY: FormValues = {
   name: '',
   email: '',
   phone: '',
+  country: '',
+  projectTitle: '',
+  timeline: '',
+  reference: '',
   service: '',
   message: '',
   budget: '',
@@ -35,7 +39,7 @@ type Status = 'idle' | 'submitting' | 'success' | 'error' | 'unconfigured';
 /* Component                                                                   */
 /* -------------------------------------------------------------------------- */
 
-export default function ContactForm() {
+export default function ContactForm({ initialService = '' }: { initialService?: string }) {
   const id = useId();
   const formRef = useRef<HTMLFormElement>(null);
   const [status, setStatus] = useState<Status>('idle');
@@ -53,7 +57,7 @@ export default function ContactForm() {
     // resolver types aligned without reaching for `any`.
     resolver: zodResolver(schema) as unknown as Resolver<FormValues>,
     mode: 'onTouched',
-    defaultValues: EMPTY,
+    defaultValues: { ...EMPTY, service: initialService },
   });
 
   const messageLength = watch('message').trim().length;
@@ -65,9 +69,12 @@ export default function ContactForm() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dirtyFields.name, dirtyFields.email, dirtyFields.message]);
 
+  const pending = useRef(false);
   const onValid = async (values: FormValues) => {
     setInvalidNotice(false);
 
+    if (pending.current) return;
+    pending.current = true;
     setStatus('submitting');
     try {
       const response = await fetch('/api/enquiry', {
@@ -89,6 +96,8 @@ export default function ContactForm() {
       }
     } catch {
       setStatus('error');
+    } finally {
+      pending.current = false;
     }
   };
 
@@ -125,6 +134,54 @@ export default function ContactForm() {
         onSubmit={(event) => void handleSubmit(onValid, onInvalid)(event)}
         className="mt-8 space-y-5"
       >
+        <div className="grid gap-5 sm:grid-cols-2">
+          {(
+            [
+              { key: 'country', label: 'Country', required: true },
+              { key: 'projectTitle', label: 'Project title', required: false },
+              { key: 'reference', label: 'Reference URL', required: false },
+            ] as const
+          ).map(({ key, label, required }) => (
+            <Field
+              key={key}
+              label={label}
+              required={required}
+              htmlFor={fieldId(key)}
+              error={errors[key]?.message}
+            >
+              <input
+                id={fieldId(key)}
+                className={inputClass(key)}
+                type={key === 'reference' ? 'url' : 'text'}
+                autoComplete={key === 'country' ? 'country-name' : undefined}
+                required={required}
+                aria-invalid={Boolean(errors[key])}
+                aria-describedby={errors[key] ? errorId(key) : undefined}
+                {...register(key)}
+              />
+            </Field>
+          ))}
+          <Field
+            label="Preferred timeline"
+            required
+            htmlFor={fieldId('timeline')}
+            error={errors.timeline?.message}
+          >
+            <select
+              id={fieldId('timeline')}
+              required
+              className={inputClass('timeline')}
+              aria-invalid={Boolean(errors.timeline)}
+              aria-describedby={errors.timeline ? errorId('timeline') : undefined}
+              {...register('timeline')}
+            >
+              <option value="">Select timeline</option>
+              {TIMELINES.map((timeline) => (
+                <option key={timeline}>{timeline}</option>
+              ))}
+            </select>
+          </Field>
+        </div>
         <div className="grid gap-5 sm:grid-cols-2">
           <Field label="Full Name" required htmlFor={fieldId('name')} error={errors.name?.message}>
             <input
@@ -236,7 +293,7 @@ export default function ContactForm() {
         </Field>
 
         <div className="grid gap-5 sm:grid-cols-2">
-          <Field label="Budget Range" htmlFor={fieldId('budget')} error={undefined}>
+          <Field label="Budget Range (USD)" htmlFor={fieldId('budget')} error={undefined}>
             <div className="relative">
               <select
                 id={fieldId('budget')}

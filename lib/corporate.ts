@@ -1,69 +1,4 @@
 import { screenshots } from './screenshots';
-import { BrainCircuit, Code2, Globe2, GraduationCap, Server, Workflow } from 'lucide-react';
-
-export const capabilities = [
-  {
-    icon: Code2,
-    title: 'Software Development',
-    copy: 'Custom applications and business systems that fit the way your team works.',
-    details: [
-      'Web applications and internal tools',
-      'Database-backed business systems',
-      'Application maintenance and integrations',
-    ],
-  },
-  {
-    icon: Globe2,
-    title: 'Web Development',
-    copy: 'Fast, accessible websites and storefronts built around the customer journey.',
-    details: [
-      'Corporate websites and e-commerce',
-      'WordPress themes and improvements',
-      'Responsive development and technical SEO',
-    ],
-  },
-  {
-    icon: BrainCircuit,
-    title: 'AI Integration',
-    copy: 'Add model-assisted features where they can save time and people can review the output.',
-    details: [
-      'Prototype AI-assisted reporting and review',
-      'Integrate model APIs into existing applications',
-      'Scope evaluation, costs and human review before rollout',
-    ],
-  },
-  {
-    icon: Workflow,
-    title: 'Business Automation',
-    copy: 'Replace repetitive handoffs and manual data processing with connected workflows.',
-    details: [
-      'API-driven workflow and reporting automation',
-      'Data transformation and scheduled tasks',
-      'Messaging integrations subject to provider access and scope',
-    ],
-  },
-  {
-    icon: Server,
-    title: 'API & Backend Engineering',
-    copy: 'Connect systems and give applications a dependable data and authentication layer.',
-    details: [
-      'REST APIs and third-party integrations',
-      'Relational database design',
-      'Authentication and application connectivity',
-    ],
-  },
-  {
-    icon: GraduationCap,
-    title: 'Digital & Educational Services',
-    copy: 'Help people build technical skills and use their tools with confidence.',
-    details: [
-      'Programming and web development tutoring',
-      'Technical documentation and writing',
-      'Digital skills and productivity support',
-    ],
-  },
-];
-
 const github = 'https://github.com/FEMZYKENTLTD/';
 type Project = {
   title: string;
@@ -85,7 +20,7 @@ export const work: Project[] = [
   {
     title: 'FEMZYK Fleet & Transport Management',
     category: 'Operations software',
-    copy: 'Desktop fleet operations software covering vehicles, assignments, trips, fuel, maintenance and reporting.',
+    copy: 'Fleet operations software covering vehicles, assignments, trips, fuel and reporting, with desktop and web editions.',
     stack: 'Java 17 · Swing · SQLite',
     repo: `${github}FEMZYK-Enterprise-Fleet-and-Transport-Management-System`,
     shots: screenshots.fleet,

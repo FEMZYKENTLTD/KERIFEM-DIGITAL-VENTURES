@@ -1,7 +1,9 @@
+import { cases } from '@/lib/cases';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, ArrowUpRight, Github, Mail, MessageCircle } from 'lucide-react';
-import { capabilities, work } from '@/lib/corporate';
+import { services } from '@/lib/services';
+import { work } from '@/lib/corporate';
 import { BRAND, CONTACT } from '@/lib/site';
 
 export function Quote() {
@@ -89,27 +91,17 @@ export function CorporateFooter() {
     </footer>
   );
 }
-export function Capabilities({ detailed = false }: { detailed?: boolean }) {
+export function Capabilities() {
   return (
     <div className="kv-grid">
-      {capabilities.map(({ icon: Icon, title, copy, details }, i) => (
-        <article className="kv-card" key={title}>
-          <div className="kv-card-head">
-            <Icon size={24} strokeWidth={1.5} aria-hidden />
-            <span>0{i + 1}</span>
-          </div>
-          <h3>{title}</h3>
+      {services.map(([id, label, , copy], index) => (
+        <article className="kv-card" key={id}>
+          <p className="kv-label">0{index + 1} / SERVICE</p>
+          <h3>{label}</h3>
           <p>{copy}</p>
-          {detailed && (
-            <>
-              <ul>
-                {details.map((detail) => (
-                  <li key={detail}>{detail}</li>
-                ))}
-              </ul>
-              {i === 2 && <p className="kv-label">Scoped integration & prototyping</p>}
-            </>
-          )}
+          <Link className="kv-text-link mt-4" href={`/services#${id}`}>
+            Explore {label} <ArrowUpRight size={14} aria-hidden />
+          </Link>
         </article>
       ))}
     </div>
@@ -118,7 +110,7 @@ export function Capabilities({ detailed = false }: { detailed?: boolean }) {
 export function Work({ expanded = false }: { expanded?: boolean }) {
   return (
     <div className={expanded ? 'kv-gallery' : 'kv-grid'}>
-      {work.slice(0, expanded ? work.length : 3).map((project) => (
+      {work.slice(0, expanded ? work.length : 3).map((project, index) => (
         <article className="kv-card kv-project" key={project.title}>
           <div className="kv-project-content">
             <p className="kv-label">{project.category}</p>
@@ -128,6 +120,9 @@ export function Work({ expanded = false }: { expanded?: boolean }) {
             <a className="kv-text-link" href={project.repo}>
               View source <ArrowUpRight size={15} aria-hidden />
             </a>
+            <Link className="kv-text-link ml-4" href={`/portfolio/${cases[index].id}`}>
+              Case study <ArrowUpRight size={15} aria-hidden />
+            </Link>
           </div>
           <div className={expanded ? 'kv-shot-grid' : ''}>
             {project.shots.slice(0, expanded ? project.shots.length : 1).map(([src, caption]) => (
