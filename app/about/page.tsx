@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { Intro, Quote } from '@/components/Corporate';
 import { pageMetadata } from '@/lib/metadata';
 export const metadata = pageMetadata(
@@ -10,26 +11,45 @@ export default function AboutPage() {
     <div className="kv-wrap">
       <Intro
         label="COMPANY / OUR STORY"
-        title="From FEMZYK to Kerifem"
+        title="The story behind KERIFEM DIGITAL VENTURES"
         copy="We build practical digital systems for teams in Nigeria and internationally."
       />
       <section className="kv-credentials" aria-labelledby="registration-title">
         <p className="kv-label">BUSINESS RECORDS / NIGERIA</p>
-        <h2 id="registration-title">Two separate registrations</h2>
+        <h2 id="registration-title">Business Registration & Official Credentials</h2>
         <div className="kv-credential-grid">
           <article>
-            <p className="kv-label">CAC / BUSINESS NAME</p>
+            <p className="kv-label">Corporate Affairs Commission (CAC)</p>
             <h3>KERIFEM DIGITAL VENTURES</h3>
-            <p>Name shown on the CAC certificate and status report.</p>
+            <p>Registered business name</p>
+            <a href="/credentials/cac.webp" className="kv-certificate">
+              <Image
+                src="/credentials/cac.webp"
+                width={1041}
+                height={1347}
+                alt="CAC business name certificate, with sensitive details redacted"
+              />
+            </a>
           </article>
           <article>
-            <p className="kv-label">SMEDAN / REGISTERED NAME</p>
+            <p className="kv-label">
+              Small and Medium Enterprises Development Agency of Nigeria (SMEDAN)
+            </p>
             <h3>FEMZYK ENTERPRISES LTD</h3>
-            <p>Name shown on the separate SMEDAN ID.</p>
+            <p>Registered name · separate registration</p>
+            <a href="/credentials/smedan.webp" className="kv-certificate">
+              <Image
+                src="/credentials/smedan.webp"
+                width={2025}
+                height={1432}
+                alt="SMEDAN registration certificate, with QR codes redacted"
+              />
+            </a>
           </article>
         </div>
         <p className="kv-credential-note">
-          Registration summaries only. Original documents and personal details are not published.
+          These are separately issued records. Click either certificate to enlarge the public copy.
+          Sensitive fields and QR codes are redacted; original PDFs are not published.
         </p>
       </section>
       <div className="kv-story">
@@ -54,12 +74,30 @@ export default function AboutPage() {
         </section>
         <section>
           <p className="kv-label">FOUNDER</p>
-          <h2>Olufemi Benua Keripe</h2>
+          <h2>Meet the Founder</h2>
+          <h3 className="mt-3 text-xl">Olufemi Benua Keripe · Founder & Lead Developer</h3>
           <p>
             Olufemi Benua Keripe is the founder and is credited as lead developer of the Knowledge
-            Land CBT Suite. The direction for Kerifem is to pair hands-on engineering with
-            documentation and support so the people who rely on a system can understand and maintain
-            it.
+            Land CBT Suite. The direction for KERIFEM DIGITAL VENTURES is to pair hands-on
+            engineering with documentation and support so the people who rely on a system can
+            understand and maintain it.
+          </p>
+          <ul className="mt-5 list-disc pl-5">
+            <li>
+              Lagos State University: Computer Science, final-year undergraduate studies in
+              progress.
+            </li>
+            <li>University of the People: Bachelor of Computer Science studies in progress.</li>
+            <li>3MTT AI & Machine Learning Programme: Graduate.</li>
+          </ul>
+        </section>
+        <section>
+          <p className="kv-label">ENGINEERING TOOLKIT</p>
+          <h2>Technologies we work with</h2>
+          <p>
+            Java, Python, Go, C#, PHP and TypeScript · React, Next.js and Tailwind CSS · FastAPI,
+            Flask and REST APIs · PostgreSQL, SQLite, MongoDB and Supabase · Git, GitHub, Maven and
+            Docker.
           </p>
         </section>
         <section>

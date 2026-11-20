@@ -42,7 +42,7 @@ export const PRIVACY_POLICY: LegalDoc = {
         'We only collect information you voluntarily provide to us. There are no advertising trackers, no profiling, and no sale of personal data.',
       ],
       bullets: [
-        'Enquiry details submitted through the website form: full name, email address, phone or WhatsApp number, service required, project description, optional budget range, and preferred contact method.',
+        'Enquiry details submitted through the website form: full name, email address, phone or WhatsApp number, country, service required, optional project title and reference link, preferred timeline, project description, optional budget range, and preferred contact method.',
         'Messages you send us by email or WhatsApp, including any files you attach.',
         'Basic technical data recorded automatically by our hosting provider for security and diagnostics (IP address, user agent, referring URL, timestamp).',
       ],

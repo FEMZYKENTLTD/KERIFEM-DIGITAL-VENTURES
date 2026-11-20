@@ -26,7 +26,19 @@ export async function POST(request: Request) {
     if (!parsed.success) return error(400);
     const key = process.env.WEB3FORMS_ACCESS_KEY;
     if (!key) return error(503);
-    const { name, email, phone, service, message, budget, contactMethod } = parsed.data;
+    const {
+      name,
+      email,
+      phone,
+      service,
+      message,
+      budget,
+      contactMethod,
+      country,
+      projectTitle,
+      timeline,
+      reference,
+    } = parsed.data;
     try {
       const upstream = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
@@ -43,6 +55,10 @@ export async function POST(request: Request) {
           message,
           budget,
           contactMethod,
+          country,
+          projectTitle,
+          timeline,
+          reference,
         }),
         signal: AbortSignal.timeout(10000),
         cache: 'no-store',

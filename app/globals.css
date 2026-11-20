@@ -712,3 +712,80 @@
 .kv-credential-note {
   margin-top: 18px;
 }
+.kv-service {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: clamp(20px, 5vw, 72px);
+  padding-block: 48px;
+  border-top: 1px solid #322c22;
+  scroll-margin-top: 24px;
+  align-items: center;
+}
+.kv-service:nth-of-type(even) > div:first-child {
+  order: 1;
+}
+.kv-service h2 {
+  font:
+    clamp(28px, 4vw, 50px) / 1.1 Georgia,
+    serif;
+  margin: 12px 0;
+  color: #faf6eb;
+}
+.kv-service p:not(.kv-label) {
+  margin-block: 12px;
+  color: #c4bfb7;
+}
+.kv-service .kv-button {
+  margin-top: 10px;
+}
+@media (max-width: 760px) {
+  .kv-service {
+    grid-template-columns: 1fr;
+  }
+  .kv-service:nth-of-type(even) > div:first-child {
+    order: 0;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .kv-hero-figure {
+    animation: kv-enter 0.65s ease-out both;
+  }
+  @keyframes kv-enter {
+    from {
+      opacity: 0.4;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+.kv-certificate {
+  margin-top: 18px;
+  display: grid;
+  place-items: center;
+  min-height: 240px;
+  padding: 8px;
+  border: 1px solid #8b7045;
+  background: #080808;
+}
+.kv-certificate img {
+  height: auto;
+  width: auto;
+  max-width: 100%;
+  max-height: 490px;
+  object-fit: contain;
+}
+.kv-faq details {
+  border-bottom: 1px solid #322c22;
+  padding: 14px 0;
+}
+.kv-faq summary {
+  cursor: pointer;
+  color: #f2e4c5;
+}
+.kv-faq details p {
+  margin: 10px 0;
+  color: #c4bfb7;
+}

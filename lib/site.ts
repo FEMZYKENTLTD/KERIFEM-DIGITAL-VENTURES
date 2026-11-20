@@ -10,15 +10,13 @@ export const BRAND = {
     'KERIFEM DIGITAL VENTURES builds software, websites and connected workflows for businesses and teams in Nigeria and internationally.',
 } as const;
 
-/** Canonical origin used for metadata, OG tags and JSON-LD. */
-export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000').replace(
-  /\/$/,
-  '',
-);
-
+/** Keep the established canonical domain on Vercel production, but never index previews. */
+const productionOrigin =
+  process.env.VERCEL_ENV === 'production' ? 'https://kerifem-digital-ventures.vercel.app' : '';
+const configuredOrigin = process.env.NEXT_PUBLIC_SITE_URL || productionOrigin;
+export const SITE_URL = (configuredOrigin || 'http://localhost:3000').replace(/\/$/, '');
 export const INDEXABLE =
-  Boolean(process.env.NEXT_PUBLIC_SITE_URL) &&
-  (!process.env.VERCEL_ENV || process.env.VERCEL_ENV === 'production');
+  Boolean(configuredOrigin) && (!process.env.VERCEL_ENV || process.env.VERCEL_ENV === 'production');
 
 export const CONTACT = {
   email: {

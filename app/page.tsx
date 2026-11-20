@@ -1,3 +1,4 @@
+import { faq, processSteps } from '@/lib/commercial';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, Globe2 } from 'lucide-react';
@@ -46,7 +47,8 @@ export default function HomePage() {
       <div className="kv-strip">
         <div className="kv-wrap">
           <span>
-            <Globe2 size={16} aria-hidden /> Nigeria · Available internationally
+            <Globe2 size={16} aria-hidden /> Nigeria · Available to US, European and international
+            clients
           </span>
           <span>
             Software <i /> Web <i /> AI & Automation
@@ -74,18 +76,44 @@ export default function HomePage() {
       <section className="kv-wrap kv-section kv-split" id="about">
         <div>
           <p className="kv-label">03 / COMPANY</p>
-          <h2>From FEMZYK to Kerifem</h2>
+          <h2>From FEMZYK to KERIFEM DIGITAL VENTURES</h2>
         </div>
         <div>
           <p>
             Our story began with FEMZYK in 2023. Today, KERIFEM DIGITAL VENTURES is our primary
-            business identity, with a focus on practical engineering and systems people can
-            maintain.
+            CAC-registered business name. Founder Olufemi Benua Keripe leads the work. The separate
+            SMEDAN record uses FEMZYK ENTERPRISES LTD.
           </p>
           <Link className="kv-text-link" href="/about">
             Read our story <ArrowRight size={16} aria-hidden />
           </Link>
         </div>
+      </section>
+      <section className="kv-wrap kv-section">
+        <SectionTitle label="DELIVERY" title="Why work with us?" />
+        <p className="mb-6 max-w-3xl text-white/75">
+          We design around your workflow, build for the right platform, and document what you
+          receive. From Java and Go desktop apps to Next.js web applications, Python APIs and
+          relational databases, the tooling follows the problem.
+        </p>
+        <h3 className="mb-4 text-xl">How we work</h3>
+        <ol className="kv-grid">
+          {processSteps.map((step, index) => (
+            <li className="kv-card" key={step}>
+              <span className="kv-label">0{index + 1}</span>
+              <p>{step}</p>
+            </li>
+          ))}
+        </ol>
+      </section>
+      <section className="kv-wrap kv-section kv-faq">
+        <SectionTitle label="ANSWERS" title="Frequently asked questions" />
+        {faq.map(([question, answer]) => (
+          <details key={question}>
+            <summary>{question}</summary>
+            <p>{answer}</p>
+          </details>
+        ))}
       </section>
       <section className="kv-wrap kv-section kv-split" id="contact">
         <div>
