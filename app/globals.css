@@ -1,0 +1,251 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* -------------------------------------------------------------------------- */
+/* Tokens                                                                      */
+/* -------------------------------------------------------------------------- */
+:root {
+  --font-display: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --font-sans:
+    'Poppins', Inter, Lato, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+
+  --brand-black: #080808;
+  --brand-charcoal: #1c1c1c;
+  --brand-gold: #d4af37;
+  --brand-white: #ffffff;
+
+  color-scheme: dark;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+    /* Offset anchor jumps so section titles clear the sticky nav. */
+    scroll-padding-top: 5.5rem;
+  }
+
+  body {
+    @apply bg-ink font-sans text-white antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display text-white;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background: var(--brand-gold);
+    color: var(--brand-black);
+  }
+
+  /* Visible, brand-consistent keyboard focus everywhere. */
+  :focus-visible {
+    outline: 2px solid var(--brand-gold);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* Dark, thin scrollbar (Chromium/Safari) */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #0b0b0b;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #2a2a2a;
+    border-radius: 999px;
+    border: 2px solid #0b0b0b;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(212, 175, 55, 0.6);
+  }
+
+  /* Native form controls on a dark surface */
+  select option {
+    background-color: #111111;
+    color: #ffffff;
+  }
+}
+
+@layer components {
+  /* Subtle "quiet luxury" card with a gold hairline + sheen on hover. */
+  .luxe-card {
+    @apply relative overflow-hidden rounded-xl bg-graphite/90 shadow-card transition-all duration-500 ease-luxury;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+  }
+
+  .luxe-card:hover {
+    border-color: rgba(212, 175, 55, 0.38);
+    transform: translateY(-3px);
+    box-shadow:
+      0 1px 0 0 rgba(255, 255, 255, 0.06) inset,
+      0 30px 70px -40px rgba(0, 0, 0, 1),
+      0 0 0 1px rgba(212, 175, 55, 0.12);
+  }
+
+  .luxe-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    background-image: radial-gradient(110% 90% at 0% 0%, rgba(212, 175, 55, 0.09), transparent 60%);
+    transition: opacity 500ms cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
+  }
+
+  .luxe-card:hover::after {
+    opacity: 1;
+  }
+
+  /* Ghost button: gold hairline outline, white type */
+  .btn-secondary {
+    @apply inline-flex min-h-[48px] items-center justify-center gap-2 rounded-full border px-6 py-3 text-sm font-medium tracking-wide transition-all duration-300 ease-luxury;
+    border-color: rgba(212, 175, 55, 0.55);
+    color: #fff;
+    background-color: rgba(212, 175, 55, 0.04);
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--brand-gold);
+    background-color: rgba(212, 175, 55, 0.12);
+    transform: translateY(-1px);
+  }
+
+  /* Primary button: solid gold, dark text — the only gold fill on the page */
+  .btn-primary {
+    @apply inline-flex min-h-[48px] items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold tracking-wide transition-all duration-300 ease-luxury tap-highlight-none;
+    background-color: var(--brand-gold);
+    color: #080808;
+    box-shadow: 0 14px 34px -18px rgba(212, 175, 55, 0.75);
+  }
+
+  .btn-primary:hover {
+    background-color: #e2c05a;
+    transform: translateY(-1px);
+    box-shadow: 0 20px 44px -18px rgba(212, 175, 55, 0.85);
+  }
+
+  .btn-primary:active {
+    transform: translateY(0);
+  }
+
+  .btn-primary:disabled {
+    @apply cursor-not-allowed opacity-60;
+    transform: none;
+  }
+
+  /* Text link with a gold underline that draws in from the left */
+  .link-underline {
+    @apply relative inline-block;
+    background-image: linear-gradient(var(--brand-gold), var(--brand-gold));
+    background-repeat: no-repeat;
+    background-size: 0% 1px;
+    background-position: left 100%;
+    transition: background-size 350ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .link-underline:hover,
+  .link-underline:focus-visible {
+    background-size: 100% 1px;
+  }
+
+  /* Gold-outlined chip (tech tags, credentials) */
+  .chip {
+    @apply inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium;
+    border-color: rgba(212, 175, 55, 0.32);
+    color: rgba(255, 255, 255, 0.82);
+    background-color: rgba(212, 175, 55, 0.05);
+  }
+
+  .footer-heading {
+    @apply text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-gold;
+  }
+
+  .field-label {
+    @apply mb-2 block text-sm font-medium text-white;
+  }
+
+  .field-base {
+    @apply w-full rounded-lg border bg-charcoal/70 px-4 py-3 text-[0.95rem] text-white transition-colors duration-200 placeholder:text-white/55;
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .field-base:hover:not(:disabled) {
+    border-color: rgba(212, 175, 55, 0.35);
+  }
+
+  .field-base:focus {
+    outline: none;
+    border-color: var(--brand-gold);
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.16);
+  }
+
+  .field-invalid {
+    border-color: rgba(242, 85, 90, 0.75) !important;
+  }
+}
+
+@layer utilities {
+  .grid-overlay {
+    background-image:
+      linear-gradient(to right, rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(75% 60% at 50% 35%, #000 0%, transparent 100%);
+    -webkit-mask-image: radial-gradient(75% 60% at 50% 35%, #000 0%, transparent 100%);
+  }
+
+  /* Gold hairline divider used between footer/section blocks. */
+  .divider-gold {
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      rgba(212, 175, 55, 0) 0%,
+      rgba(212, 175, 55, 0.45) 30%,
+      rgba(212, 175, 55, 0.45) 70%,
+      rgba(212, 175, 55, 0) 100%
+    );
+  }
+
+  .noise-overlay {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Motion preferences                                                          */
+/* -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Force colours-correct dark rendering in browsers that would otherwise invert. */
+@media (prefers-color-scheme: light) {
+  body {
+    background-color: #080808;
+  }
+}
