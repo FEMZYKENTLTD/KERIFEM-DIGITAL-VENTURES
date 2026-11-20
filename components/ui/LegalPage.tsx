@@ -3,7 +3,7 @@ import { ArrowLeft } from 'lucide-react';
 
 import JsonLd from '@/components/seo/JsonLd';
 import { ALL_LEGAL_DOCS, LEGAL_DISCLAIMER, LEGAL_LAST_UPDATED, type LegalDoc } from '@/lib/legal';
-import { BRAND, CONTACT } from '@/lib/site';
+import { BRAND, CONTACT, INDEXABLE } from '@/lib/site';
 import { breadcrumbSchema } from '@/lib/schema';
 
 /** Shared renderer for the three placeholder legal documents. */
@@ -12,12 +12,14 @@ export default function LegalPage({ doc }: { doc: LegalDoc }) {
 
   return (
     <article className="relative">
-      <JsonLd
-        data={breadcrumbSchema([
-          { name: 'Home', href: '/' },
-          { name: doc.title, href: doc.path },
-        ])}
-      />
+      {INDEXABLE && (
+        <JsonLd
+          data={breadcrumbSchema([
+            { name: 'Home', href: '/' },
+            { name: doc.title, href: doc.path },
+          ])}
+        />
+      )}
 
       <div className="container-shell max-w-shell pb-24 pt-32 md:pb-32 md:pt-40">
         <div className="mx-auto max-w-3xl">

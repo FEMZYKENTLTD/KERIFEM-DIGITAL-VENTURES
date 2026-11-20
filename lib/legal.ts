@@ -6,10 +6,9 @@ import { BRAND } from './site';
  * Every page renders a visible notice telling the client these documents must be
  * reviewed and customised with a legal professional before launch. The wording is
  * standard boilerplate written to match how this site actually behaves (Web3Forms
- * submissions, Google Fonts, Vercel hosting, no first-party cookies).
  */
 
-export const LEGAL_LAST_UPDATED = '11 November 2026';
+export const LEGAL_LAST_UPDATED = '20 November 2026';
 
 export const LEGAL_DISCLAIMER =
   'This is a placeholder document. Please consult a legal professional for compliant policies.';
@@ -34,8 +33,8 @@ export const PRIVACY_POLICY: LegalDoc = {
   path: '/privacy-policy',
   title: 'Privacy Policy',
   metaDescription:
-    'How FEMZYK ENTERPRISES collects, uses, and protects the information you submit through the website enquiry form.',
-  intro: `This Privacy Policy explains how ${BRAND.name} ("FEMZYK", "we", "us") handles personal information when you visit our website or send us a project enquiry. We keep data collection to the minimum required to answer enquiries and deliver agreed work.`,
+    'How KERIFEM DIGITAL VENTURES collects, uses, and protects the information you submit through the website enquiry form.',
+  intro: `This Privacy Policy explains how ${BRAND.name} ("we", "us") handles personal information when you visit our website or send us a project enquiry. We keep data collection to the minimum required to answer enquiries and deliver agreed work.`,
   sections: [
     {
       heading: '1. Information we collect',
@@ -51,7 +50,7 @@ export const PRIVACY_POLICY: LegalDoc = {
     {
       heading: '2. How we use your information',
       bullets: [
-        'To respond to your enquiry, normally within 24 hours of receipt.',
+        'To respond to your enquiry, using your preferred contact method.',
         'To prepare a project scope, timeline, and quotation when you request one.',
         'To deliver, maintain, and support work you have engaged us for.',
         'To keep records of correspondence for administrative, legal, and accounting purposes.',
@@ -64,12 +63,11 @@ export const PRIVACY_POLICY: LegalDoc = {
     {
       heading: '3. Form processing and third-party services',
       paragraphs: [
-        'The enquiry form on this website does not store submissions in our own database. It is submitted directly from your browser to Web3Forms (https://web3forms.com), a third-party form-handling service, which forwards the enquiry by email to the address shown on this site. Web3Forms processes that data under its own privacy notice and may retain submission metadata on its infrastructure for spam filtering and delivery logging.',
+        'The enquiry form on this website does not store submissions in our own database. Our server validates the submission and forwards it to Web3Forms (https://web3forms.com), a third-party form-handling service, which forwards the enquiry by email to the address shown on this site. Web3Forms processes that data under its own privacy notice and may retain submission metadata on its infrastructure for spam filtering and delivery logging.',
       ],
       bullets: [
         'Web3Forms — enquiry delivery and spam protection (including a hidden honeypot field).',
-        'Google Fonts — the Playfair Display and Poppins stylesheets are requested from Google\u2019s CDN, which receives your IP address as part of serving them.',
-        'Vercel Inc. — website hosting, content delivery, and security logging.',
+        'Hosting provider (Vercel if deployed there) — content delivery and security logging.',
         'WhatsApp (Meta Platforms) and Gmail — communication channels you may choose to use with us.',
       ],
     },
@@ -82,7 +80,7 @@ export const PRIVACY_POLICY: LegalDoc = {
     {
       heading: '5. How long we keep your data',
       bullets: [
-        'Enquiry correspondence: while we are in contact with you, and afterwards for up to three years for legal and dispute-resolution purposes.',
+        'Enquiry correspondence: while we are in contact with you, and afterwards as needed for follow-up and applicable legal obligations.',
         'Project records (scope, files, invoices): as long as required by Nigerian tax and record-keeping obligations.',
         'Hosting security logs: according to our hosting provider\u2019s retention defaults.',
       ],
@@ -132,7 +130,7 @@ export const TERMS_OF_SERVICE: LegalDoc = {
   path: '/terms-of-service',
   title: 'Terms of Service',
   metaDescription:
-    'The terms that govern engagements with FEMZYK ENTERPRISES for web development, software, writing, and tutoring services.',
+    'The terms that govern engagements with KERIFEM DIGITAL VENTURES for web development, software, writing, and tutoring services.',
   intro: `These Terms of Service govern your use of this website and any engagement with ${BRAND.name}. By submitting an enquiry or instructing us for a project, you agree to these terms.`,
   sections: [
     {
@@ -154,7 +152,7 @@ export const TERMS_OF_SERVICE: LegalDoc = {
       heading: '2. Enquiries and proposals',
       paragraphs: [
         'Enquiries submitted through the website, email, or WhatsApp are requests for information and do not create a binding agreement. Every project is quoted individually: pricing reflects scope, complexity, and timeline, and is stated in a written proposal.',
-        'We do not offer free consultations, free quotes, or free assessments. Where a discovery or scoping discussion is chargeable, it is stated plainly before you commit to it. A contract is formed only when you accept a written proposal and, where required, pay the agreed deposit.',
+        'Sending an enquiry does not start a paid engagement. Any chargeable discovery work, project scope, fees and payment schedule are agreed separately in writing.',
       ],
     },
     {
@@ -245,7 +243,7 @@ export const COOKIE_POLICY: LegalDoc = {
   path: '/cookie-policy',
   title: 'Cookie Policy',
   metaDescription:
-    'Which cookies and similar technologies FEMZYK ENTERPRISES uses on its website, and how to control them.',
+    'Which cookies and similar technologies KERIFEM DIGITAL VENTURES uses on its website, and how to control them.',
   intro:
     'This policy describes the cookies and similar technologies used on this website and how you can control them.',
   sections: [
@@ -270,8 +268,7 @@ export const COOKIE_POLICY: LegalDoc = {
     {
       heading: '3. Third-party technologies on this page',
       bullets: [
-        'Google Fonts — loading a stylesheet from fonts.gstatic.com discloses your IP address to Google and may store a font cache entry in your browser.',
-        'Web3Forms — submissions are delivered through their API; their spam protection may set or read cookies on the api.web3forms.com origin.',
+        'Web3Forms receives validated requests from our server; the enquiry form does not load Web3Forms in your browser.',
         'Vercel — hosting may use security cookies (for example DDoS and bot mitigation) on the site origin as configured by the platform.',
         'WhatsApp click-to-chat links — once you follow a link to wa.me, WhatsApp\u2019s own cookie policy applies to that page.',
       ],
@@ -279,7 +276,7 @@ export const COOKIE_POLICY: LegalDoc = {
     {
       heading: '4. Managing cookies',
       paragraphs: [
-        'You can block or delete cookies in your browser settings (Chrome, Firefox, Safari, and Edge all provide per-site controls). Blocking strictly necessary or platform security cookies may stop the enquiry form or the page itself from working correctly. Browser "Do Not Track" and "Global Privacy Control" signals are respected by our hosting platform where configured.',
+        'You can block or delete cookies in your browser settings (Chrome, Firefox, Safari, and Edge all provide per-site controls). Blocking strictly necessary or platform security cookies may stop the enquiry form or the page itself from working correctly.',
       ],
     },
     {
