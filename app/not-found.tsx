@@ -22,8 +22,8 @@ export default function NotFound() {
             <ArrowLeft className="h-4 w-4" strokeWidth={1.8} aria-hidden="true" />
             Return to the home page
           </Link>
-          <Link href="/#contact" className="btn-secondary">
-            Contact FEMZYK
+          <Link href="/contact" className="btn-secondary">
+            Contact Kerifem
           </Link>
         </div>
       </div>

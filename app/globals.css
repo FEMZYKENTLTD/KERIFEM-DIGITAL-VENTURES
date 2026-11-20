@@ -249,3 +249,466 @@
     background-color: #080808;
   }
 }
+
+/* Kerifem corporate layout */
+.kv-wrap {
+  width: min(1240px, calc(100% - 96px));
+  margin-inline: auto;
+}
+.kv-nav,
+.kv-strip,
+.kv-footer {
+  border-block-end: 1px solid #272522;
+  background: #0b0b0b;
+}
+.kv-nav-inner,
+.kv-strip .kv-wrap,
+.kv-footer-top,
+.kv-footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+.kv-nav-inner {
+  min-height: 83px;
+}
+.kv-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 17px;
+  letter-spacing: 0.14em;
+  font-weight: 600;
+  line-height: 1.15;
+  white-space: nowrap;
+}
+.kv-brand small {
+  display: block;
+  font-size: 8px;
+  letter-spacing: 0.23em;
+  color: #beb7a5;
+  margin-top: 5px;
+}
+.kv-mark {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid #b99b58;
+  color: #e3c775;
+  font-family: Georgia, serif;
+  font-size: 24px;
+}
+.kv-nav nav,
+.kv-links,
+.kv-actions {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.kv-nav nav a,
+.kv-links a {
+  font-size: 13px;
+  color: #d0cbc2;
+}
+.kv-nav a:hover,
+.kv-links a:hover {
+  color: #e3c775;
+}
+.kv-button,
+.kv-secondary,
+.kv-text-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.kv-button,
+.kv-secondary {
+  padding: 13px 17px;
+  border: 1px solid #38332b;
+  min-height: 45px;
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+.kv-button {
+  background: #dfbd68;
+  color: #12100b;
+  border-color: #dfbd68;
+  white-space: nowrap;
+}
+.kv-nav .kv-button:hover,
+.kv-button:hover {
+  background: #f4d88e;
+  color: #12100b;
+}
+.kv-secondary:hover,
+.kv-card:hover {
+  border-color: #74603b;
+}
+.kv-text-link,
+.kv-label {
+  color: #e0bf72;
+}
+.kv-label {
+  font-size: 11px !important;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  line-height: 1.5;
+}
+.kv-dot,
+.kv-strip i {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #d4af37;
+}
+.kv-dot {
+  margin-right: 9px;
+  vertical-align: 2px;
+}
+.kv-hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 34px;
+  padding-block: 66px 52px;
+}
+.kv-hero h1,
+.kv-intro h1,
+.kv-section h2,
+.kv-story h2 {
+  font-family: Georgia, 'Times New Roman', serif;
+  letter-spacing: -0.045em;
+  line-height: 1.02;
+  font-weight: 400;
+  color: #faf6eb;
+}
+.kv-hero h1,
+.kv-intro h1 {
+  font-size: clamp(43px, 5.15vw, 78px);
+  margin: 19px 0 23px;
+}
+.kv-hero h1 em {
+  color: #e4c47c;
+  font-weight: 400;
+}
+.kv-hero-copy > p:not(.kv-label),
+.kv-intro > p:last-child,
+.kv-split p:not(.kv-label),
+.kv-story p:not(.kv-label) {
+  color: #c4bfb7;
+  font-size: 16px;
+  line-height: 1.75;
+  max-width: 57ch;
+}
+.kv-actions {
+  margin-top: 28px;
+  gap: 12px;
+}
+.kv-hero-figure {
+  border: 1px solid #2b2720;
+  padding: 8px;
+  background: #10100f;
+}
+.kv-hero-image {
+  position: relative;
+  aspect-ratio: 1.34;
+  background: #0c0c0c;
+}
+.kv-hero-image img,
+.kv-project img {
+  object-fit: cover;
+}
+.kv-hero-figure figcaption,
+.kv-project figcaption,
+.kv-project-art span {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: #b8a886;
+  font: 10px/1.5 monospace;
+  letter-spacing: 0.12em;
+  padding: 9px;
+}
+.kv-strip {
+  border-block-start: 1px solid #272522;
+}
+.kv-strip .kv-wrap {
+  min-height: 59px;
+  flex-wrap: wrap;
+  padding-block: 12px;
+  color: #c1bbb0;
+  font-size: 12px;
+}
+.kv-strip span,
+.kv-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.kv-strip svg {
+  color: #dfbd68;
+}
+.kv-section {
+  padding-block: 55px;
+  border-bottom: 1px solid #25231f;
+}
+.kv-section-title,
+.kv-split {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+}
+.kv-section h2,
+.kv-story h2 {
+  font-size: clamp(32px, 4vw, 54px);
+  margin-top: 9px;
+}
+.kv-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+.kv-card {
+  background: #121211;
+  border: 1px solid #2c2924;
+  padding: 22px;
+  transition: border-color 0.2s;
+}
+.kv-card-head {
+  display: flex;
+  justify-content: space-between;
+  color: #e1bd70;
+}
+.kv-card-head span,
+.kv-stack {
+  font: 12px/1.5 monospace;
+  color: #c6ad7a !important;
+}
+.kv-card h3 {
+  font-size: 18px;
+  margin: 14px 0 7px;
+  font-weight: 600;
+}
+.kv-card p:not(.kv-label),
+.kv-card li {
+  font-size: 14px;
+  color: #c0bbb2;
+  line-height: 1.65;
+}
+.kv-card ul {
+  list-style: disc;
+  padding-left: 17px;
+  margin: 14px 0;
+}
+.kv-project {
+  padding: 0;
+  overflow: hidden;
+}
+.kv-project img {
+  width: 100%;
+  aspect-ratio: 2/1;
+}
+.kv-project figure,
+.kv-project-art {
+  border-bottom: 1px solid #302c25;
+  background: #191613;
+}
+.kv-project-art {
+  aspect-ratio: 1.73;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  color: #dfbd68;
+  background: repeating-linear-gradient(135deg, #191613, #191613 14px, #1d1915 14px, #1d1915 15px);
+}
+.kv-project-content {
+  padding: 22px;
+}
+.kv-stack {
+  margin-block: 13px;
+}
+.kv-split {
+  align-items: start;
+  margin-bottom: 0;
+}
+.kv-split > div:last-child {
+  flex: 0 1 490px;
+}
+.kv-split .kv-button,
+.kv-split .kv-text-link,
+.kv-story .kv-button {
+  margin-top: 16px;
+}
+.kv-intro {
+  padding-block: 65px 36px;
+}
+.kv-story {
+  max-width: 850px;
+  margin-bottom: 55px;
+}
+.kv-story section {
+  padding: 27px 0;
+  border-top: 1px solid #2c2924;
+}
+.kv-story p:not(.kv-label) {
+  margin-top: 12px;
+}
+.kv-bottom {
+  padding-bottom: 65px;
+}
+.kv-contact {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+.kv-contact aside a {
+  display: block;
+  color: #e1bd70;
+  overflow-wrap: anywhere;
+}
+.kv-contact aside p {
+  margin-top: 16px;
+}
+.kv-footer {
+  border-top: 1px solid #2c2924;
+}
+.kv-footer-top {
+  padding-block: 33px;
+  flex-wrap: wrap;
+}
+.kv-footer p,
+.kv-footer-bottom {
+  color: #bdb7ad;
+  font-size: 12px;
+}
+.kv-footer-bottom {
+  padding-block: 17px;
+  border-top: 1px solid #2c2924;
+  flex-wrap: wrap;
+}
+@media (max-width: 950px) {
+  .kv-wrap {
+    width: calc(100% - 48px);
+  }
+  .kv-nav nav {
+    gap: 12px;
+  }
+  .kv-nav-inner {
+    gap: 12px;
+  }
+  .kv-nav-inner > .kv-button {
+    display: none;
+  }
+}
+@media (max-width: 760px) {
+  .kv-wrap {
+    width: calc(100% - 32px);
+  }
+  .kv-nav-inner {
+    flex-wrap: wrap;
+    padding-block: 12px;
+  }
+  .kv-nav nav {
+    width: 100%;
+    gap: 14px;
+  }
+  .kv-nav nav a {
+    padding-block: 6px;
+  }
+  .kv-hero,
+  .kv-contact {
+    grid-template-columns: 1fr;
+  }
+  .kv-hero {
+    padding-block: 40px;
+    gap: 27px;
+  }
+  .kv-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .kv-section {
+    padding-block: 38px;
+  }
+}
+@media (max-width: 480px) {
+  .kv-grid {
+    grid-template-columns: 1fr;
+  }
+  .kv-actions {
+    align-items: stretch;
+  }
+  .kv-strip .kv-wrap {
+    gap: 9px;
+  }
+}
+.kv-project-image {
+  position: relative;
+  aspect-ratio: 2/1;
+}
+.kv-gallery {
+  display: grid;
+  gap: 24px;
+}
+.kv-shot-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: 12px;
+  padding: 0 22px 22px;
+}
+.kv-project-image {
+  display: block;
+  background: #0c0c0c;
+}
+.kv-project .kv-project-image img {
+  object-fit: contain;
+}
+.kv-credentials {
+  padding: clamp(20px, 5vw, 52px);
+  margin-bottom: 32px;
+  border: 1px solid #79613a;
+  background:
+    linear-gradient(90deg, #0b0b0b 28%, #0b0b0bdf),
+    url('/kerifem-hero.jpg') right center / cover;
+}
+.kv-credentials h2 {
+  font:
+    clamp(26px, 4vw, 44px) / 1.1 Georgia,
+    serif;
+  margin: 10px 0 24px;
+}
+.kv-credential-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: 16px;
+}
+.kv-credential-grid article {
+  padding: 22px;
+  border: 1px solid #8b7045;
+  background: #11110f;
+  box-shadow: inset 0 0 0 4px #181612;
+}
+.kv-credential-grid h3 {
+  margin: 12px 0 8px;
+  font-size: 16px;
+  color: #f3e7cd;
+}
+.kv-credential-grid article > p:last-child,
+.kv-credential-note {
+  color: #c4bfb7;
+  font-size: 13px;
+}
+.kv-credential-note {
+  margin-top: 18px;
+}

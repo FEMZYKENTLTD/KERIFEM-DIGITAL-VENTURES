@@ -3,64 +3,16 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import { useForm, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
+import { schema, MIN_MESSAGE, MAX_MESSAGE, type FormValues } from '@/lib/enquiry';
 import { AlertTriangle, Check, Loader2, Send } from 'lucide-react';
 
 import { BUDGET_OPTIONS, CONTACT_METHODS, SERVICE_OPTIONS } from '@/lib/content';
-import { CONTACT, WEB3FORMS_ACCESS_KEY } from '@/lib/site';
+import { CONTACT } from '@/lib/site';
 import { cn } from '@/lib/utils';
 
 /* -------------------------------------------------------------------------- */
 /* Validation                                                                  */
 /* -------------------------------------------------------------------------- */
-
-const MIN_MESSAGE = 20;
-const MAX_MESSAGE = 4000;
-
-const oneOf = (options: readonly string[], message: string) =>
-  z
-    .string()
-    .min(1, message)
-    .refine((value) => options.includes(value), message);
-
-const schema = z
-  .object({
-    name: z
-      .string()
-      .trim()
-      .min(2, 'Please enter your full name.')
-      .max(120, 'That name looks too long — please keep it under 120 characters.'),
-    email: z
-      .string()
-      .trim()
-      .min(1, 'Email address is required.')
-      .email('Enter a valid email address, e.g. you@company.com.'),
-    phone: z
-      .string()
-      .trim()
-      .min(7, 'Add a phone or WhatsApp number we can reach you on.')
-      .max(24, 'That number looks too long — include the country code only.')
-      .regex(/^\+?[\d][\d\s\-()]*$/, 'Use digits, spaces, +, - or ( ) only.'),
-    service: oneOf(SERVICE_OPTIONS, 'Select the service you need.'),
-    message: z
-      .string()
-      .trim()
-      .min(MIN_MESSAGE, `Please describe your project in at least ${MIN_MESSAGE} characters.`)
-      .max(MAX_MESSAGE, `Please keep the description under ${MAX_MESSAGE} characters.`),
-    budget: z
-      .string()
-      .optional()
-      .refine(
-        (value) => !value || BUDGET_OPTIONS.includes(value as (typeof BUDGET_OPTIONS)[number]),
-        'Select a valid budget range.',
-      ),
-    contactMethod: oneOf(CONTACT_METHODS, 'Let us know how you prefer to be contacted.'),
-    /** Honeypot — must stay empty or the submission is silently dropped. */
-    botcheck: z.string().max(0).optional(),
-  })
-  .refine((data) => !data.botcheck, { path: ['botcheck'], message: 'Spam detected.' });
-
-type FormValues = z.infer<typeof schema>;
 
 const EMPTY: FormValues = {
   name: '',
@@ -78,42 +30,6 @@ const EMPTY: FormValues = {
 /* -------------------------------------------------------------------------- */
 
 type Status = 'idle' | 'submitting' | 'success' | 'error' | 'unconfigured';
-
-async function submitToWeb3Forms(values: FormValues): Promise<boolean> {
-  const response = await fetch('https://api.web3forms.com/submit', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-    },
-    body: JSON.stringify({
-      access_key: WEB3FORMS_ACCESS_KEY,
-      subject: 'New Project Enquiry — FEMZYK ENTERPRISES',
-      from_name: 'FEMZYK ENTERPRISES Website',
-      // Reply-to so the enquiry can be answered from the inbox directly.
-      replyto: values.email,
-      botcheck: values.botcheck ?? '',
-      // Structured fields for the notification email.
-      Name: values.name,
-      Email: values.email,
-      'Phone / WhatsApp': values.phone,
-      'Service Required': values.service,
-      'Project Description': values.message,
-      'Budget Range': values.budget || 'Not provided',
-      'Preferred Contact Method': values.contactMethod,
-      // Plain-text fallback in case the notification template is customised.
-      message: `New enquiry from ${values.name}\n\nService: ${values.service}\nBudget: ${
-        values.budget || 'Not provided'
-      }\nPreferred contact: ${values.contactMethod}\n\n${values.message}`,
-    }),
-  });
-
-  if (!response.ok) return false;
-  const data: unknown = await response.json().catch(() => null);
-  return Boolean(
-    data && typeof data === 'object' && (data as { success?: boolean }).success === true,
-  );
-}
 
 /* -------------------------------------------------------------------------- */
 /* Component                                                                   */
@@ -152,14 +68,19 @@ export default function ContactForm() {
   const onValid = async (values: FormValues) => {
     setInvalidNotice(false);
 
-    if (!WEB3FORMS_ACCESS_KEY) {
-      setStatus('unconfigured');
-      return;
-    }
-
     setStatus('submitting');
     try {
-      const ok = await submitToWeb3Forms(values);
+      const response = await fetch('/api/enquiry', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(values),
+        signal: AbortSignal.timeout(15000),
+      });
+      if (response.status === 503) {
+        setStatus('unconfigured');
+        return;
+      }
+      const ok = response.ok && (await response.json()).success === true;
       if (ok) {
         setStatus('success');
         reset(EMPTY);
@@ -190,8 +111,12 @@ export default function ContactForm() {
     <div className="luxe-card p-6 sm:p-8 lg:p-10">
       <h3 className="font-display text-2xl font-semibold text-white">Project Enquiry Form</h3>
       <p className="mt-2 text-sm text-fog">
-        Fields marked with <span className="text-gold">*</span> are required. Your enquiry is sent
-        straight to {CONTACT.email.primary}.
+        Fields marked with <span className="text-gold">*</span> are required. Enquiries are
+        processed by Web3Forms.{' '}
+        <a className="link-underline" href="/privacy-policy">
+          Privacy Policy
+        </a>
+        .
       </p>
 
       <form
@@ -415,7 +340,7 @@ export default function ContactForm() {
             ) : (
               <>
                 <Send className="h-4 w-4" strokeWidth={1.8} aria-hidden="true" />
-                Send Enquiry
+                Request a Quote
               </>
             )}
           </button>
