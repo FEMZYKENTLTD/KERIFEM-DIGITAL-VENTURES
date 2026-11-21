@@ -1,5 +1,5 @@
 import type { FormValues } from './enquiry';
-import { BRAND } from './site';
+import { BRAND, CONTACT } from './site';
 
 export type Enquiry = { id: string; created_at: string; payload: FormValues; notification: string };
 
@@ -39,38 +39,39 @@ export async function enquiryMetrics() {
 }
 
 export async function notifyOwner(id: string) {
-  const key = process.env.WEB3FORMS_ACCESS_KEY?.trim();
-  if (!key) {
-    console.warn('[enquiry-alert] Web3Forms is not configured');
+  const key = process.env.BREVO_API_KEY?.trim();
+  const sender = process.env.BREVO_SENDER_EMAIL?.trim();
+  if (!key || !sender) {
+    console.warn('[enquiry-alert] Brevo is not configured');
     return 'not_configured';
   }
   try {
-    const response = await fetch('https://api.web3forms.com/submit', {
+    const response = await fetch('https://api.brevo.com/v3/smtp/email', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json', 'api-key': key },
       body: JSON.stringify({
-        access_key: key,
+        sender: { name: BRAND.name, email: sender },
+        to: [{ email: CONTACT.email.primary }],
         subject: `New quote request — ${BRAND.name}`,
-        from_name: BRAND.name,
-        message: `A new enquiry was saved. Reference: ${id}. Sign in at /admin/enquiries to view the details.`,
+        textContent: `A new enquiry was saved. Reference: ${id}. Sign in at /admin/enquiries to view the details.`,
       }),
       signal: AbortSignal.timeout(5000),
       cache: 'no-store',
     });
     if (!response.ok) {
-      console.warn('[enquiry-alert] Web3Forms HTTP rejection:', response.status);
+      console.warn('[enquiry-alert] Brevo HTTP rejection:', response.status);
       return 'failed';
     }
     const result = await response.json();
-    if (result?.success === true) return 'accepted';
-    console.warn('[enquiry-alert] Web3Forms did not confirm acceptance');
+    if (typeof result?.messageId === 'string' && result.messageId.length > 0) return 'accepted';
+    console.warn('[enquiry-alert] Brevo did not confirm acceptance');
     return 'failed';
   } catch (error) {
     console.warn(
       '[enquiry-alert]',
       error instanceof Error && error.name === 'TimeoutError'
-        ? 'Web3Forms timed out'
-        : 'Web3Forms transport or response error',
+        ? 'Brevo timed out'
+        : 'Brevo transport or response error',
     );
     return 'failed';
   }

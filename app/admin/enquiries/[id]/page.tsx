@@ -68,7 +68,7 @@ export default async function EnquiryPage({
       {notice && (
         <p className="admin-notice" role="alert">
           {notice === 'alert-accepted'
-            ? 'Web3Forms accepted the retry. Check the business inbox for delivery.'
+            ? 'Brevo accepted the retry. Check the business inbox for delivery.'
             : notice === 'alert-failed'
               ? 'The alert was not accepted. The enquiry is still saved.'
               : notice === 'alert-unavailable'
