@@ -133,7 +133,7 @@ npm run test:smoke -- --unconfigured
 | Environment variable | Scope | Setup |
 | --- | --- | --- |
 | `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` | Server only | Apply `supabase/enquiries.sql` in the intended project, then configure its URL and legacy service-role key. |
-| `ENQUIRY_ADMIN_PASSWORD` | Server only | Generate a unique password of at least 24 random characters. Open `/admin/enquiries` over HTTPS and use username `owner`. |
+| `SUPABASE_PUBLISHABLE_KEY` | Auth configuration | The Supabase publishable key (or legacy `anon` key), from the same project. This does not replace the private service-role key. |
 | `WEB3FORMS_ACCESS_KEY` | Server only | Use the Web3Forms key linked to the business inbox. Only a reference number is sent; submission details stay in Supabase. |
 | `NEXT_PUBLIC_SITE_URL` | Public | Override the production HTTPS origin if needed. |
 
@@ -141,8 +141,18 @@ npm run test:smoke -- --unconfigured
 
 1. For a **new** Supabase project, apply [`supabase/enquiries.sql`](supabase/enquiries.sql) once. Skip this step for an existing project where the migration has already been applied.
 2. Add the variables above to your deployment's **Preview** environment and redeploy the branch. Use separate test credentials where possible. Never add a secret to Git, chat, public environment variables, or build logs.
-3. Open `/admin/enquiries` on the preview over HTTPS. Use username `owner` and the password configured for that environment. The inbox uses browser HTTP Basic authentication; avoid shared devices.
+3. Provision the owner account using the instructions below. Open **Admin sign in** in the footer or go to `/admin/sign-in` over HTTPS.
 4. Submit a clearly labelled test quote. Verify the saved record in the private inbox, then check the actual business email inbox for the matching reference. **No Resend account or custom domain is required.**
+
+### Provision the admin account and recovery
+
+1. For an existing database, run [`supabase/enquiry-admin.sql`](supabase/enquiry-admin.sql) once to permit owner-initiated deletes through the server. Existing enquiries are not moved or modified.
+2. In Supabase **Authentication → Users**, create or confirm the site owner's account (`femzykenterprisesltd@gmail.com`). Use a unique initial password, stored privately, and disable public sign-ups for this dedicated project. Only the confirmed owner email is authorised by the app.
+3. In **Authentication → URL Configuration**, set the site URL and allow the exact `/admin/callback` URL. It must match the origin configured in `NEXT_PUBLIC_SITE_URL` for the deployment under test. Avoid wildcard redirect URLs. A preview that points at the production origin cannot complete its own recovery flow.
+4. Configure Supabase Auth **custom SMTP** and test the reset email. Password recovery mail is separate from Web3Forms alerts; Web3Forms is not an SMTP provider. Open a reset link in the same browser that requested it. Keep the standard Supabase recovery-link template for PKCE.
+5. Verify the new sign-in, password change and recovery on the target environment before switching production. Remove the unused `ENQUIRY_ADMIN_PASSWORD` only after verification. Set platform rate limits on the admin and enquiry endpoints.
+
+The dashboard lists 25 records per page with server-side search and filters. Owners can create, view, edit and permanently delete records. Manual additions and edits do not trigger an email. Search terms appear in the private dashboard URL, so don't paste confidential project text into search.
 
 ### Troubleshooting
 
@@ -150,7 +160,7 @@ npm run test:smoke -- --unconfigured
 | --- | --- |
 | Quote form returns `503 FORM_NOT_CONFIGURED` | Confirm the Supabase URL and server key are set for this deployment, then redeploy. |
 | Quote form returns `502 PROVIDER_UNAVAILABLE` | The save could not be confirmed. Check the database configuration and whether a record exists before retrying. |
-| Admin returns `404` | The inbox is disabled unless the owner password is configured and at least 24 characters. |
+| Admin sign-in fails | Confirm the publishable key, confirmed owner user, and password. The old `owner` / `ENQUIRY_ADMIN_PASSWORD` sign-in is no longer used. |
 | Notification is `not_configured` or `failed` | The enquiry is saved. Check the Web3Forms key and the inbox it is linked to. |
 | Notification is `accepted`, but no email arrived | Web3Forms accepted the alert; this does not confirm delivery. Check the destination mailbox and spam folder. |
 | Notification remains `pending` | The save completed, but the final notification status was not recorded. Check server diagnostics and the inbox. |
@@ -179,3 +189,16 @@ Enable **Web Analytics** and **Speed Insights** in the Vercel project dashboard.
 - Alternate email: [femzykentltd@gmail.com](mailto:femzykentltd@gmail.com)
 - WhatsApp: [+234 902 115 6310](https://wa.me/2349021156310) · [+234 904 990 3679](https://wa.me/2349049903679)
 - [GitHub](https://github.com/FEMZYKENTLTD) · [X](https://x.com/KeripeOluf1604)
+
+### Enquiry charts and site guide
+
+- Apply [`supabase/enquiry-metrics.sql`](supabase/enquiry-metrics.sql) in the dedicated Supabase project to enable the dashboard charts. The server-only function returns aggregate service and budget counts and 30 UTC daily totals. The dashboard continues to list enquiries if the charts are unavailable.
+- The public site guide matches questions against the website's FAQ, service catalog, and quote workflow. It carries limited context in React memory only and has no external model, transcript storage, or training pipeline. It cannot access enquiries or the admin workspace. To improve answers across visits, add a reviewed question, non-sensitive matching phrases, and a source page to [`lib/guide-answers.ts`](lib/guide-answers.ts), then redeploy. Use recurring topics shared by support staff, not raw visitor chats.
+
+### Password recovery and alert delivery
+
+Supabase Auth handles password hashing and verification; the application does not store password hashes or plaintext passwords in the enquiry table. For the existing business Gmail account, if Google makes App Passwords available, enable two-step verification and create an app password for SMTP. In Supabase **Authentication → Email → SMTP settings**, use `smtp.gmail.com`, port `587` (STARTTLS), and the full Gmail address as both SMTP username and sender. Enter the app password directly in Supabase, never in Vercel, Git, or chat. If App Passwords are unavailable for this account, use an SMTP service you control. Test **Forgot password?** from the deployed admin sign-in page and open the link in the same browser.
+
+Quote alerts are separate. Confirm `WEB3FORMS_ACCESS_KEY` is linked to the intended business mailbox and set it in the environment being tested. Redeploy after changing it. The Vercel function logs show sanitized Web3Forms failure categories, not details or credentials. In the owner dashboard, use **Retry email alert** on a failed or unconfigured record, then check the mailbox and spam folder. A provider timeout is ambiguous, so an earlier alert may still arrive. The database remains the source of truth for the enquiry.
+
+For Brevo, a verified sender is not necessarily compliant for delivery. If the only verified sender is a freemail address flagged as noncompliant, do not rely on it for recovery until a test reaches the owner inbox. If Brevo allows transactional sending with that sender, use `smtp-relay.brevo.com`, port `587`, the Brevo SMTP login and a dedicated Brevo SMTP key in Supabase. Use the verified sender shown in Brevo. Verify the received sender and delivery in Brevo transactional logs. If Brevo refuses or delivery fails, use an authenticated domain or another provider with an approved sending identity; keep Supabase dashboard account management available in the meantime.

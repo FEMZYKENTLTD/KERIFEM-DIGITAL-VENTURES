@@ -8,4 +8,4 @@ create table public.enquiries (
 create index enquiries_created_at_idx on public.enquiries (created_at desc);
 alter table public.enquiries enable row level security;
 revoke all on public.enquiries from public, anon, authenticated;
-grant select, insert, update on public.enquiries to service_role;
+grant select, insert, update, delete on public.enquiries to service_role;

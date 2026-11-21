@@ -87,6 +87,7 @@ export function CorporateFooter() {
           </div>
         </div>
         <div className="kv-footer-bottom">
+          <Link href="/admin/sign-in">Admin sign in</Link>
           <span>
             © {new Date().getFullYear()} {BRAND.name}
           </span>
