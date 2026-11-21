@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { adminAuth, OWNER_EMAIL, requireOwner } from '@/lib/admin-auth';
 import { schema } from '@/lib/enquiry';
 import { enquiryStore, notifyOwner } from '@/lib/enquiry-store';
+import { isRecoveryToken } from '@/lib/recovery-token';
 import { SITE_URL } from '@/lib/site';
 
 export async function signIn(fields: FormData) {
@@ -24,6 +25,19 @@ export async function requestReset() {
   });
   if (error) redirect('/admin/sign-in?notice=unavailable');
   redirect('/admin/sign-in?notice=sent');
+}
+
+export async function confirmRecovery(token: string) {
+  if (!isRecoveryToken(token)) redirect('/admin/sign-in?notice=expired');
+  const auth = await adminAuth();
+  if (!auth) redirect('/admin/sign-in?notice=unavailable');
+  const { data, error } = await auth.auth.verifyOtp({ token_hash: token, type: 'recovery' });
+  if (error) redirect('/admin/sign-in?notice=expired');
+  if (!data.user?.email_confirmed_at || data.user.email?.toLowerCase() !== OWNER_EMAIL) {
+    await auth.auth.signOut({ scope: 'local' });
+    redirect('/admin/sign-in?notice=expired');
+  }
+  redirect('/admin/account');
 }
 
 export async function changePassword(fields: FormData) {
