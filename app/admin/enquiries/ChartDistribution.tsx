@@ -13,7 +13,7 @@ const colors = [
   '#ffac8f',
   '#d2dcec',
 ];
-const modes = ['Bars', 'Pie', 'Both'] as const;
+const modes = ['Bars', 'Pie', 'Premium'] as const;
 type Rows = [string, number][];
 const format = new Intl.NumberFormat('en-GB');
 const percent = new Intl.NumberFormat('en-GB', { style: 'percent', maximumFractionDigits: 1 });
@@ -37,21 +37,26 @@ function Distribution({
     return `${colors[index % colors.length]} ${start}% ${Math.min(100, offset)}%`;
   });
   return (
-    <>
+    <div className="admin-distribution" data-ring={showPie && total > 0}>
       {showPie &&
         (total ? (
           <div
             className="admin-pie"
             aria-hidden="true"
             style={{ background: `conic-gradient(${slices.join(', ')})` }}
-          />
+          >
+            <div className="admin-pie-center">
+              <strong>{format.format(total)}</strong>
+              <small>ENQUIRIES</small>
+            </div>
+          </div>
         ) : (
           <p className="admin-hint">No enquiries to chart yet.</p>
         ))}
       <ul className="admin-bars">
         {rows.map(([label, value], index) => (
           <li key={label}>
-            <span>
+            <span className="admin-chart-name">
               {showPie && (
                 <i
                   className="admin-pie-key"
@@ -66,14 +71,19 @@ function Distribution({
               {showPie && total > 0 ? ` · ${percent.format(value / total)}` : ''}
             </strong>
             {showBars && (
-              <div aria-hidden="true">
-                <i style={{ width: `${(100 * value) / max}%` }} />
+              <div className="admin-chart-track" aria-hidden="true">
+                <i
+                  style={{
+                    width: `${(100 * value) / max}%`,
+                    background: colors[index % colors.length],
+                  }}
+                />
               </div>
             )}
           </li>
         ))}
       </ul>
-    </>
+    </div>
   );
 }
 
@@ -86,7 +96,7 @@ export function ChartDistribution({
   budgets: Rows;
   children: ReactNode;
 }) {
-  const [mode, setMode] = useState<(typeof modes)[number]>('Both');
+  const [mode, setMode] = useState<(typeof modes)[number]>('Premium');
   const id = useId();
   return (
     <>
@@ -95,15 +105,20 @@ export function ChartDistribution({
           <button
             type="button"
             className="admin-secondary"
-            key={option}
+            key={option === 'Pie' ? 'Donut' : option}
             aria-pressed={option === mode}
             aria-controls={id}
             onClick={() => setMode(option)}
           >
-            {option}
+            {option === 'Pie' ? 'Donut' : option}
           </button>
         ))}
       </div>
+      {mode === 'Premium' && (
+        <p className="admin-hint">
+          Premium overview · share of enquiries and count comparison in one view.
+        </p>
+      )}
       <div id={id} className="admin-charts">
         <section className="admin-panel">
           <h3>Services requested</h3>
