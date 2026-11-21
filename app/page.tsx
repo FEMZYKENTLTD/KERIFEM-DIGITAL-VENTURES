@@ -37,9 +37,10 @@ export default function HomePage() {
                 height={1200}
                 alt="Portrait of Olufemi Benua Keripe"
                 priority
-                sizes="(max-width: 480px) 67vw, 300px"
+                sizes="(max-width: 480px) 62vw, 278px"
               />
             </div>
+            <div className="kv-portrait-plinth" aria-hidden="true" />
           </div>
           <figcaption>
             <span>FIG. 01 / KERIFEM</span>
