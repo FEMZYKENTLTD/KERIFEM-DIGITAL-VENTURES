@@ -15,13 +15,21 @@ export default function ServicesPage() {
         title="Technology that moves businesses forward"
         copy="From custom business software to the design, documentation and training that support it."
       />
-      <nav className="kv-links kv-bottom" aria-label="Service sections">
-        {services.map(([id, label]) => (
-          <Link key={id} href={`#${id}`}>
-            {label}
+      <nav className="kv-service-directory" aria-label="Explore services">
+        {services.map(([id, label, , copy], index) => (
+          <Link key={id} href={`/services/${id}`} className="kv-service-tile">
+            <span className="kv-label">0{index + 1} / SERVICE</span>
+            <strong>{label}</strong>
+            <span>{copy}</span>
+            <span className="kv-text-link">Explore service →</span>
           </Link>
         ))}
-        <Link href="#pricing">USD pricing</Link>
+        <Link href="#pricing" className="kv-service-tile">
+          <span className="kv-label">USD / PRICING</span>
+          <strong>Plan your budget</strong>
+          <span>See indicative pricing and how we scope your quote.</span>
+          <span className="kv-text-link">View pricing ↓</span>
+        </Link>
       </nav>
       {services.map(([id, label, title, copy, value, tools, items], index) => (
         <section key={id} id={id} className="kv-service">
@@ -29,7 +37,12 @@ export default function ServicesPage() {
             <p className="kv-label">
               0{index + 1} / {label}
             </p>
-            <h2>{title}</h2>
+            <h2>
+              <Link href={`/services/${id}`}>{title}</Link>
+            </h2>
+            <Link className="kv-text-link" href={`/services/${id}`}>
+              View service details →
+            </Link>
             <p>{copy}</p>
             <p>{value}</p>
             <Link className="kv-button" href={`/contact?service=${id}`}>

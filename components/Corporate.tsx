@@ -28,12 +28,14 @@ export function CorporateNav() {
     <header className="kv-nav">
       <div className="kv-wrap kv-nav-inner">
         <Link href="/" className="kv-brand">
-          <span className="kv-mark" aria-hidden>
-            K
-          </span>
-          <span>
-            KERIFEM<small>DIGITAL VENTURES</small>
-          </span>
+          <Image
+            className="kv-brand-logo"
+            src="/brand/kerifem.webp"
+            width={438}
+            height={150}
+            sizes="(max-width: 760px) 156px, 180px"
+            alt="KERIFEM DIGITAL VENTURES"
+          />
         </Link>
         <nav aria-label="Main navigation">
           {[
@@ -61,9 +63,12 @@ export function CorporateFooter() {
     <footer className="kv-footer">
       <div className="kv-wrap">
         <div className="kv-footer-top">
-          <div>
-            <strong>{BRAND.name}</strong>
-            <p>Digital solutions. Intelligent systems. Real-world impact.</p>
+          <div className="kv-footer-brand">
+            <Image src="/brand/kerifem-mark.webp" width={144} height={136} sizes="44px" alt="" />
+            <div>
+              <strong>{BRAND.name}</strong>
+              <p>Digital solutions. Intelligent systems. Real-world impact.</p>
+            </div>
           </div>
           <div className="kv-links">
             <a href={CONTACT.social.github}>
@@ -103,7 +108,7 @@ export function Capabilities() {
           <p className="kv-label">0{index + 1} / SERVICE</p>
           <h3>{label}</h3>
           <p>{copy}</p>
-          <Link className="kv-text-link mt-4" href={`/services#${id}`}>
+          <Link className="kv-text-link mt-4" href={`/services/${id}`}>
             Explore {label} <ArrowUpRight size={14} aria-hidden />
           </Link>
         </article>

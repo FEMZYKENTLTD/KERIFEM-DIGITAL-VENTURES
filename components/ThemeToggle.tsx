@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 
 export default function ThemeToggle() {
-  const [midnight, setMidnight] = useState(false);
+  const [midnight, setMidnight] = useState(true);
 
   useEffect(() => {
     setMidnight(document.documentElement.dataset.palette === 'midnight');
