@@ -56,7 +56,8 @@ The portfolio features 16 genuine application screenshots across these five proj
 ```text
 Next.js App Router → static corporate and legal pages
                   → /contact → React Hook Form + shared Zod schema
-                             → POST /api/enquiry → Web3Forms → business inbox
+                             → POST /api/enquiry → Supabase → private /admin/enquiries
+                                               → Web3Forms → business email
 ```
 
 | Path | Responsibility |
@@ -95,12 +96,14 @@ npm run test:smoke -- --unconfigured
 
 | Environment variable | Scope | Setup |
 | --- | --- | --- |
-| `WEB3FORMS_ACCESS_KEY` | Server only | Create an access key for the approved business inbox and store it in `.env.local` or the hosting dashboard. Replace any prior `NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY` deployment setting; rotate a previously public key as appropriate. |
-| `NEXT_PUBLIC_SITE_URL` | Public | Override the production HTTPS origin if the public domain changes. The existing Vercel production domain is the default; leave blank for local development. |
+| `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` | Server only | Apply `supabase/enquiries.sql` in the intended project, then configure its URL and legacy service-role key. |
+| `ENQUIRY_ADMIN_PASSWORD` | Server only | Generate a unique password of at least 24 random characters. Open `/admin/enquiries` over HTTPS and use username `owner`. |
+| `WEB3FORMS_ACCESS_KEY` | Server only | Use the Web3Forms key linked to the business inbox. Only a reference number is sent; submission details stay in Supabase. |
+| `NEXT_PUBLIC_SITE_URL` | Public | Override the production HTTPS origin if needed. |
 
-The quote form includes country, a project title and reference URL where applicable, a USD budget range and delivery timeline. The server accepts bounded JSON, validates it again, rejects honeypot entries and cross-site browser POSTs, and times out the provider call. Success means Web3Forms accepted the submission; inbox delivery is a separate check. On failure, the form retains the visitor’s details and shows direct contact alternatives. No site database is used.
+Save configuration in `.env.local` or the hosting dashboard, never in Git. Switch production only after applying the SQL, setting all variables, and verifying a labelled end-to-end test. A successful form response confirms a database save. An **accepted** notification means Web3Forms accepted the email request, not that it reached the inbox. If email fails or is not configured, the enquiry remains visible in the private inbox. The inbox uses browser HTTP Basic authentication, so only use it over HTTPS in production and close the browser session on shared devices.
 
-**Why not Supabase?** No eligible project was visible in the connected account, and inbox delivery does not require an enquiry database. Using Web3Forms avoids adding a database, access policies, retention jobs and a separate email sender. Confirm the provider's current terms, quotas and retention before launch. Enable platform-level rate limiting for `/api/enquiry` where available; the honeypot and provider filtering are not a distributed rate limiter. Do not add enquiry payloads to logs or ask visitors for passwords or sensitive records.
+Keep Web3Forms operational on the old deployment until cutover is verified. Keep its server-side key for notifications after migration and rotate it if previously exposed. Existing emails are not imported automatically. Restrict access to the service role key, configure rate limits on the public endpoint and admin route, and set a retention policy for enquiry records before launch. Do not log enquiry payloads or request passwords or sensitive records in the form.
 
 ## Deploy
 

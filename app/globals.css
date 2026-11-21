@@ -1041,3 +1041,31 @@ body.bg-ink {
   border-radius: 4px;
   background: #f8f6f1;
 }
+
+.kv-portrait-zoom {
+  display: block;
+  cursor: zoom-in;
+  position: relative;
+}
+.kv-portrait-zoom-label {
+  display: block;
+  padding: 0.65rem 1rem;
+  background: var(--kv-panel);
+  color: var(--kv-hover);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+:root[data-palette='obsidian'] {
+  --kv-secondary-accent: #ddc499;
+  --kv-line: #5a4e3a;
+}
+:root[data-palette='obsidian'] .kv-nav nav a,
+:root[data-palette='obsidian'] .kv-links a,
+:root[data-palette='obsidian'] .kv-card p:not(.kv-label),
+:root[data-palette='obsidian'] .kv-card li,
+:root[data-palette='obsidian'] .kv-service p:not(.kv-label),
+:root[data-palette='obsidian'] .kv-hero-copy > p:not(.kv-label),
+:root[data-palette='obsidian'] .kv-story p:not(.kv-label),
+:root[data-palette='obsidian'] .kv-faq details p {
+  color: #e6e0d6;
+}

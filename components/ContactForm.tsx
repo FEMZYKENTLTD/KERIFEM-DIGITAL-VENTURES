@@ -30,7 +30,7 @@ const EMPTY: FormValues = {
 };
 
 /* -------------------------------------------------------------------------- */
-/* Web3Forms submission                                                        */
+/* Enquiry submission                                                        */
 /* -------------------------------------------------------------------------- */
 
 type Status = 'idle' | 'submitting' | 'success' | 'error' | 'unconfigured' | 'provider-error';
@@ -86,7 +86,7 @@ export default function ContactForm({ initialService = '' }: { initialService?: 
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(values),
-        signal: AbortSignal.timeout(15000),
+        signal: AbortSignal.timeout(22000),
       });
       const result = await response.json().catch(() => null);
       if (result?.code === 'FORM_NOT_CONFIGURED') {
@@ -130,8 +130,8 @@ export default function ContactForm({ initialService = '' }: { initialService?: 
     <div className="luxe-card p-6 sm:p-8 lg:p-10">
       <h3 className="font-display text-2xl font-semibold text-white">Project Enquiry Form</h3>
       <p className="mt-2 text-sm text-fog">
-        Fields marked with <span className="text-gold">*</span> are required. Enquiries are
-        processed by Web3Forms.{' '}
+        Fields marked with <span className="text-gold">*</span> are required. Enquiries are saved to
+        our private enquiry inbox.{' '}
         <a className="link-underline" href="/privacy-policy">
           Privacy Policy
         </a>
@@ -533,7 +533,7 @@ function StatusMessage({ status }: { status: Status }) {
       />
       <p className="text-sm leading-relaxed text-danger">
         {status === 'provider-error'
-          ? 'The email service could not confirm your submission. Your details are still in the form. You can try again or contact us directly via'
+          ? 'We could not confirm that your enquiry was saved. Your details are still in the form. You can try again or contact us directly via'
           : 'Something went wrong. Please try again or contact us directly via'}{' '}
         <a
           href={CONTACT.whatsapp.primary.href}

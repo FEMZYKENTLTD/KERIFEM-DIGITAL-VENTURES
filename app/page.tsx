@@ -29,7 +29,13 @@ export default function HomePage() {
           </div>
         </div>
         <figure className="kv-hero-figure">
-          <div className="kv-portrait-board">
+          <a
+            className="kv-portrait-board kv-portrait-zoom"
+            href="/founder/portrait.webp"
+            target="_blank"
+            rel="noopener"
+            aria-label="Open the full-size founder portrait in a new tab"
+          >
             <Image
               src="/founder/obsidian-portrait.webp"
               width={1458}
@@ -38,7 +44,8 @@ export default function HomePage() {
               priority
               sizes="(max-width: 760px) 94vw, (max-width: 1300px) 48vw, 600px"
             />
-          </div>
+            <span className="kv-portrait-zoom-label">View full-size portrait ↗</span>
+          </a>
           <figcaption>
             <span>FIG. 01 / KERIFEM</span>
             <span>OLUFEMI BENUA KERIPE / FOUNDER</span>
@@ -98,10 +105,11 @@ export default function HomePage() {
         </p>
         <h3 className="mb-4 text-xl">How we work</h3>
         <ol className="kv-grid">
-          {processSteps.map((step, index) => (
+          {processSteps.map(([step, brief], index) => (
             <li className="kv-card" key={step}>
               <span className="kv-label">0{index + 1}</span>
-              <p>{step}</p>
+              <h4 className="mb-2 mt-2 font-semibold">{step}</h4>
+              <p>{brief}</p>
             </li>
           ))}
         </ol>

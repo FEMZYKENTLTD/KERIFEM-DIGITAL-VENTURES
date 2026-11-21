@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
 
-if (process.env.WEB3FORMS_ACCESS_KEY)
+if (process.env.SUPABASE_SERVICE_ROLE_KEY)
   throw new Error('Run only against an unconfigured local server.');
 
-// Run against a local production server WITHOUT a Web3Forms key.
+// Run against a local production server WITHOUT enquiry database credentials.
 const origin = 'http://localhost:3000';
 for (const path of [
   '/',

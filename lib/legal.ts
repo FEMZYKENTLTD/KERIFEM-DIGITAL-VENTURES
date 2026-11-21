@@ -5,7 +5,7 @@ import { BRAND } from './site';
  *
  * Every page renders a visible notice telling the client these documents must be
  * reviewed and customised with a legal professional before launch. The wording is
- * standard boilerplate written to match how this site actually behaves (Web3Forms
+ * standard boilerplate written to match how this site actually behaves (private enquiry storage and email notifications
  */
 
 export const LEGAL_LAST_UPDATED = '20 November 2026';
@@ -63,10 +63,10 @@ export const PRIVACY_POLICY: LegalDoc = {
     {
       heading: '3. Form processing and third-party services',
       paragraphs: [
-        'The enquiry form on this website does not store submissions in our own database. Our server validates the submission and forwards it to Web3Forms (https://web3forms.com), a third-party form-handling service, which forwards the enquiry by email to the address shown on this site. Web3Forms processes that data under its own privacy notice and may retain submission metadata on its infrastructure for spam filtering and delivery logging.',
+        'The server validates enquiry submissions and stores them in a private Supabase database for authorised review. When configured, Web3Forms sends the business inbox a notification with a reference number only. The submitted details are available in the private enquiry inbox.',
       ],
       bullets: [
-        'Web3Forms — enquiry delivery and spam protection (including a hidden honeypot field).',
+        'Supabase — private enquiry storage. Web3Forms — reference-only email notifications.',
         'Vercel Web Analytics and Speed Insights — measure page visits and browser performance on the production deployment. The site removes query strings and fragments from event page URLs and does not send enquiry form contents to these services.',
         'Hosting provider (Vercel if deployed there) — content delivery and security logging.',
         'WhatsApp (Meta Platforms) and Gmail — communication channels you may choose to use with us.',
@@ -267,7 +267,7 @@ export const COOKIE_POLICY: LegalDoc = {
     {
       heading: '3. Third-party technologies on this page',
       bullets: [
-        'Web3Forms receives validated requests from our server; the enquiry form does not load Web3Forms in your browser.',
+        'Enquiry storage and notification requests take place on our server and do not set browser cookies.',
         'Vercel — hosting may use security cookies (for example DDoS and bot mitigation) on the site origin as configured by the platform.',
         'WhatsApp click-to-chat links — once you follow a link to wa.me, WhatsApp\u2019s own cookie policy applies to that page.',
       ],
