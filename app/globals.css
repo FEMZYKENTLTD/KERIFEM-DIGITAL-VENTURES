@@ -965,50 +965,12 @@ body.bg-ink {
 }
 
 .kv-portrait-board {
-  position: relative;
-  isolation: isolate;
-  display: grid;
-  justify-items: center;
-  padding: clamp(18px, 3vw, 38px) 12px clamp(24px, 4vw, 46px);
+  overflow: hidden;
   border: 1px solid var(--kv-line);
-  background: radial-gradient(ellipse at 40% 28%, var(--kv-line), var(--kv-bg) 72%);
+  background: #141414;
 }
-.kv-portrait-board::before {
-  content: '';
-  position: absolute;
-  z-index: -1;
-  inset: auto 0 0;
-  height: 22%;
-  border-top: 1px solid var(--kv-line);
-  background: linear-gradient(180deg, var(--kv-surface), var(--kv-bg));
-}
-.kv-portrait-mat {
-  position: relative;
-  z-index: 1;
-  width: min(72%, 300px);
-  padding: clamp(7px, 1.1vw, 12px);
-  border: clamp(5px, 0.8vw, 10px) solid var(--kv-secondary-accent);
-  border-top-color: color-mix(in srgb, var(--kv-secondary-accent), white 32%);
-  border-left-color: color-mix(in srgb, var(--kv-secondary-accent), white 18%);
-  border-right-color: color-mix(in srgb, var(--kv-secondary-accent), black 41%);
-  border-bottom-color: color-mix(in srgb, var(--kv-secondary-accent), black 30%);
-  background: var(--kv-panel);
-  box-shadow:
-    inset 0 0 0 1px var(--kv-line),
-    5px 3px 0 var(--kv-ink),
-    12px 8px 22px #0008;
-}
-.kv-portrait-mat img {
+.kv-portrait-board img {
   display: block;
   width: 100%;
   height: auto;
-}
-.kv-portrait-plinth {
-  width: min(91%, 390px);
-  height: clamp(16px, 3vw, 30px);
-  margin-top: -3px;
-  background: linear-gradient(180deg, var(--kv-panel), var(--kv-ink));
-  border: 1px solid var(--kv-line);
-  border-top: 5px solid color-mix(in srgb, var(--kv-line), var(--kv-secondary-accent) 25%);
-  box-shadow: 7px 13px 17px -5px #000a;
 }
