@@ -30,17 +30,14 @@ export default function HomePage() {
         </div>
         <figure className="kv-hero-figure">
           <div className="kv-portrait-board">
-            <div className="kv-portrait-mat">
-              <Image
-                src="/founder/portrait.webp"
-                width={800}
-                height={1200}
-                alt="Portrait of Olufemi Benua Keripe"
-                priority
-                sizes="(max-width: 480px) 62vw, 278px"
-              />
-            </div>
-            <div className="kv-portrait-plinth" aria-hidden="true" />
+            <Image
+              src="/founder/obsidian-portrait.webp"
+              width={1264}
+              height={843}
+              alt="Portrait of Olufemi Benua Keripe in a brass-edged obsidian frame on a slate platform"
+              priority
+              sizes="(max-width: 760px) 94vw, (max-width: 1300px) 48vw, 600px"
+            />
           </div>
           <figcaption>
             <span>FIG. 01 / KERIFEM</span>
