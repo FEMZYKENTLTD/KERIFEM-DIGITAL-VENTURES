@@ -121,3 +121,7 @@ Keep service claims tied to demonstrable capability and list a demo only after c
 - Alternate email: [femzykentltd@gmail.com](mailto:femzykentltd@gmail.com)
 - WhatsApp: [+234 902 115 6310](https://wa.me/2349021156310) · [+234 904 990 3679](https://wa.me/2349049903679)
 - [GitHub](https://github.com/FEMZYKENTLTD) · [X](https://x.com/KeripeOluf1604)
+
+### Production measurement
+
+Enable **Web Analytics** and **Speed Insights** in the Vercel project dashboard, deploy, and visit the production site. The root layout loads both integrations when `VERCEL_ENV=production`; local and preview traffic is not collected by this setup. Event page URLs omit query strings and fragments. Verify page views and performance samples in the respective dashboards after visiting the deployment.
