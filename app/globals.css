@@ -1178,3 +1178,45 @@ body.bg-ink {
   border-radius: 8px;
   padding: 8px 12px;
 }
+
+/* Frameless floating portrait: keep the supplied photograph intact. */
+.kv-portrait-board {
+  overflow: visible;
+  border: 0;
+  background: none;
+  isolation: isolate;
+  margin-inline: clamp(6px, 2vw, 30px);
+}
+.kv-portrait-board::before {
+  content: '';
+  position: absolute;
+  inset: 10% -2% 3%;
+  z-index: -1;
+  background: radial-gradient(ellipse, #5279ae58, transparent 72%);
+  filter: blur(24px);
+  pointer-events: none;
+}
+.kv-portrait-board img {
+  aspect-ratio: 5 / 6;
+  height: auto;
+  object-fit: cover;
+  object-position: center 27%;
+  border-radius: 18px;
+  box-shadow:
+    0 25px 42px #0008,
+    0 2px 10px #0006;
+}
+.kv-portrait-board .kv-portrait-zoom-label {
+  width: fit-content;
+  margin: 12px auto 0;
+  background: transparent;
+}
+@media (min-width: 761px) and (prefers-reduced-motion: no-preference) {
+  .kv-portrait-board img {
+    transform: perspective(1100px) rotateY(-7deg) rotateX(3deg);
+    transition: transform 260ms ease;
+  }
+  .kv-portrait-board:is(:hover, :focus-visible) img {
+    transform: perspective(1100px) rotateY(0) rotateX(0) translateY(-4px);
+  }
+}
