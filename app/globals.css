@@ -789,3 +789,201 @@
   margin: 10px 0;
   color: #c4bfb7;
 }
+
+/* Shared palette tokens keep the visual switch coherent across every route. */
+:root {
+  --kv-bg: #10100f;
+  --kv-surface: #171614;
+  --kv-panel: #1c1a17;
+  --kv-line: #393229;
+  --kv-accent: #e0c183;
+  --kv-hover: #f6dba3;
+  --kv-secondary-accent: #b29b75;
+  --kv-ink: #15110a;
+}
+:root[data-palette='midnight'] {
+  --kv-bg: #0b1321;
+  --kv-surface: #111c2d;
+  --kv-panel: #162339;
+  --kv-line: #304159;
+  --kv-accent: #b6cff6;
+  --kv-hover: #dce9ff;
+  --kv-secondary-accent: #e5bf9c;
+  --kv-ink: #0a1425;
+}
+body.bg-ink {
+  background: var(--kv-bg);
+}
+#main {
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent 0,
+    transparent calc(25% - 1px),
+    color-mix(in srgb, var(--kv-line) 24%, transparent) calc(25% - 1px),
+    color-mix(in srgb, var(--kv-line) 24%, transparent) 25%
+  );
+}
+.kv-nav,
+.kv-footer,
+.kv-strip {
+  background: var(--kv-surface);
+  border-color: var(--kv-line);
+}
+.kv-card,
+.kv-hero-figure,
+.kv-credentials,
+.kv-credential-grid article,
+.kv-project figure,
+.kv-contact .luxe-card {
+  background: var(--kv-panel);
+  border-color: var(--kv-line);
+  box-shadow: none;
+}
+.kv-certificate,
+.kv-project-image,
+.kv-contact .field-base {
+  background: var(--kv-bg);
+}
+.kv-section,
+.kv-service,
+.kv-story section,
+.kv-faq details,
+.kv-footer-bottom,
+.kv-secondary,
+.kv-certificate {
+  border-color: var(--kv-line);
+}
+.kv-label,
+.kv-text-link,
+.kv-nav a:hover,
+.kv-links a:hover,
+.kv-strip svg,
+.kv-contact aside a {
+  color: var(--kv-accent);
+}
+.kv-hero h1 em,
+.kv-faq summary,
+.kv-credential-grid h3 {
+  color: var(--kv-secondary-accent);
+}
+.kv-button {
+  background: var(--kv-accent);
+  border-color: var(--kv-accent);
+  color: var(--kv-ink);
+}
+.kv-nav .kv-button:hover,
+.kv-button:hover {
+  background: var(--kv-hover);
+  color: var(--kv-ink);
+}
+.kv-dot,
+.kv-strip i {
+  background: var(--kv-secondary-accent);
+}
+.kv-mark,
+.kv-card:hover,
+.kv-secondary:hover {
+  border-color: var(--kv-secondary-accent);
+  color: var(--kv-accent);
+}
+.kv-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.kv-palette {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--kv-line);
+  padding: 9px 11px;
+  min-height: 44px;
+  font-size: 12px;
+  color: #f4f1ed;
+}
+.kv-palette:hover,
+.kv-palette[aria-pressed='true'] {
+  border-color: var(--kv-accent);
+}
+.kv-palette-swatch {
+  width: 14px;
+  height: 14px;
+  border: 1px solid #90a9d0;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #274674 50%, #e5bf9c 50%);
+}
+.kv-mark-board {
+  background: var(--kv-bg);
+  border: 1px solid var(--kv-line);
+  padding: clamp(12px, 2vw, 24px);
+}
+.kv-mark-board svg {
+  width: 100%;
+  display: block;
+}
+.kv-mark-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+  color: var(--kv-secondary-accent);
+  font: 10px/1.4 monospace;
+  letter-spacing: 0.09em;
+}
+.kv-draft {
+  stroke: var(--kv-line);
+}
+.kv-draft-dashed {
+  stroke: var(--kv-line);
+  stroke-dasharray: 3 6;
+}
+.kv-draft-accent,
+.kv-draft-outline {
+  stroke: var(--kv-secondary-accent);
+}
+.kv-draft-fill {
+  fill: var(--kv-panel);
+  stroke: var(--kv-accent);
+  stroke-width: 1.3;
+}
+.kv-draft-highlight {
+  stroke: var(--kv-accent);
+  stroke-width: 3;
+}
+.kv-hero-figure figcaption,
+.kv-project figcaption {
+  color: var(--kv-secondary-accent);
+}
+@media (max-width: 1100px) {
+  .kv-nav-actions .kv-button {
+    display: none;
+  }
+}
+@media (max-width: 760px) {
+  .kv-nav-inner nav {
+    order: 2;
+  }
+}
+
+.kv-portrait-board {
+  display: grid;
+  place-items: center;
+  padding: clamp(12px, 2vw, 24px);
+  border: 1px solid var(--kv-line);
+  background: repeating-linear-gradient(
+    90deg,
+    var(--kv-bg) 0,
+    var(--kv-bg) 31px,
+    var(--kv-line) 32px
+  );
+}
+.kv-portrait-mat {
+  width: min(78%, 300px);
+  padding: 6px;
+  background: var(--kv-panel);
+  border: 1px solid var(--kv-secondary-accent);
+}
+.kv-portrait-mat img {
+  display: block;
+  width: 100%;
+  height: auto;
+}

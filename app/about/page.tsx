@@ -12,10 +12,10 @@ export default function AboutPage() {
       <Intro
         label="COMPANY / OUR STORY"
         title="The story behind KERIFEM DIGITAL VENTURES"
-        copy="We build practical digital systems for teams in Nigeria and internationally."
+        copy="We build practical digital systems for teams worldwide."
       />
       <section className="kv-credentials" aria-labelledby="registration-title">
-        <p className="kv-label">BUSINESS RECORDS / NIGERIA</p>
+        <p className="kv-label">BUSINESS RECORDS</p>
         <h2 id="registration-title">Business Registration & Official Credentials</h2>
         <div className="kv-credential-grid">
           <article>

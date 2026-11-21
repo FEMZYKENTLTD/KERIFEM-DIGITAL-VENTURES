@@ -17,7 +17,15 @@ export const metadata: Metadata = {
 export const viewport: Viewport = { colorScheme: 'dark', themeColor: '#080808' };
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "try{if(localStorage.getItem('kerifem-palette')==='midnight')document.documentElement.dataset.palette='midnight'}catch{}",
+          }}
+        />
+      </head>
       <body className="bg-ink text-white antialiased">
         <a
           href="#main"

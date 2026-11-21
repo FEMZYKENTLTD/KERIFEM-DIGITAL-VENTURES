@@ -33,7 +33,7 @@ const EMPTY: FormValues = {
 /* Web3Forms submission                                                        */
 /* -------------------------------------------------------------------------- */
 
-type Status = 'idle' | 'submitting' | 'success' | 'error' | 'unconfigured';
+type Status = 'idle' | 'submitting' | 'success' | 'error' | 'unconfigured' | 'provider-error';
 
 /* -------------------------------------------------------------------------- */
 /* Component                                                                   */
@@ -61,11 +61,16 @@ export default function ContactForm({ initialService = '' }: { initialService?: 
   });
 
   const messageLength = watch('message').trim().length;
-  const showStatus = status === 'success' || status === 'error' || status === 'unconfigured';
+  const showStatus =
+    status === 'success' ||
+    status === 'error' ||
+    status === 'unconfigured' ||
+    status === 'provider-error';
 
   /* Reset the inline status whenever the visitor edits after an error. */
   useEffect(() => {
-    if (status === 'error' || status === 'unconfigured') setStatus('idle');
+    if (status === 'error' || status === 'unconfigured' || status === 'provider-error')
+      setStatus('idle');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dirtyFields.name, dirtyFields.email, dirtyFields.message]);
 
@@ -83,11 +88,16 @@ export default function ContactForm({ initialService = '' }: { initialService?: 
         body: JSON.stringify(values),
         signal: AbortSignal.timeout(15000),
       });
-      if (response.status === 503) {
+      const result = await response.json().catch(() => null);
+      if (result?.code === 'FORM_NOT_CONFIGURED') {
         setStatus('unconfigured');
         return;
       }
-      const ok = response.ok && (await response.json()).success === true;
+      if (result?.code?.startsWith('PROVIDER_')) {
+        setStatus('provider-error');
+        return;
+      }
+      const ok = response.ok && result?.success === true;
       if (ok) {
         setStatus('success');
         reset(EMPTY);
@@ -522,7 +532,9 @@ function StatusMessage({ status }: { status: Status }) {
         aria-hidden="true"
       />
       <p className="text-sm leading-relaxed text-danger">
-        Something went wrong. Please try again or contact us directly via{' '}
+        {status === 'provider-error'
+          ? 'The email service could not confirm your submission. Your details are still in the form. You can try again or contact us directly via'
+          : 'Something went wrong. Please try again or contact us directly via'}{' '}
         <a
           href={CONTACT.whatsapp.primary.href}
           target="_blank"

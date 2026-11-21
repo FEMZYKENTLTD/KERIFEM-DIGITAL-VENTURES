@@ -14,7 +14,7 @@ export const faq = [
   ],
   [
     'Do you work with international clients?',
-    'Yes. We are based in Nigeria and available remotely to clients in the United States, Europe and other markets.',
+    'Yes. We work remotely with clients in the United States, Europe and other markets.',
   ],
   [
     'What currencies do you quote in?',

@@ -7,7 +7,7 @@ export const BRAND = {
   registrationShort: 'CAC registered business name',
   foundedYear: 2023,
   description:
-    'KERIFEM DIGITAL VENTURES builds software, websites and connected workflows for businesses and teams in Nigeria and internationally.',
+    'KERIFEM DIGITAL VENTURES builds software, websites and connected workflows for businesses and teams worldwide.',
 } as const;
 
 /** Keep the established canonical domain on Vercel production, but never index previews. */
@@ -37,7 +37,6 @@ export const CONTACT = {
     github: 'https://github.com/FEMZYKENTLTD',
     x: 'https://x.com/KeripeOluf1604',
   },
-  location: 'Lagos, Nigeria',
   deliveryModel: 'Remote-First, Serving Clients Globally',
   responseTime: '24 hours',
 } as const;

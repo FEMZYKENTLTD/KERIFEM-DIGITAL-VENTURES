@@ -1,3 +1,4 @@
+import ThemeToggle from './ThemeToggle';
 import { cases } from '@/lib/cases';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -47,7 +48,10 @@ export function CorporateNav() {
             </Link>
           ))}
         </nav>
-        <Quote />
+        <div className="kv-nav-actions">
+          <ThemeToggle />
+          <Quote />
+        </div>
       </div>
     </header>
   );
