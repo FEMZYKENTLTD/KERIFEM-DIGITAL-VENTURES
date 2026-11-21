@@ -32,8 +32,8 @@ export default function HomePage() {
           <div className="kv-portrait-board">
             <Image
               src="/founder/obsidian-portrait.webp"
-              width={1264}
-              height={843}
+              width={1458}
+              height={1114}
               alt="Portrait of Olufemi Benua Keripe in a brass-edged obsidian frame on a slate platform"
               priority
               sizes="(max-width: 760px) 94vw, (max-width: 1300px) 48vw, 600px"
