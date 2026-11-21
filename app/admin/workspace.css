@@ -196,13 +196,13 @@
   gap: 4px 12px;
   font-size: 0.9rem;
 }
-.admin-bars li div {
+.admin-bars .admin-chart-track {
   grid-column: 1/-1;
   height: 7px;
   background: #2e405c;
   border-radius: 8px;
 }
-.admin-bars i {
+.admin-chart-track > i {
   display: block;
   height: 100%;
   border-radius: inherit;
@@ -265,4 +265,79 @@
 }
 .admin-trend-grid {
   margin-top: 12px;
+}
+
+.admin-distribution {
+  container-type: inline-size;
+}
+.admin-distribution[data-ring='true'] {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 205px), 1fr));
+  align-items: start;
+  gap: 18px;
+}
+.admin-chart-name {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+  line-height: 1.4;
+}
+.admin-bars li {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  padding-bottom: 6px;
+}
+.admin-bars strong {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.admin-chart-name .admin-pie-key {
+  flex: 0 0 0.6rem;
+  height: 0.6rem;
+  margin: 0;
+  border-radius: 2px;
+}
+.admin-pie {
+  width: min(100%, 190px);
+  display: grid;
+  place-items: center;
+  margin: 8px auto;
+}
+.admin-pie-center {
+  width: 66%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #141f32;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.admin-pie-center strong {
+  font-size: 1.65rem;
+  line-height: 1.1;
+}
+.admin-pie-center small {
+  color: #c8d9fa;
+  letter-spacing: 0.1em;
+  font-size: 0.65rem;
+}
+
+/* Let long legend labels wrap and grow without colliding with the next track. */
+.admin-distribution .admin-bars {
+  gap: 8px;
+  align-content: start;
+}
+.admin-distribution .admin-bars li {
+  min-block-size: 38px;
+  padding-block: 5px;
+  row-gap: 6px;
+}
+.admin-chart-name {
+  overflow-wrap: anywhere;
+}
+.admin-insights .admin-panel {
+  min-width: 0;
+  height: auto;
 }
