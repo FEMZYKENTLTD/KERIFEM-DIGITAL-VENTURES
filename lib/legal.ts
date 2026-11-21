@@ -63,10 +63,10 @@ export const PRIVACY_POLICY: LegalDoc = {
     {
       heading: '3. Form processing and third-party services',
       paragraphs: [
-        'The server validates enquiry submissions and stores them in a private Supabase database for authorised review. When configured, Web3Forms sends the business inbox a notification with a reference number only. The submitted details are available in the private enquiry inbox.',
+        'The server validates enquiry submissions and stores them in a private Supabase database for authorised review. When configured, Brevo sends the business inbox a notification with a reference number only. The submitted details are available in the private enquiry inbox.',
       ],
       bullets: [
-        'Supabase — private enquiry storage. Web3Forms — reference-only email notifications.',
+        'Supabase — private enquiry storage. Brevo — reference-only email notifications.',
         'Vercel Web Analytics and Speed Insights — measure page visits and browser performance on the production deployment. The site removes query strings and fragments from event page URLs and does not send enquiry form contents to these services.',
         'Hosting provider (Vercel if deployed there) — content delivery and security logging.',
         'WhatsApp (Meta Platforms) and Gmail — communication channels you may choose to use with us.',

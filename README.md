@@ -33,7 +33,7 @@ Kerifem builds software, websites and connected workflows for businesses, educat
 
 - **Public site:** seven dedicated service pages, five portfolio case studies, an About page, and a quote form with service preselection.
 - **Design:** Midnight blue by default, optional black-and-gold Obsidian, and a full-size founder portrait link.
-- **Enquiry operations:** validated submissions go to a private database; Web3Forms sends reference-only email alerts. A missed email does not erase a saved enquiry.
+- **Enquiry operations:** validated submissions go to a private database; Brevo sends reference-only email alerts. A missed email does not erase a saved enquiry.
 - **Measurement:** Vercel Web Analytics and Speed Insights run on Vercel production deployments when enabled. A merged change is not evidence of a live deployment or successful delivery.
 
 ## Website preview
@@ -88,7 +88,7 @@ flowchart LR
     Visitor --> Form[Quote form]
     Form --> API[POST /api/enquiry]
     API -->|Validate and save first| DB[(Private Supabase enquiries)]
-    API -->|After save: reference only| Mail[Web3Forms]
+    API -->|After save: reference only| Mail[Brevo]
     Mail --> Inbox[Business email]
     Owner --> Admin[GET /admin/enquiries]
     Admin -->|Authenticated server-side read| DB
@@ -145,7 +145,8 @@ npm run test:smoke -- --unconfigured
 | --- | --- | --- |
 | `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` | Server only | Apply `supabase/enquiries.sql` in the intended project, then configure its URL and legacy service-role key. |
 | `SUPABASE_PUBLISHABLE_KEY` | Auth configuration | The Supabase publishable key (or legacy `anon` key), from the same project. This does not replace the private service-role key. |
-| `WEB3FORMS_ACCESS_KEY` | Server only | Use the Web3Forms key linked to the business inbox. Only a reference number is sent; submission details stay in Supabase. |
+| `BREVO_API_KEY` | Server only | Brevo API key for transactional email; not the SMTP key used in Supabase Auth. |
+| `BREVO_SENDER_EMAIL` | Server configuration | Sender email verified in Brevo. Alerts go to the primary business inbox. Only the reference is sent. |
 | `NEXT_PUBLIC_SITE_URL` | Public | Override the production HTTPS origin if needed. |
 
 ### Set up a preview first
@@ -160,7 +161,7 @@ npm run test:smoke -- --unconfigured
 1. For an existing database, run [`supabase/enquiry-admin.sql`](supabase/enquiry-admin.sql) once to permit owner-initiated deletes through the server. Existing enquiries are not moved or modified.
 2. In Supabase **Authentication → Users**, create or confirm the site owner's account (`femzykenterprisesltd@gmail.com`). Use a unique initial password, stored privately, and disable public sign-ups for this dedicated project. Only the confirmed owner email is authorised by the app.
 3. In **Authentication → URL Configuration**, set the site URL and allow the exact `/admin/callback` URL. It must match the origin configured in `NEXT_PUBLIC_SITE_URL` for the deployment under test. Avoid wildcard redirect URLs. A preview that points at the production origin cannot complete its own recovery flow.
-4. Configure Supabase Auth **custom SMTP** and test the reset email. Password recovery mail is separate from Web3Forms alerts; Web3Forms is not an SMTP provider. After deploying the new recovery route, replace the link in **Authentication → Emails → Templates → Reset password** with `<a href="{{ .SiteURL }}/admin/recover?token_hash={{ .TokenHash }}">Reset password</a>`. Set Site URL to the production website origin (no trailing slash). Turn off email link tracking for reset emails if it is enabled. Request a fresh email and click **Continue to password reset** before choosing a password. The new link is verified only on confirmation, not on page load, and does not rely on the original browser's PKCE cookie. The legacy `/admin/callback` remains available for old links.
+4. Configure Supabase Auth **custom SMTP** and test the reset email. Password recovery uses Supabase Auth SMTP. Quote alerts use the Brevo transactional API and are configured separately. After deploying the new recovery route, replace the link in **Authentication → Emails → Templates → Reset password** with `<a href="{{ .SiteURL }}/admin/recover?token_hash={{ .TokenHash }}">Reset password</a>`. Set Site URL to the production website origin (no trailing slash). Turn off email link tracking for reset emails if it is enabled. Request a fresh email and click **Continue to password reset** before choosing a password. The new link is verified only on confirmation, not on page load, and does not rely on the original browser's PKCE cookie. The legacy `/admin/callback` remains available for old links.
 5. Verify the new sign-in, password change and recovery on the target environment before switching production. Remove the unused `ENQUIRY_ADMIN_PASSWORD` only after verification. Set platform rate limits on the admin and enquiry endpoints.
 
 The dashboard lists 25 records per page with server-side search and filters. Owners can create, view, edit and permanently delete records. Manual additions and edits do not trigger an email. Search terms appear in the private dashboard URL, so don't paste confidential project text into search.
@@ -172,8 +173,8 @@ The dashboard lists 25 records per page with server-side search and filters. Own
 | Quote form returns `503 FORM_NOT_CONFIGURED` | Confirm the Supabase URL and server key are set for this deployment, then redeploy. |
 | Quote form returns `502 PROVIDER_UNAVAILABLE` | The save could not be confirmed. Check the database configuration and whether a record exists before retrying. |
 | Admin sign-in fails | Confirm the publishable key, confirmed owner user, and password. The old `owner` / `ENQUIRY_ADMIN_PASSWORD` sign-in is no longer used. |
-| Notification is `not_configured` or `failed` | The enquiry is saved. Check the Web3Forms key and the inbox it is linked to. |
-| Notification is `accepted`, but no email arrived | Web3Forms accepted the alert; this does not confirm delivery. Check the destination mailbox and spam folder. |
+| Notification is `not_configured` or `failed` | The enquiry is saved. Check the Brevo API key, verified sender, and transactional logs. |
+| Notification is `accepted`, but no email arrived | Brevo accepted the alert; this does not confirm delivery. Check the destination mailbox and spam folder. |
 | Notification remains `pending` | The save completed, but the final notification status was not recorded. Check server diagnostics and the inbox. |
 
 The form enforces shared validation, a request-size limit, a honeypot and a cross-site browser request check. These are not distributed rate limits. There is no automatic email retry or historical inbox import. Keep the legacy form working until the preview passes both checks.
@@ -214,6 +215,6 @@ Keep public claims tied to the site's published content or to evidence in the po
 
 Supabase Auth handles password hashing and verification; the application does not store password hashes or plaintext passwords in the enquiry table. For the existing business Gmail account, if Google makes App Passwords available, enable two-step verification and create an app password for SMTP. In Supabase **Authentication → Email → SMTP settings**, use `smtp.gmail.com`, port `587` (STARTTLS), and the full Gmail address as both SMTP username and sender. Enter the app password directly in Supabase, never in Vercel, Git, or chat. If App Passwords are unavailable for this account, use an SMTP service you control. Test **Forgot password?** from the deployed admin sign-in page with the recovery template above.
 
-Quote alerts are separate. Confirm `WEB3FORMS_ACCESS_KEY` is linked to the intended business mailbox and set it in the environment being tested. Redeploy after changing it. The Vercel function logs show sanitized Web3Forms failure categories, not details or credentials. In the owner dashboard, use **Retry email alert** on a failed or unconfigured record, then check the mailbox and spam folder. A provider timeout is ambiguous, so an earlier alert may still arrive. The database remains the source of truth for the enquiry.
+Quote alerts are separate. Set `BREVO_API_KEY` and `BREVO_SENDER_EMAIL` in the deployment environment. The recipient is the primary business inbox; customer contact details never go to the notification provider. If Brevo API IP restrictions are enabled, confirm your hosting setup can satisfy them. Redeploy after changing it. The Vercel function logs show sanitized Brevo failure categories, not details or credentials. In the owner dashboard, use **Retry email alert** on a failed or unconfigured record, then check the mailbox and spam folder. A provider timeout is ambiguous, so an earlier alert may still arrive. The database remains the source of truth for the enquiry.
 
 For Brevo, a verified sender is not necessarily compliant for delivery. If the only verified sender is a freemail address flagged as noncompliant, do not rely on it for recovery until a test reaches the owner inbox. If Brevo allows transactional sending with that sender, use `smtp-relay.brevo.com`, port `587`, the Brevo SMTP login and a dedicated Brevo SMTP key in Supabase. Use the verified sender shown in Brevo. Verify the received sender and delivery in Brevo transactional logs. If Brevo refuses or delivery fails, use an authenticated domain or another provider with an approved sending identity; keep Supabase dashboard account management available in the meantime.
