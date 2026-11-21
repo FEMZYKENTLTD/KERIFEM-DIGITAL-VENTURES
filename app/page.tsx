@@ -31,16 +31,16 @@ export default function HomePage() {
         <figure className="kv-hero-figure">
           <a
             className="kv-portrait-board kv-portrait-zoom"
-            href="/founder/portrait.webp"
+            href="/founder/studio-portrait.webp"
             target="_blank"
             rel="noopener"
             aria-label="Open the full-size founder portrait in a new tab"
           >
             <Image
-              src="/founder/obsidian-portrait.webp"
-              width={1458}
-              height={1114}
-              alt="Portrait of Olufemi Benua Keripe in a brass-edged obsidian frame on a slate platform"
+              src="/founder/studio-portrait.webp"
+              width={832}
+              height={1248}
+              alt="Portrait of Olufemi Benua Keripe in a white shirt against a dark blue background"
               priority
               sizes="(max-width: 760px) 94vw, (max-width: 1300px) 48vw, 600px"
             />
