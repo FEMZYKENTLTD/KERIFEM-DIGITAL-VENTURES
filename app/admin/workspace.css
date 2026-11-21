@@ -1,0 +1,240 @@
+.admin-wrap {
+  width: min(94%, 1280px);
+  margin: 48px auto 72px;
+  color: #eff4fc;
+  overflow-wrap: anywhere;
+}
+.admin-eyebrow {
+  color: #c8d9fa;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+  margin-bottom: 14px;
+}
+.admin-wrap h1 {
+  font-size: clamp(2rem, 5vw, 3.25rem);
+  font-weight: 700;
+  line-height: 1.12;
+  margin: 8px 0 12px;
+}
+.admin-wrap h2 {
+  font-size: 1.4rem;
+  font-weight: 650;
+  margin-bottom: 12px;
+}
+.admin-wrap a {
+  color: #c4dcff;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.admin-wrap button {
+  background: #d2e4ff;
+  color: #0c182c;
+  padding: 9px 15px;
+  border-radius: 7px;
+  font-weight: 650;
+}
+.admin-wrap .admin-secondary {
+  background: #26354e;
+  color: #eff4fc;
+}
+.admin-header,
+.admin-header nav,
+.admin-filters,
+.admin-pagination {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.admin-header {
+  justify-content: space-between;
+  margin-bottom: 22px;
+}
+.admin-panel,
+.admin-metrics > div {
+  background: #141f32;
+  border: 1px solid #455773;
+  border-radius: 12px;
+  padding: clamp(16px, 3vw, 28px);
+}
+.admin-auth {
+  max-width: 530px;
+  margin: auto;
+}
+.admin-auth form {
+  display: grid;
+  gap: 12px;
+  margin-top: 20px;
+  justify-items: start;
+}
+.admin-auth label {
+  width: 100%;
+}
+.admin-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+}
+.admin-metrics dd {
+  font-size: 2rem;
+  font-weight: 700;
+}
+.admin-hint {
+  font-size: 0.875rem;
+  color: #c2cfe3;
+  margin: 10px 0 18px;
+}
+.admin-notice {
+  background: #263b56;
+  padding: 12px;
+  border-radius: 8px;
+  margin: 12px 0;
+}
+.admin-wrap label {
+  display: grid;
+  gap: 5px;
+  font-weight: 600;
+}
+.admin-wrap :is(input:not([type='checkbox']), select, textarea) {
+  width: 100%;
+  border: 1px solid #667995;
+  background: #0d1626;
+  color: #f4f7fc;
+  border-radius: 7px;
+  padding: 9px 10px;
+}
+.admin-filters {
+  align-items: end;
+  margin: 16px 0;
+}
+.admin-filters label {
+  flex: 1 1 165px;
+}
+.admin-table {
+  overflow: auto;
+  margin: 12px 0;
+}
+.admin-table table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 660px;
+  text-align: left;
+}
+.admin-table :is(th, td) {
+  padding: 12px;
+  border-bottom: 1px solid #44536b;
+}
+.admin-table th {
+  color: #c9d8f2;
+}
+.admin-table small {
+  display: block;
+  color: #c0cce0;
+}
+.admin-chip {
+  display: inline-block;
+  background: #283950;
+  padding: 3px 8px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+}
+.admin-chip[data-status='failed'] {
+  background: #633039;
+}
+.admin-chip[data-status='accepted'] {
+  background: #214c42;
+}
+.admin-pagination {
+  margin-top: 16px;
+}
+.admin-editor {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 255px), 1fr));
+  gap: 15px;
+  margin-top: 22px;
+}
+.admin-span {
+  grid-column: 1/-1;
+}
+.admin-danger {
+  border-top: 1px solid #667995;
+  margin-top: 20px;
+  padding-top: 12px;
+}
+.admin-danger summary {
+  cursor: pointer;
+  color: #ffc6c9;
+}
+.admin-danger label {
+  display: flex;
+  margin: 12px 0;
+}
+.admin-danger button {
+  background: #ffc6c9;
+}
+
+.admin-insights {
+  margin: 24px 0;
+}
+.admin-charts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr));
+  gap: 12px;
+}
+.admin-charts h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+.admin-bars {
+  display: grid;
+  gap: 10px;
+}
+.admin-bars li {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4px 12px;
+  font-size: 0.9rem;
+}
+.admin-bars li div {
+  grid-column: 1/-1;
+  height: 7px;
+  background: #2e405c;
+  border-radius: 8px;
+}
+.admin-bars i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #708fea, #a9e6e5);
+}
+.admin-trend {
+  grid-column: 1/-1;
+}
+.admin-columns {
+  display: grid;
+  grid-template-columns: repeat(30, minmax(0, 1fr));
+  gap: 4px;
+  align-items: end;
+  height: 130px;
+  border-bottom: 1px solid #667995;
+}
+.admin-columns div {
+  background: linear-gradient(#a9e6e5, #567dd0);
+  border-radius: 4px 4px 0 0;
+}
+.admin-trend-axis {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  margin: 6px 0 10px;
+}
+.admin-trend summary {
+  cursor: pointer;
+}
+.admin-day-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 6px;
+  margin-top: 12px;
+}

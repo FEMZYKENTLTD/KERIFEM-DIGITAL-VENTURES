@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { CorporateFooter, CorporateNav } from '@/components/Corporate';
 import SiteTelemetry from '@/components/SiteTelemetry';
+import SiteGuide from '@/components/SiteGuide';
 import JsonLd from '@/components/seo/JsonLd';
 import { pageMetadata } from '@/lib/metadata';
 import { BRAND, CONTACT, INDEXABLE, SITE_URL } from '@/lib/site';
@@ -37,6 +38,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <CorporateNav />
         <main id="main">{children}</main>
         <CorporateFooter />
+        <SiteGuide />
         <JsonLd
           data={{
             '@context': 'https://schema.org',
