@@ -1,3 +1,4 @@
+import { services } from '@/lib/services';
 import { cases } from '@/lib/cases';
 import type { MetadataRoute } from 'next';
 import { ALL_LEGAL_DOCS } from '@/lib/legal';
@@ -8,6 +9,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
         '/',
         '/about',
         '/services',
+        ...services.map(([id]) => `/services/${id}`),
         '/portfolio',
         ...cases.map(({ id }) => `/portfolio/${id}`),
         '/contact',

@@ -14,15 +14,15 @@ export const metadata: Metadata = {
   },
   robots: { index: INDEXABLE, follow: INDEXABLE },
 };
-export const viewport: Viewport = { colorScheme: 'dark', themeColor: '#080808' };
+export const viewport: Viewport = { colorScheme: 'dark', themeColor: '#0b1321' };
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" data-palette="midnight" suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{
             __html:
-              "try{if(localStorage.getItem('kerifem-palette')==='midnight')document.documentElement.dataset.palette='midnight'}catch{}",
+              "try{if(localStorage.getItem('kerifem-palette')==='obsidian')document.documentElement.dataset.palette='obsidian'}catch{}",
           }}
         />
       </head>

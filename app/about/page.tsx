@@ -56,6 +56,15 @@ export default function AboutPage() {
         <section>
           <p className="kv-label">2023 / FEMZYK</p>
           <h2>Where the work began</h2>
+          <Image
+            className="mt-4 rounded"
+            src="/brand/femzyk.webp"
+            width={450}
+            height={190}
+            sizes="220px"
+            style={{ width: 220, height: 'auto' }}
+            alt="FEMZYK ENTERPRISES LTD legacy logo"
+          />
           <p>
             FEMZYK originated in 2023. The name still appears in public repositories and projects,
             including FEMZYK MARKET and the Knowledge Land CBT Suite. Those projects show an early

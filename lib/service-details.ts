@@ -1,0 +1,51 @@
+export const serviceDetails = {
+  software: [
+    'From a defined workflow to a maintainable application.',
+    'We map who does what, where records live and which exceptions the system must handle before choosing the architecture.',
+    'We build the core workflow first, agree on permissions and data boundaries, then test with representative records before handover.',
+    'A scoped application, acceptance checklist and operating notes.',
+    'Replacing a spreadsheet-heavy approval process or building a role-based internal tool.',
+  ],
+  web: [
+    'A website built around the next action.',
+    'We inventory your pages, identify what visitors need to find and define the action each page should help them take.',
+    'We choose WordPress or a custom stack based on editing and integration needs, then check key journeys across screen sizes.',
+    'A responsive website, publishing guidance and a launch checklist.',
+    'A WordPress refresh, a business landing page or a maintainable storefront.',
+  ],
+  ai: [
+    'AI that fits the task, not the other way around.',
+    'We identify what should be automated, what requires human review and which sample inputs can safely be used for evaluation.',
+    'We prototype prompts or model API calls against representative cases, track incorrect outputs and design a fallback before integration.',
+    'A scoped prototype, evaluation notes and a practical rollout recommendation.',
+    'Structured extraction from documents or a reviewed content-generation workflow.',
+  ],
+  automation: [
+    'Reliable handoffs between systems.',
+    'We trace the current manual steps, source-of-truth records and available API permissions.',
+    'We define field mappings, error handling and retry behaviour, then test duplicate events and provider failures before launch.',
+    'A documented integration with test cases and operational guidance.',
+    'Synchronising records, scheduling reports or routing incoming enquiries.',
+  ],
+  design: [
+    'Visual assets built to work together.',
+    'We agree on audience, brand references, formats and the contexts where the work will appear.',
+    'We develop a visual direction, refine typography and layout, and prepare channel-specific versions using tools such as Canva where appropriate.',
+    'Export-ready graphics and editable files where agreed.',
+    'A campaign kit with social graphics, presentation slides and banners.',
+  ],
+  writing: [
+    'Clear writing with a purpose on every page.',
+    'We define the reader, desired action, source material and tone before drafting.',
+    'We structure the content, revise for voice and clarity, and check factual or technical details against the material you provide.',
+    'Reviewed copy or documentation in the agreed format.',
+    'Website and campaign copy, ghostwritten articles or practical product handover guides.',
+  ],
+  training: [
+    'Learn by completing a real task.',
+    'We identify current skills, confidence gaps and the practical outcome you want from the sessions.',
+    'We teach through short demonstrations, guided practice and review of your own work, adjusting pace to your progress.',
+    'A learning plan, exercises and a review of the agreed outcome.',
+    'Building a first web page, writing useful prompts or practising database and API basics.',
+  ],
+} as const;
