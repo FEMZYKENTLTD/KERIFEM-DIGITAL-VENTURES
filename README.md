@@ -19,6 +19,16 @@ Kerifem builds software, websites and connected workflows for businesses, educat
 
 ---
 
+## Engineering highlights
+
+| Feature | Engineering decision |
+| --- | --- |
+| Public site search | The guide ranks passages from the same public content modules the site renders, links to source pages, and falls back when it has no good match. No external model or transcript storage is required. |
+| Private quote receipts | Nine budget-specific routes display the submitted details in memory only. Refreshing or sharing the URL does not reveal the submission. |
+| Enquiry workflow | Validate on the server and save first; notify second. A failed email does not discard a saved enquiry. |
+| Owner workspace | Supabase Auth protects enquiry management, while server-only queries handle pagination, aggregate charts, and email retries. |
+| Quality checks | The repository includes automated formatting, lint, build, type, and search regression checks. The search suite checks coverage against the public route inventory. |
+
 ## At a glance
 
 - **Public site:** seven dedicated service pages, five portfolio case studies, an About page, and a quote form with service preselection.
@@ -28,7 +38,7 @@ Kerifem builds software, websites and connected workflows for businesses, educat
 
 ## Website preview
 
-Fresh browser captures from this branch, using the default **Midnight blue** palette.
+Browser captures using the default **Midnight blue** palette. The homepage captures predate the latest founder portrait.
 
 <div align="center">
 
@@ -120,6 +130,7 @@ Open <http://localhost:3000>. For a production-style local check:
 
 ```sh
 npm run lint
+npm run test:guide
 npm run typecheck
 npm run format:check
 npm run build
@@ -183,6 +194,10 @@ Enable **Web Analytics** and **Speed Insights** in the Vercel project dashboard.
 
 ---
 
+## Contributing changes
+
+Keep public claims tied to the site's published content or to evidence in the portfolio. When adding a public information route, update [`lib/public-pages.ts`](lib/public-pages.ts) and its search entry in [`lib/guide-search.ts`](lib/guide-search.ts), then run `npm run test:guide`. Keep the admin area and customer-specific receipts out of the search and sitemap. The [verification workflow](.github/workflows/verify.yml) does not need deployment secrets and cannot verify live email delivery.
+
 ## Contact
 
 - Primary email: [femzykenterprisesltd@gmail.com](mailto:femzykenterprisesltd@gmail.com)
@@ -193,7 +208,7 @@ Enable **Web Analytics** and **Speed Insights** in the Vercel project dashboard.
 ### Enquiry charts and site guide
 
 - Apply [`supabase/enquiry-metrics.sql`](supabase/enquiry-metrics.sql) in the dedicated Supabase project to enable the dashboard charts. The server-only function returns aggregate service and budget counts and 30 UTC daily totals. The dashboard continues to list enquiries if the charts are unavailable.
-- The public site guide matches questions against the website's FAQ, service catalog, and quote workflow. It carries limited context in React memory only and has no external model, transcript storage, or training pipeline. It cannot access enquiries or the admin workspace. To improve answers across visits, add a reviewed question, non-sensitive matching phrases, and a source page to [`lib/guide-answers.ts`](lib/guide-answers.ts), then redeploy. Use recurring topics shared by support staff, not raw visitor chats.
+- The public site guide searches the FAQ, service catalog, About content, portfolio case studies, policies, contact details, and quote workflow. It carries limited context in React memory only and has no external model, transcript storage, or training pipeline. It cannot access enquiries or the admin workspace. To improve answers across visits, add a reviewed question, non-sensitive matching phrases, and a source page to [`lib/guide-answers.ts`](lib/guide-answers.ts), then redeploy. Use recurring topics shared by support staff, not raw visitor chats.
 
 ### Password recovery and alert delivery
 

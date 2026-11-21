@@ -1,5 +1,24 @@
+import { faq } from './commercial';
+
 /** Publish only answers checked against the public site. Never copy chat transcripts here. */
 export const reviewedGuideAnswers = [
+  {
+    question: 'What is the minimum fee?',
+    phrases: [
+      'minimum fee',
+      'minimum price',
+      'minimum cost',
+      'minimum project budget',
+      'minimum budget',
+      'starting price',
+      'starting fee',
+      'how much do you charge',
+      'lowest price',
+    ],
+    answer: `${faq.find(([question]) => question === 'What is your minimum project budget?')?.[1] ?? ''} The final quote depends on your scope.`,
+    href: '/services',
+    label: 'See services and pricing',
+  },
   {
     question: 'Can I request a quote without a budget?',
     phrases: [
