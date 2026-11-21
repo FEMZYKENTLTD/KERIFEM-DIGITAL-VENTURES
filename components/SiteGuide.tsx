@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { MessageCircle, X } from 'lucide-react';
 import { faq, processSteps } from '@/lib/commercial';
 import { reviewedGuideAnswers, reviewedGuideMatch } from '@/lib/guide-answers';
+import { searchGuide, type GuideResult } from '@/lib/guide-search';
 import { serviceDetails } from '@/lib/service-details';
 import { services } from '@/lib/services';
 
@@ -121,7 +122,7 @@ function pick(question: string) {
   return best?.score && best.score > (runnerUp?.score ?? 0) ? best.topic : undefined;
 }
 
-type GuideAnswer = { answer: string; href?: string; label?: string };
+type GuideAnswer = { answer: string; href?: string; label?: string; related?: GuideResult[] };
 
 export default function SiteGuide() {
   const pathname = usePathname();
@@ -147,12 +148,18 @@ export default function SiteGuide() {
       /\b[^\s@]+@[^\s@]+\.[^\s@]+\b|(?:\d[\s().+-]*){7,}|\b(?:password|passcode|secret key|api key)\b/i.test(
         query,
       );
-    const match = sensitive ? undefined : reviewedGuideMatch(query) || pick(query);
+    const reviewed = sensitive ? undefined : reviewedGuideMatch(query);
+    const results = sensitive || reviewed ? [] : searchGuide(query);
+    const [primary, ...related] = results;
+    const match = sensitive ? undefined : reviewed || pick(query);
+    const indexed = primary
+      ? { answer: primary.answer, href: primary.href, label: `Source: ${primary.title}`, related }
+      : undefined;
     const contextual =
       !sensitive && (!match || match.href.startsWith('/services/'))
         ? serviceAnswer(query, match?.href ?? lastTopic?.href ?? pathname)
         : undefined;
-    const topic = contextual || match;
+    const topic = reviewed || contextual || indexed || match;
     const followUp =
       !sensitive && !topic && /\b(more|next|start|proceed|details)\b/i.test(query)
         ? lastTopic
@@ -227,6 +234,21 @@ export default function SiteGuide() {
                   <Link href={response.href} onClick={() => setOpen(false)}>
                     {response.label}
                   </Link>
+                )}
+                {Boolean(response.related?.length) && (
+                  <details>
+                    <summary>Other matching pages</summary>
+                    <ul>
+                      {response.related?.map((result) => (
+                        <li key={result.href}>
+                          <Link href={result.href} onClick={() => setOpen(false)}>
+                            {result.title}
+                          </Link>
+                          <p>{result.answer}</p>
+                        </li>
+                      ))}
+                    </ul>
+                  </details>
                 )}
               </div>
             ))}
