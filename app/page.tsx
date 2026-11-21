@@ -29,26 +29,28 @@ export default function HomePage() {
           </div>
         </div>
         <figure className="kv-hero-figure">
-          <div className="kv-hero-image">
-            <Image
-              src="/kerifem-hero.jpg"
-              alt=""
-              fill
-              priority
-              sizes="(max-width: 760px) 100vw, 52vw"
-            />
+          <div className="kv-portrait-board">
+            <div className="kv-portrait-mat">
+              <Image
+                src="/founder/portrait.webp"
+                width={800}
+                height={1200}
+                alt="Portrait of Olufemi Benua Keripe"
+                priority
+                sizes="(max-width: 480px) 67vw, 300px"
+              />
+            </div>
           </div>
           <figcaption>
             <span>FIG. 01 / KERIFEM</span>
-            <span>ENGINEERED FOR IMPACT</span>
+            <span>OLUFEMI BENUA KERIPE / FOUNDER</span>
           </figcaption>
         </figure>
       </section>
       <div className="kv-strip">
         <div className="kv-wrap">
           <span>
-            <Globe2 size={16} aria-hidden /> Nigeria · Available to US, European and international
-            clients
+            <Globe2 size={16} aria-hidden /> Available to US, European and international clients
           </span>
           <span>
             Software <i /> Web <i /> AI & Automation

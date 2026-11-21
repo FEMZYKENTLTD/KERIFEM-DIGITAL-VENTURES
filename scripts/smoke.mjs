@@ -51,6 +51,6 @@ assert.equal((await post(payload, { 'Sec-Fetch-Site': 'cross-site' })).status, 4
 if (process.argv.includes('--unconfigured')) {
   const unavailable = await post(payload);
   assert.equal(unavailable.status, 503);
-  assert.deepEqual(await unavailable.json(), { success: false });
+  assert.deepEqual(await unavailable.json(), { success: false, code: 'FORM_NOT_CONFIGURED' });
 }
 console.log('Public routes, 404 and enquiry rejection paths passed.');

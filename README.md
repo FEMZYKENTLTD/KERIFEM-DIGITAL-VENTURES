@@ -13,7 +13,7 @@
 
 </div>
 
-Kerifem builds software, websites and connected workflows for businesses, education providers and teams in Nigeria and internationally. This repository contains the corporate website, public portfolio and quote-request flow.
+Kerifem builds software, websites and connected workflows for businesses, education providers and teams worldwide. This repository contains the corporate website, public portfolio and quote-request flow.
 
 **Business identity:** KERIFEM DIGITAL VENTURES is the CAC-registered business name. FEMZYK originated in 2023 and remains part of our project and brand history. The separate SMEDAN record uses **FEMZYK ENTERPRISES LTD**. This distinction does not establish a corporate ownership relationship.
 

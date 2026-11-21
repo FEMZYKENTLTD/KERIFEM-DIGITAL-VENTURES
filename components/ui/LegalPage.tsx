@@ -81,8 +81,8 @@ export default function LegalPage({ doc }: { doc: LegalDoc }) {
               <a href={`mailto:${CONTACT.email.primary}`} className="link-underline text-white">
                 {CONTACT.email.primary}
               </a>{' '}
-              or message {CONTACT.whatsapp.primary.display} on WhatsApp. We are based in{' '}
-              {CONTACT.location} and work remotely with clients worldwide.
+              or message {CONTACT.whatsapp.primary.display} on WhatsApp. We work remotely with
+              clients worldwide.
             </p>
           </section>
 
