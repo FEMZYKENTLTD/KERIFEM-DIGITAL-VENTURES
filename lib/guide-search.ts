@@ -1,3 +1,4 @@
+import { guideTokens as tokens } from './guide-language';
 import { aboutContent, founderStudies } from './about-content';
 import { cases } from './cases';
 import { faq, processSteps } from './commercial';
@@ -71,41 +72,6 @@ const documents: GuideResult[] = [
       'Share the problem you want to solve, who will use the solution and any timeline you have in mind. Budget and a reference link are optional.',
   },
 ];
-const stop = new Set(
-  'a an and are about any could did do does for from had has have how i if in is it me my of on or our please say should tell than that the their them these they this to use was we what when where which who why will with would you your'.split(
-    ' ',
-  ),
-);
-const aliases: Record<string, string> = {
-  fee: 'cost',
-  fees: 'cost',
-  price: 'cost',
-  pricing: 'cost',
-  charge: 'cost',
-  charges: 'cost',
-  lowest: 'minimum',
-  cheapest: 'minimum',
-  starting: 'minimum',
-  sites: 'website',
-  websites: 'website',
-  quotation: 'quote',
-  quotations: 'quote',
-  enquiries: 'enquiry',
-  inquiry: 'enquiry',
-  inquiries: 'enquiry',
-  spreadsheet: 'spreadsheet',
-  spreadsheets: 'spreadsheet',
-  data: 'data',
-};
-function tokens(text: string) {
-  return [
-    ...new Set(
-      (text.toLowerCase().match(/[a-z0-9]+/g) || [])
-        .filter((token) => !stop.has(token))
-        .map((token) => (Object.hasOwn(aliases, token) ? aliases[token] : token)),
-    ),
-  ];
-}
 export const indexedGuidePaths = [...new Set(documents.map(({ href }) => href))];
 
 const index = documents.map((document) => ({

@@ -238,3 +238,31 @@
   gap: 6px;
   margin-top: 12px;
 }
+
+.admin-chart-toggle {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.admin-chart-toggle button[aria-pressed='true'] {
+  background: #d2e4ff;
+  color: #0c182c;
+}
+.admin-pie {
+  width: min(100%, 170px);
+  aspect-ratio: 1;
+  border: 1px solid #667995;
+  border-radius: 50%;
+  margin: 8px auto 20px;
+}
+.admin-pie-key {
+  display: inline-block;
+  width: 0.65rem;
+  height: 0.65rem;
+  border-radius: 50%;
+  margin-right: 0.45rem;
+}
+.admin-trend-grid {
+  margin-top: 12px;
+}

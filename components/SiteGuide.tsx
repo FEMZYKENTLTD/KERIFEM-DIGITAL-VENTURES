@@ -7,6 +7,7 @@ import { MessageCircle, X } from 'lucide-react';
 import { faq, processSteps } from '@/lib/commercial';
 import { reviewedGuideAnswers, reviewedGuideMatch } from '@/lib/guide-answers';
 import { searchGuide, type GuideResult } from '@/lib/guide-search';
+import { guideTokens as tokens, isAccountOrEmploymentPricing } from '@/lib/guide-language';
 import { serviceDetails } from '@/lib/service-details';
 import { services } from '@/lib/services';
 
@@ -78,38 +79,6 @@ const topics = [
     label: 'Request a Quote',
   })),
 ];
-const stop = new Set([
-  'a',
-  'an',
-  'the',
-  'what',
-  'how',
-  'can',
-  'do',
-  'you',
-  'your',
-  'i',
-  'we',
-  'it',
-  'to',
-  'is',
-  'for',
-  'and',
-  'about',
-  'please',
-  'me',
-  'my',
-  'in',
-  'of',
-  'this',
-  'that',
-  'with',
-]);
-function tokens(text: string) {
-  return [...new Set(text.toLowerCase().match(/[a-z0-9]+/g) || [])].filter(
-    (word) => !stop.has(word),
-  );
-}
 function pick(question: string) {
   const words = tokens(question);
   const ranked = topics
@@ -148,15 +117,16 @@ export default function SiteGuide() {
       /\b[^\s@]+@[^\s@]+\.[^\s@]+\b|(?:\d[\s().+-]*){7,}|\b(?:password|passcode|secret key|api key)\b/i.test(
         query,
       );
-    const reviewed = sensitive ? undefined : reviewedGuideMatch(query);
-    const results = sensitive || reviewed ? [] : searchGuide(query);
+    const privatePricing = isAccountOrEmploymentPricing(query);
+    const reviewed = sensitive || privatePricing ? undefined : reviewedGuideMatch(query);
+    const results = sensitive || privatePricing || reviewed ? [] : searchGuide(query);
     const [primary, ...related] = results;
-    const match = sensitive ? undefined : reviewed || pick(query);
+    const match = sensitive || privatePricing ? undefined : reviewed || pick(query);
     const indexed = primary
       ? { answer: primary.answer, href: primary.href, label: `Source: ${primary.title}`, related }
       : undefined;
     const contextual =
-      !sensitive && (!match || match.href.startsWith('/services/'))
+      !sensitive && !privatePricing && (!match || match.href.startsWith('/services/'))
         ? serviceAnswer(query, match?.href ?? lastTopic?.href ?? pathname)
         : undefined;
     const topic = reviewed || contextual || indexed || match;
@@ -171,20 +141,27 @@ export default function SiteGuide() {
           href: '/contact',
           label: 'Open private enquiry form',
         }
-      : topic ||
-        (followUp
-          ? {
-              answer:
-                'Start with the page for the topic we were discussing. When you’re ready, share your goal, timeline, and relevant requirements through Request a Quote.',
-              href: followUp.href,
-              label: followUp.label,
-            }
-          : {
-              answer:
-                'I couldn’t find a reliable answer in the website guide. Try asking about pricing, WordPress, software, automation, timelines, or the quote process.',
-              href: '/contact',
-              label: 'Ask Kerifem directly',
-            });
+      : privatePricing
+        ? {
+            answer:
+              'I can explain public project pricing, but I can’t confirm pay, invoice amounts, or payment terms for a specific situation.',
+            href: '/contact',
+            label: 'Ask Kerifem directly',
+          }
+        : topic ||
+          (followUp
+            ? {
+                answer:
+                  'Start with the page for the topic we were discussing. When you’re ready, share your goal, timeline, and relevant requirements through Request a Quote.',
+                href: followUp.href,
+                label: followUp.label,
+              }
+            : {
+                answer:
+                  'I couldn’t find a reliable answer in the website guide. Try asking about pricing, WordPress, software, automation, timelines, or the quote process.',
+                href: '/contact',
+                label: 'Ask Kerifem directly',
+              });
     if (topic) setLastTopic(topic);
     setHistory((previous) => [
       ...previous.slice(-11),

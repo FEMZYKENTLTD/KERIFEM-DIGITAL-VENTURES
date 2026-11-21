@@ -1,3 +1,4 @@
+import { formatSubmissionTime } from '@/lib/submission-time';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { z } from 'zod';
@@ -55,7 +56,7 @@ export default async function EnquiryPage({
       {row && (
         <p>
           {row.id} · Alert: {row.notification.replaceAll('_', ' ')} ·{' '}
-          {new Date(row.created_at).toLocaleString('en-GB', { timeZone: 'UTC' })} UTC
+          <time dateTime={row.created_at}>{formatSubmissionTime(row.created_at)}</time>
         </p>
       )}
       {row && ['failed', 'not_configured'].includes(row.notification) && (

@@ -30,7 +30,22 @@ try {
   const { reviewedGuideMatch } = require(join(temp, 'guide-answers.js'));
   const { publicPages } = require(join(temp, 'public-pages.js'));
   assert.deepEqual([...indexedGuidePaths].sort(), [...publicPages].sort());
+  assert.match(reviewedGuideMatch('what is the minimum pay?').answer, /\$100 USD/);
   assert.match(reviewedGuideMatch('WHAT IS THE MINIMUM FEE?').answer, /\$100 USD/);
+  for (const question of [
+    'What is the least I would need to spend?',
+    'Is there a floor for project charges?',
+    'How much is the cheapest project payment?',
+    'What budget is the minimum to start?',
+  ]) {
+    assert.match(reviewedGuideMatch(question)?.answer || '', /\$100 USD/, question);
+  }
+  for (const question of [
+    'What is the minimum pay for employees?',
+    'What is the minimum payment on my invoice?',
+  ]) {
+    assert.equal(reviewedGuideMatch(question), undefined, question);
+  }
   for (const [question, path] of [
     ['What university did the founder attend?', '/about'],
     ['What does ResumeRank do?', '/portfolio/resumerank'],
