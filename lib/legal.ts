@@ -39,7 +39,7 @@ export const PRIVACY_POLICY: LegalDoc = {
     {
       heading: '1. Information we collect',
       paragraphs: [
-        'We only collect information you voluntarily provide to us. There are no advertising trackers, no profiling, and no sale of personal data.',
+        'We process information you submit and limited site usage and performance measurements. There are no advertising trackers, no profiling, and no sale of personal data.',
       ],
       bullets: [
         'Enquiry details submitted through the website form: full name, email address, phone or WhatsApp number, country, service required, optional project title and reference link, preferred timeline, project description, optional budget range, and preferred contact method.',
@@ -67,6 +67,7 @@ export const PRIVACY_POLICY: LegalDoc = {
       ],
       bullets: [
         'Web3Forms — enquiry delivery and spam protection (including a hidden honeypot field).',
+        'Vercel Web Analytics and Speed Insights — measure page visits and browser performance on the production deployment. The site removes query strings and fragments from event page URLs and does not send enquiry form contents to these services.',
         'Hosting provider (Vercel if deployed there) — content delivery and security logging.',
         'WhatsApp (Meta Platforms) and Gmail — communication channels you may choose to use with us.',
       ],
@@ -74,7 +75,7 @@ export const PRIVACY_POLICY: LegalDoc = {
     {
       heading: '4. Cookies',
       paragraphs: [
-        'This website does not set advertising, analytics, or profiling cookies of its own. See our Cookie Policy for the full position, including what changes if consent-based analytics are added later.',
+        'This website does not set advertising, analytics, or profiling cookies of its own. See our Cookie Policy for details about browser storage and cookieless measurement.',
       ],
     },
     {
@@ -255,13 +256,11 @@ export const COOKIE_POLICY: LegalDoc = {
     },
     {
       heading: '2. What we use today',
-      paragraphs: [
-        'This website is deliberately minimal. It does not set advertising, remarketing, or profiling cookies, and it does not run a third-party analytics script that stores identifiers in your browser.',
-      ],
+      paragraphs: ['This website does not set advertising, remarketing, or profiling cookies.'],
       bullets: [
         'Strictly necessary: nothing persistent is required for the site to work; the enquiry form operates without cookies from our own servers.',
-        'Functional: none set by us at present.',
-        'Analytics: none at present. If privacy-friendly measurement is introduced, it will be listed here and, where the law requires it, placed behind a consent banner.',
+        'Functional: the site saves your colour palette preference in browser local storage.',
+        'Analytics: Vercel Web Analytics and Speed Insights measure traffic and performance on production without setting analytics cookies.',
         'Advertising: none, now or by plan.',
       ],
     },
