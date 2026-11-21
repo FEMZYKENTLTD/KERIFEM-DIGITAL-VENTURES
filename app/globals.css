@@ -1069,3 +1069,112 @@ body.bg-ink {
 :root[data-palette='obsidian'] .kv-faq details p {
   color: #e6e0d6;
 }
+
+.kv-receipt {
+  overflow: hidden;
+  color: #eff4fc;
+  background: #0e1727;
+  border: 1px solid #48556a;
+  border-radius: 20px;
+  box-shadow: 0 24px 70px #0005;
+}
+.kv-receipt-hero {
+  position: relative;
+  padding: clamp(24px, 6vw, 58px);
+  background:
+    radial-gradient(
+      ellipse at 88% 10%,
+      color-mix(in srgb, var(--receipt-accent) 23%, transparent),
+      transparent 56%
+    ),
+    repeating-linear-gradient(var(--receipt-angle), transparent 0 24px, #ffffff0a 25px 26px),
+    #121d30;
+  border-top: 4px solid var(--receipt-accent);
+  overflow-wrap: anywhere;
+}
+.kv-receipt-mark {
+  display: grid;
+  place-items: center;
+  width: 68px;
+  height: 68px;
+  border: 1px solid var(--receipt-accent);
+  border-radius: 20px;
+  color: var(--receipt-accent);
+  margin-bottom: 24px;
+}
+.kv-receipt-kicker,
+.kv-receipt-reference {
+  color: var(--receipt-accent);
+  font-size: 0.85rem;
+}
+.kv-receipt-kicker {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.kv-receipt-hero h2 {
+  font-family: Georgia, serif;
+  font-size: clamp(2rem, 5vw, 4rem);
+  line-height: 1.1;
+  margin: 12px 0;
+  scroll-margin-top: 110px;
+}
+.kv-receipt-reference {
+  margin-top: 18px;
+}
+.kv-receipt-body {
+  padding: clamp(20px, 5vw, 40px);
+}
+.kv-receipt-body h3 {
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+.kv-receipt-body dl {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+  gap: 8px;
+  margin: 16px 0 24px;
+}
+.kv-receipt-body dl > div {
+  background: #172338;
+  border: 1px solid #33425a;
+  border-radius: 10px;
+  padding: 12px;
+  min-width: 0;
+}
+.kv-receipt-wide {
+  grid-column: 1 / -1;
+}
+.kv-receipt-body dt {
+  color: var(--receipt-accent);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.kv-receipt-body dd {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  margin-top: 4px;
+}
+.kv-receipt-body p {
+  color: #c8d4e5;
+  margin-bottom: 8px;
+}
+.kv-receipt-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 22px;
+}
+.kv-receipt-actions a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--receipt-accent);
+  text-decoration: underline;
+}
+.kv-receipt-actions button {
+  border: 1px solid var(--receipt-accent);
+  border-radius: 8px;
+  padding: 8px 12px;
+}

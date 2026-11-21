@@ -56,7 +56,10 @@ export async function POST(request: Request) {
     } catch {
       console.warn('[enquiry] Notification status could not be recorded');
     }
-    return Response.json({ success: true });
+    return Response.json(
+      { success: true, reference: id },
+      { headers: { 'Cache-Control': 'no-store' } },
+    );
   } catch {
     return error(400);
   }
