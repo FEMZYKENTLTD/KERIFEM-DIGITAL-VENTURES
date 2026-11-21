@@ -4,10 +4,13 @@ import { useEffect, useId, useRef, useState } from 'react';
 import { useForm, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { schema, MIN_MESSAGE, MAX_MESSAGE, type FormValues } from '@/lib/enquiry';
-import { AlertTriangle, Check, Loader2, Send } from 'lucide-react';
+import { AlertTriangle, Loader2, Send } from 'lucide-react';
 
 import { BUDGET_OPTIONS, CONTACT_METHODS, SERVICE_OPTIONS, TIMELINES } from '@/lib/content';
 import { CONTACT } from '@/lib/site';
+import { useRouter } from 'next/navigation';
+import { quoteReceiptPath } from '@/lib/quote-editions';
+import { useReceiptSession } from './QuoteReceiptSession';
 import { cn } from '@/lib/utils';
 
 /* -------------------------------------------------------------------------- */
@@ -33,7 +36,7 @@ const EMPTY: FormValues = {
 /* Enquiry submission                                                        */
 /* -------------------------------------------------------------------------- */
 
-type Status = 'idle' | 'submitting' | 'success' | 'error' | 'unconfigured' | 'provider-error';
+type Status = 'idle' | 'submitting' | 'error' | 'unconfigured' | 'provider-error';
 
 /* -------------------------------------------------------------------------- */
 /* Component                                                                   */
@@ -43,12 +46,13 @@ export default function ContactForm({ initialService = '' }: { initialService?: 
   const id = useId();
   const formRef = useRef<HTMLFormElement>(null);
   const [status, setStatus] = useState<Status>('idle');
+  const { setReceipt } = useReceiptSession();
+  const router = useRouter();
   const [invalidNotice, setInvalidNotice] = useState(false);
 
   const {
     register,
     handleSubmit,
-    reset,
     watch,
     setFocus,
     formState: { errors, isSubmitting, dirtyFields },
@@ -61,11 +65,7 @@ export default function ContactForm({ initialService = '' }: { initialService?: 
   });
 
   const messageLength = watch('message').trim().length;
-  const showStatus =
-    status === 'success' ||
-    status === 'error' ||
-    status === 'unconfigured' ||
-    status === 'provider-error';
+  const showStatus = status === 'error' || status === 'unconfigured' || status === 'provider-error';
 
   /* Reset the inline status whenever the visitor edits after an error. */
   useEffect(() => {
@@ -99,8 +99,12 @@ export default function ContactForm({ initialService = '' }: { initialService?: 
       }
       const ok = response.ok && result?.success === true;
       if (ok) {
-        setStatus('success');
-        reset(EMPTY);
+        setReceipt({
+          values,
+          reference: typeof result.reference === 'string' ? result.reference : '',
+        });
+        setStatus('idle');
+        router.replace(quoteReceiptPath(values.budget));
       } else {
         setStatus('error');
       }
@@ -478,23 +482,6 @@ function Chevron() {
 }
 
 function StatusMessage({ status }: { status: Status }) {
-  if (status === 'success') {
-    return (
-      <div
-        role="status"
-        aria-live="polite"
-        className="flex items-start gap-3 rounded-lg border border-success/35 bg-success/[0.08] px-4 py-3.5"
-      >
-        <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-success/20 text-success">
-          <Check className="h-3.5 w-3.5" strokeWidth={2.4} aria-hidden="true" />
-        </span>
-        <p className="text-sm leading-relaxed text-success">
-          Thank you! Your enquiry has been received. We will respond within 24 hours.
-        </p>
-      </div>
-    );
-  }
-
   if (status === 'unconfigured') {
     return (
       <div role="alert" className="rounded-lg border border-gold/35 bg-gold/[0.06] px-4 py-3.5">

@@ -9,13 +9,15 @@
 ![TypeScript strict](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)
 ![Tailwind CSS 3](https://img.shields.io/badge/Tailwind_CSS-3-0f7490?logo=tailwindcss&logoColor=white)
 
-[Website preview](#website-preview) · [Services](#services) · [Portfolio](#selected-work) · [Architecture](#architecture) · [Setup](#run-locally) · [Release checklist](#release-checklist)
+[Website preview](#website-preview) · [Services](#services) · [Portfolio](#selected-work) · [Architecture](#architecture) · [Setup](#run-locally) · [Release checklist](#release-checklist) · [Contact](#contact)
 
 </div>
 
 Kerifem builds software, websites and connected workflows for businesses, education providers and teams worldwide. This repository contains the corporate website, public portfolio and quote-request flow.
 
 **Business identity:** KERIFEM DIGITAL VENTURES is the CAC-registered business name. FEMZYK originated in 2023 and remains part of our project and brand history. The separate SMEDAN record uses **FEMZYK ENTERPRISES LTD**. This distinction does not establish a corporate ownership relationship.
+
+---
 
 ## At a glance
 
@@ -26,11 +28,21 @@ Kerifem builds software, websites and connected workflows for businesses, educat
 
 ## Website preview
 
-Archived captures from a local production build. These document an earlier layout; use a current branch preview to review the latest theme and navigation.
+Fresh browser captures from this branch, using the default **Midnight blue** palette.
 
-| Desktop | Mobile |
+<div align="center">
+
+| Desktop homepage · 1440 × 960 | Mobile homepage · 390 × 844 |
 | --- | --- |
-| <img src="docs/images/website-desktop.jpg" width="690" alt="Desktop homepage with main navigation and engineering illustration" /> | <img src="docs/images/website-mobile.jpg" width="250" alt="Mobile homepage with quote and portfolio buttons" /> |
+| <img src="docs/images/website-desktop.jpg" width="720" alt="Midnight blue homepage on desktop with service navigation and founder portrait" /> | <img src="docs/images/website-mobile.jpg" width="234" alt="Midnight blue homepage on a narrow mobile viewport" /> |
+
+<details>
+<summary><strong>Explore the Services overview</strong></summary>
+<br />
+<img src="docs/images/website-services.jpg" width="920" alt="Desktop Services overview with the dedicated service directory" />
+</details>
+
+</div>
 
 ## Services
 
@@ -53,14 +65,11 @@ Focused engagements start at **$100 USD**. **$100–$10,000+** is an indicative 
 | [Knowledge Land CBT Suite](https://github.com/FEMZYKENTLTD/klc-exam-portal) | README, exam controllers, scoring utility, repository screenshots | Java/JavaFX examination and administration workflows |
 | [FEMZYK Fleet & Transport Management](https://github.com/FEMZYKENTLTD/FEMZYK-Enterprise-Fleet-and-Transport-Management-System) | Release screenshots and Java application source | Fleet operations dashboards and reporting |
 | [ResumeRank](https://github.com/FEMZYKENTLTD/Resume-Screening-Classifier) | README, scoring source, Streamlit dashboard and API files | Python document processing and weighted keyword review; not automated hiring |
-| [Contact Book Pro](https://github.com/FEMZYKENTLTD/Contact_Book_Pro) | Go application, storage code and UI captures | Contact entry, search and recovery |
 | [Stock Analysis JavaFX App](https://github.com/FEMZYKENTLTD/stock-analysis-javafx) | JavaFX source and five application captures | Interactive calculations on manually entered prices |
 
-The portfolio features 16 genuine application screenshots across these five projects. See [asset provenance](public/projects/README.txt). The Fleet project’s separate web edition is linked from its case study; the publicly accessible landing page was verified, not its authenticated workflows. FEMZYK MARKET is excluded from the featured gallery because the inspected checkout had no suitable UI capture. The About page summarises the separately reviewed CAC and SMEDAN documents using redacted images of the supplied certificates; the original PDFs and sensitive details are not published.
+The portfolio features 16 genuine application screenshots across the published case studies. See [asset provenance](public/projects/README.txt). The Fleet project’s separate web edition is linked from its case study; the publicly accessible landing page was verified, not its authenticated workflows. FEMZYK MARKET is excluded from the featured gallery because the inspected checkout had no suitable UI capture. The About page summarises the separately reviewed CAC and SMEDAN documents using redacted images of the supplied certificates; the original PDFs and sensitive details are not published.
 
-### Related repository
-
-[NaijaSignal Pro](https://github.com/FEMZYKENTLTD/NaijaSignal-Pro) documents a cellular signal simulation project. It is separate from the five published case studies and is not evidence of measured network coverage or production deployment. [Contact Book Pro](https://github.com/FEMZYKENTLTD/Contact_Book_Pro) is already represented in the featured portfolio; its separate README covers the Go/Wails architecture and contact recovery workflow in more detail.
+---
 
 ## Architecture
 
@@ -95,6 +104,8 @@ flowchart LR
 | `public/` | Brand artwork, social card and portfolio assets |
 | `scripts/` | Local route and enquiry smoke checks |
 
+---
+
 ## Run locally
 
 Use Node.js 22 and npm. The site uses Next.js App Router, React 19, strict TypeScript, Tailwind CSS 3, Lucide, React Hook Form and Zod.
@@ -117,7 +128,7 @@ npm run start
 npm run test:smoke -- --unconfigured
 ```
 
-## Contact form setup
+## Enquiry inbox setup
 
 | Environment variable | Scope | Setup |
 | --- | --- | --- |
@@ -159,6 +170,8 @@ The form enforces shared validation, a request-size limit, a honeypot and a cros
 ### Production measurement
 
 Enable **Web Analytics** and **Speed Insights** in the Vercel project dashboard. The application mounts both only when `VERCEL_ENV=production` and strips query strings and fragments from event page URLs. After deployment, visit a few pages and verify traffic and performance samples in the respective dashboards. Local and preview visits are not collected by this setup.
+
+---
 
 ## Contact
 
