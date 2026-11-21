@@ -1,3 +1,4 @@
+import { isAccountOrEmploymentPricing, isMinimumProjectPrice } from './guide-language';
 import { faq } from './commercial';
 
 /** Publish only answers checked against the public site. Never copy chat transcripts here. */
@@ -6,6 +7,8 @@ export const reviewedGuideAnswers = [
     question: 'What is the minimum fee?',
     phrases: [
       'minimum fee',
+      'minimum pay',
+      'minimum payment',
       'minimum price',
       'minimum cost',
       'minimum project budget',
@@ -86,5 +89,12 @@ export function reviewedGuideMatch(question: string) {
   const matches = reviewedGuideAnswers.filter((entry) =>
     entry.phrases.some((phrase) => normalized.includes(` ${phrase} `)),
   );
-  return matches.length === 1 ? matches[0] : undefined;
+  if (matches.length === 1 && matches[0] !== reviewedGuideAnswers[0]) return matches[0];
+  if (matches.length > 1) return undefined;
+  if (
+    !isAccountOrEmploymentPricing(question) &&
+    (matches[0] === reviewedGuideAnswers[0] || isMinimumProjectPrice(question))
+  )
+    return reviewedGuideAnswers[0];
+  return undefined;
 }

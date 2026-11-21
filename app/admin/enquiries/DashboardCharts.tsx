@@ -1,22 +1,7 @@
 import { BUDGET_OPTIONS, SERVICE_OPTIONS } from '@/lib/content';
 import { enquiryMetrics } from '@/lib/enquiry-store';
 
-function Bars({ rows }: { rows: [string, number][] }) {
-  const max = Math.max(1, ...rows.map(([, value]) => value));
-  return (
-    <ul className="admin-bars">
-      {rows.map(([label, value]) => (
-        <li key={label}>
-          <span>{label}</span>
-          <strong>{value.toLocaleString('en-GB')}</strong>
-          <div aria-hidden="true">
-            <i style={{ width: `${(100 * value) / max}%` }} />
-          </div>
-        </li>
-      ))}
-    </ul>
-  );
-}
+import { ChartDistribution } from './ChartDistribution';
 
 export async function DashboardCharts() {
   let data;
@@ -50,25 +35,17 @@ export async function DashboardCharts() {
       <p className="admin-hint">
         Charts include the whole inbox. Budget bands are visitor estimates, not sales or revenue.
       </p>
-      <div className="admin-charts">
-        <section className="admin-panel">
-          <h3>Services requested</h3>
-          <p className="admin-hint">All time · ranked by enquiry count</p>
-          <Bars rows={services} />
-          <p className="admin-hint">
-            {leaders.length
-              ? `Most requested: ${leaders.map(([label]) => label).join(', ')}.`
-              : 'No service demand recorded yet.'}{' '}
-            {zero.length > 0 &&
-              leaders.length > 0 &&
-              `${zero.length} service${zero.length === 1 ? ' has' : 's have'} no enquiries yet. Check visibility and positioning before drawing conclusions.`}
-          </p>
-        </section>
-        <section className="admin-panel">
-          <h3>Budget distribution</h3>
-          <p className="admin-hint">All time · selected ranges in USD</p>
-          <Bars rows={budgets} />
-        </section>
+      <ChartDistribution services={services} budgets={budgets}>
+        <p className="admin-hint">
+          {leaders.length
+            ? `Most requested: ${leaders.map(([label]) => label).join(', ')}.`
+            : 'No service demand recorded yet.'}{' '}
+          {zero.length > 0 &&
+            leaders.length > 0 &&
+            `${zero.length} service${zero.length === 1 ? ' has' : 's have'} no enquiries yet. Check visibility and positioning before drawing conclusions.`}
+        </p>
+      </ChartDistribution>
+      <div className="admin-charts admin-trend-grid">
         <section className="admin-panel admin-trend">
           <h3>Enquiry activity</h3>
           <p className="admin-hint">{total} in the last 30 calendar days · UTC, including today</p>

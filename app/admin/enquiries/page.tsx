@@ -1,3 +1,4 @@
+import { formatSubmissionTime } from '@/lib/submission-time';
 import Link from 'next/link';
 import { requireOwner, OWNER_EMAIL } from '@/lib/admin-auth';
 import { enquiryStore, type Enquiry } from '@/lib/enquiry-store';
@@ -81,7 +82,6 @@ export default async function InboxPage({
   }
   const link = (number: number) =>
     `/admin/enquiries?${new URLSearchParams({ page: String(number), q: search, service, status })}`;
-  const date = new Intl.DateTimeFormat('en-GB', { dateStyle: 'medium', timeZone: 'UTC' });
   return (
     <>
       <header className="admin-header">
@@ -167,7 +167,7 @@ export default async function InboxPage({
                   <th scope="col">Project / contact</th>
                   <th scope="col">Service</th>
                   <th scope="col">Budget</th>
-                  <th scope="col">Submitted (UTC)</th>
+                  <th scope="col">Submitted (WAT)</th>
                   <th scope="col">Alert</th>
                 </tr>
               </thead>
@@ -182,7 +182,9 @@ export default async function InboxPage({
                     </td>
                     <td>{row.payload.service}</td>
                     <td>{row.payload.budget || '—'}</td>
-                    <td>{date.format(new Date(row.created_at))}</td>
+                    <td>
+                      <time dateTime={row.created_at}>{formatSubmissionTime(row.created_at)}</time>
+                    </td>
                     <td>
                       <span className="admin-chip" data-status={row.notification}>
                         {row.notification.replaceAll('_', ' ')}
