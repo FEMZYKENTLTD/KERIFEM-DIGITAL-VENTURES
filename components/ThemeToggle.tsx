@@ -14,7 +14,7 @@ export default function ThemeToggle() {
     document.documentElement.dataset.palette = next ? 'midnight' : 'obsidian';
     setMidnight(next);
     try {
-      localStorage.setItem('kerifem-palette', next ? 'midnight' : 'obsidian');
+      localStorage.setItem('kerifem-palette-v2', next ? 'midnight' : 'obsidian');
     } catch {
       // The palette remains available when storage is blocked.
     }

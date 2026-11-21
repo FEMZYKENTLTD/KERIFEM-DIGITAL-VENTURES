@@ -23,7 +23,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script
           dangerouslySetInnerHTML={{
             __html:
-              "try{if(localStorage.getItem('kerifem-palette')==='obsidian')document.documentElement.dataset.palette='obsidian'}catch{}",
+              "try{if(localStorage.getItem('kerifem-palette-v2')==='obsidian')document.documentElement.dataset.palette='obsidian'}catch{}",
           }}
         />
       </head>

@@ -1,5 +1,10 @@
 import { schema } from '@/lib/enquiry';
-import { BRAND } from '@/lib/site';
+import {
+  enquiryStore,
+  enquiryStoreConfigured,
+  notifyOwner,
+  type Enquiry,
+} from '@/lib/enquiry-store';
 
 export async function POST(request: Request) {
   const error = (status: number, code = 'INVALID_REQUEST') =>
@@ -25,64 +30,33 @@ export async function POST(request: Request) {
     text += decoder.decode();
     const parsed = schema.safeParse(JSON.parse(text));
     if (!parsed.success) return error(400);
-    const key = process.env.WEB3FORMS_ACCESS_KEY?.trim();
-    if (!key) return error(503, 'FORM_NOT_CONFIGURED');
-    const {
-      name,
-      email,
-      phone,
-      service,
-      message,
-      budget,
-      contactMethod,
-      country,
-      projectTitle,
-      timeline,
-      reference,
-    } = parsed.data;
+    if (!enquiryStoreConfigured()) return error(503, 'FORM_NOT_CONFIGURED');
+    const { botcheck, ...payload } = parsed.data;
+    void botcheck;
+    let id: string;
     try {
-      const upstream = await fetch('https://api.web3forms.com/submit', {
+      const response = await enquiryStore('?select=id', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({
-          access_key: key,
-          subject: `New quote request — ${BRAND.name}`,
-          from_name: BRAND.name,
-          name,
-          email,
-          replyto: email,
-          phone,
-          service,
-          message,
-          budget,
-          contactMethod,
-          country,
-          projectTitle,
-          timeline,
-          reference,
-        }),
-        signal: AbortSignal.timeout(10000),
-        cache: 'no-store',
+        headers: { Prefer: 'return=representation' },
+        body: JSON.stringify({ payload }),
       });
-      if (!upstream.ok) {
-        console.warn('[enquiry] Web3Forms returned HTTP', upstream.status);
-        if (upstream.status === 429) return error(503, 'PROVIDER_RATE_LIMITED');
-        return error(502, 'PROVIDER_REJECTED');
-      }
-      if ((await upstream.json())?.success !== true) {
-        console.warn('[enquiry] Web3Forms did not confirm acceptance');
-        return error(502, 'PROVIDER_REJECTED');
-      }
-      return Response.json({ success: true });
-    } catch (cause) {
-      const timedOut = cause instanceof Error && cause.name === 'TimeoutError';
-      console.warn(
-        timedOut
-          ? '[enquiry] Web3Forms timed out'
-          : '[enquiry] Web3Forms request or response failed',
-      );
-      return error(timedOut ? 504 : 502, 'PROVIDER_UNAVAILABLE');
+      const rows = (await response.json()) as Pick<Enquiry, 'id'>[];
+      if (!rows[0]?.id) return error(502, 'PROVIDER_UNAVAILABLE');
+      id = rows[0].id;
+    } catch {
+      console.warn('[enquiry] Could not confirm the submission was saved');
+      return error(502, 'PROVIDER_UNAVAILABLE');
     }
+    const notification = await notifyOwner(id);
+    try {
+      await enquiryStore(`?id=eq.${encodeURIComponent(id)}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ notification }),
+      });
+    } catch {
+      console.warn('[enquiry] Notification status could not be recorded');
+    }
+    return Response.json({ success: true });
   } catch {
     return error(400);
   }

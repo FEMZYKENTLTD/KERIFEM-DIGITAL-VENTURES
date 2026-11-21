@@ -1,12 +1,33 @@
 export const processSteps = [
-  'Discovery and consultation',
-  'Requirements and planning',
-  'Scope and quotation',
-  'Design and development',
-  'Testing and quality assurance',
-  'Delivery and handover',
-  'Support and maintenance',
-];
+  [
+    'Discovery and consultation',
+    'We learn what you want to achieve, who the work is for, and what’s getting in the way.',
+  ],
+  [
+    'Requirements and planning',
+    'We identify what the project needs, what it depends on, and which milestones matter most.',
+  ],
+  [
+    'Scope and quotation',
+    'We share the deliverables, estimated timeline, and price so you know what’s included before work starts.',
+  ],
+  [
+    'Design and development',
+    'We design and build in stages, sharing progress at agreed points so you can give feedback.',
+  ],
+  [
+    'Testing and quality assurance',
+    'We check the work against the agreed requirements, test key workflows, and fix issues before delivery.',
+  ],
+  [
+    'Delivery and handover',
+    'We deliver the finished work and share the files, access, or documentation you need to use it.',
+  ],
+  [
+    'Support and maintenance',
+    'If you need ongoing updates or troubleshooting, we agree on what support will cover.',
+  ],
+] as const;
 export const faq = [
   [
     'What services do you provide?',
