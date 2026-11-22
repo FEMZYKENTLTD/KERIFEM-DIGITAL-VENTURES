@@ -1,13 +1,15 @@
 import { formatSubmissionTime } from '@/lib/submission-time';
 import Link from 'next/link';
 import { requireOwner, OWNER_EMAIL } from '@/lib/admin-auth';
+import { brevoHealth } from '@/lib/brevo';
 import { enquiryStore, type Enquiry } from '@/lib/enquiry-store';
 import { SERVICE_OPTIONS } from '@/lib/content';
+import { NOTIFICATION_STATUSES, notificationLabel } from '@/lib/notification';
 import { DashboardCharts } from './DashboardCharts';
 import { signOut } from '../actions';
 
 const PAGE_SIZE = 25;
-const notifications = ['accepted', 'failed', 'pending', 'not_configured'];
+const notifications = [...NOTIFICATION_STATUSES];
 const single = (value: unknown) => (typeof value === 'string' ? value : '');
 
 async function count(filter = '') {
@@ -31,7 +33,10 @@ export default async function InboxPage({
     .replace(/[^\p{L}\p{N}@. \-+]/gu, ' ')
     .trim()
     .slice(0, 100);
-  const status = notifications.includes(single(params.status)) ? single(params.status) : '';
+  const requestedStatus = single(params.status);
+  const status = notifications.includes(requestedStatus as (typeof notifications)[number])
+    ? requestedStatus
+    : '';
   const service = SERVICE_OPTIONS.find((item) => item === params.service) || '';
   const page = Math.max(1, Math.min(10000, Number.parseInt(single(params.page), 10) || 1));
   const filters = new URLSearchParams();
@@ -51,7 +56,7 @@ export default async function InboxPage({
       count(`&created_at=gte.${recent}`),
       count('&notification=eq.accepted'),
       count('&notification=eq.failed'),
-      count('&notification=in.(pending,not_configured)'),
+      count('&notification=in.(pending,not_configured,ambiguous)'),
       count(filter),
     ]);
     const last = Math.max(1, Math.ceil(matched / PAGE_SIZE));
@@ -113,8 +118,9 @@ export default async function InboxPage({
       </dl>
       <p className="admin-hint">
         Metrics cover the whole inbox. “Accepted” means the email provider accepted the request, not
-        that Gmail received it.
+        that the business inbox received it.
       </p>
+      <BrevoHealth />
       <DashboardCharts />
       <section className="admin-panel" aria-labelledby="submissions">
         <h2 id="submissions">Submissions</h2>
@@ -148,7 +154,7 @@ export default async function InboxPage({
               <option value="">All statuses</option>
               {notifications.map((value) => (
                 <option key={value} value={value}>
-                  {value.replaceAll('_', ' ')}
+                  {notificationLabel(value)}
                 </option>
               ))}
             </select>
@@ -187,7 +193,7 @@ export default async function InboxPage({
                     </td>
                     <td>
                       <span className="admin-chip" data-status={row.notification}>
-                        {row.notification.replaceAll('_', ' ')}
+                        {notificationLabel(row.notification)}
                       </span>
                     </td>
                   </tr>
@@ -204,5 +210,43 @@ export default async function InboxPage({
         </nav>
       </section>
     </>
+  );
+}
+
+function BrevoHealth() {
+  const health = brevoHealth();
+  const ready =
+    health.keyPresent &&
+    health.keyLooksTransactional &&
+    health.senderPresent &&
+    health.senderLooksLikeEmail;
+  return (
+    <section className="admin-panel admin-health" aria-labelledby="alert-config">
+      <h2 id="alert-config">Email alert configuration</h2>
+      <ul>
+        <li>{health.keyPresent ? 'Brevo API key is present.' : 'Brevo API key is missing.'}</li>
+        <li>
+          {health.keyLooksTransactional
+            ? 'The key looks like a transactional API key.'
+            : health.keyLooksLikeSmtp
+              ? 'The key looks like an SMTP key. Transactional sending needs an API key from Brevo → SMTP & API → API keys.'
+              : health.keyPresent
+                ? 'The key does not look like a Brevo transactional API key (xkeysib-).'
+                : 'No key format could be checked.'}
+        </li>
+        <li>
+          {health.senderPresent
+            ? health.senderLooksLikeEmail
+              ? 'A sender address is present.'
+              : 'The sender value is not a valid email address.'
+            : 'BREVO_SENDER_EMAIL is missing.'}
+        </li>
+      </ul>
+      <p className="admin-hint">
+        {ready
+          ? 'Configuration looks complete. Provider acceptance is still not the same as inbox delivery.'
+          : 'Fix the items above in Vercel for both Preview and Production, then redeploy before retrying alerts.'}
+      </p>
+    </section>
   );
 }

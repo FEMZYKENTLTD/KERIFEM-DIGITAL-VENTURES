@@ -3,6 +3,7 @@ import {
   enquiryStore,
   enquiryStoreConfigured,
   notifyOwner,
+  recordNotification,
   type Enquiry,
 } from '@/lib/enquiry-store';
 
@@ -47,15 +48,7 @@ export async function POST(request: Request) {
       console.warn('[enquiry] Could not confirm the submission was saved');
       return error(502, 'PROVIDER_UNAVAILABLE');
     }
-    const notification = await notifyOwner(id);
-    try {
-      await enquiryStore(`?id=eq.${encodeURIComponent(id)}`, {
-        method: 'PATCH',
-        body: JSON.stringify({ notification }),
-      });
-    } catch {
-      console.warn('[enquiry] Notification status could not be recorded');
-    }
+    await recordNotification(id, await notifyOwner(id));
     return Response.json(
       { success: true, reference: id },
       { headers: { 'Cache-Control': 'no-store' } },

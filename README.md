@@ -145,9 +145,10 @@ npm run test:smoke -- --unconfigured
 | --- | --- | --- |
 | `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` | Server only | Apply `supabase/enquiries.sql` in the intended project, then configure its URL and legacy service-role key. |
 | `SUPABASE_PUBLISHABLE_KEY` | Auth configuration | The Supabase publishable key (or legacy `anon` key), from the same project. This does not replace the private service-role key. |
-| `BREVO_API_KEY` | Server only | Brevo API key for transactional email; not the SMTP key used in Supabase Auth. |
-| `BREVO_SENDER_EMAIL` | Server configuration | Sender email verified in Brevo. Alerts go to the primary business inbox. Only the reference is sent. |
-| `NEXT_PUBLIC_SITE_URL` | Public | Override the production HTTPS origin if needed. |
+| `BREVO_API_KEY` | Server only | Brevo **transactional API key** (`xkeysib-…`) from SMTP & API → API keys. Do not use an SMTP key, a Supabase SMTP password, or a client key. Configure it for both Preview and Production. |
+| `BREVO_SENDER_EMAIL` | Server configuration | A sender address Brevo has verified for transactional email. Alerts go to the primary business inbox unless `ENQUIRY_TO_EMAIL` is set. Only the enquiry reference is sent. |
+| `ENQUIRY_TO_EMAIL` | Optional server override | Notification recipient. Leave unset to use `femzykenterprisesltd@gmail.com`. |
+| `NEXT_PUBLIC_SITE_URL` | Public | Override the production HTTPS origin if needed. Admin links in emails use the production origin so they can be opened from a mailbox. |
 
 ### Set up a preview first
 
@@ -173,8 +174,9 @@ The dashboard lists 25 records per page with server-side search and filters. Own
 | Quote form returns `503 FORM_NOT_CONFIGURED` | Confirm the Supabase URL and server key are set for this deployment, then redeploy. |
 | Quote form returns `502 PROVIDER_UNAVAILABLE` | The save could not be confirmed. Check the database configuration and whether a record exists before retrying. |
 | Admin sign-in fails | Confirm the publishable key, confirmed owner user, and password. The old `owner` / `ENQUIRY_ADMIN_PASSWORD` sign-in is no longer used. |
-| Notification is `not_configured` or `failed` | The enquiry is saved. Check the Brevo API key, verified sender, and transactional logs. |
-| Notification is `accepted`, but no email arrived | Brevo accepted the alert; this does not confirm delivery. Check the destination mailbox and spam folder. |
+| Notification is `not_configured` or `failed` | The enquiry is saved. Open the enquiry in the owner workspace and read the sanitized diagnostic (HTTP status, category, provider code). Typical causes: SMTP key used instead of an API key, unverified sender, or missing Preview/Production env vars. |
+| Notification is `ambiguous` | The provider timed out or did not confirm a message id. The enquiry is saved. Check the inbox before retrying. |
+| Notification is `accepted`, but no email arrived | Brevo accepted the alert; this does not confirm delivery. Use **Check delivery status**, then the destination mailbox and spam folder. |
 | Notification remains `pending` | The save completed, but the final notification status was not recorded. Check server diagnostics and the inbox. |
 
 The form enforces shared validation, a request-size limit, a honeypot and a cross-site browser request check. These are not distributed rate limits. There is no automatic email retry or historical inbox import. Keep the legacy form working until the preview passes both checks.
