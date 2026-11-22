@@ -24,7 +24,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script
           dangerouslySetInnerHTML={{
             __html:
-              "try{if(localStorage.getItem('kerifem-palette-v2')==='obsidian')document.documentElement.dataset.palette='obsidian'}catch{}",
+              "try{const p=localStorage.getItem('kerifem-palette-v2');if(p==='obsidian'||p==='champagne')document.documentElement.dataset.palette=p}catch{}",
           }}
         />
       </head>

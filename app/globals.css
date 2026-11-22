@@ -811,6 +811,16 @@
   --kv-secondary-accent: #e5bf9c;
   --kv-ink: #0a1425;
 }
+:root[data-palette='champagne'] {
+  --kv-bg: #191207;
+  --kv-surface: #221a0d;
+  --kv-panel: #2b2113;
+  --kv-line: #5f4c2c;
+  --kv-accent: #e9c67c;
+  --kv-hover: #f6dfa6;
+  --kv-secondary-accent: #c79a52;
+  --kv-ink: #221708;
+}
 body.bg-ink {
   background: var(--kv-bg);
 }
@@ -901,8 +911,7 @@ body.bg-ink {
   font-size: 12px;
   color: #f4f1ed;
 }
-.kv-palette:hover,
-.kv-palette[aria-pressed='true'] {
+.kv-palette:hover {
   border-color: var(--kv-accent);
 }
 .kv-palette-swatch {
@@ -911,6 +920,14 @@ body.bg-ink {
   border: 1px solid #90a9d0;
   border-radius: 50%;
   background: linear-gradient(135deg, #274674 50%, #e5bf9c 50%);
+}
+:root[data-palette='obsidian'] .kv-palette-swatch {
+  border-color: #ddc499;
+  background: linear-gradient(135deg, #211c14 50%, #ddc499 50%);
+}
+:root[data-palette='champagne'] .kv-palette-swatch {
+  border-color: #e9c67c;
+  background: linear-gradient(135deg, #7a5a26 50%, #e9c67c 50%);
 }
 .kv-mark-board {
   background: var(--kv-bg);
@@ -1068,6 +1085,16 @@ body.bg-ink {
 :root[data-palette='obsidian'] .kv-story p:not(.kv-label),
 :root[data-palette='obsidian'] .kv-faq details p {
   color: #e6e0d6;
+}
+:root[data-palette='champagne'] .kv-nav nav a,
+:root[data-palette='champagne'] .kv-links a,
+:root[data-palette='champagne'] .kv-card p:not(.kv-label),
+:root[data-palette='champagne'] .kv-card li,
+:root[data-palette='champagne'] .kv-service p:not(.kv-label),
+:root[data-palette='champagne'] .kv-hero-copy > p:not(.kv-label),
+:root[data-palette='champagne'] .kv-story p:not(.kv-label),
+:root[data-palette='champagne'] .kv-faq details p {
+  color: #efe7d8;
 }
 
 .kv-receipt {

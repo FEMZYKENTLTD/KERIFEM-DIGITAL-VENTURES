@@ -32,7 +32,7 @@ Kerifem builds software, websites and connected workflows for businesses, educat
 ## At a glance
 
 - **Public site:** seven dedicated service pages, five portfolio case studies, an About page, and a quote form with service preselection.
-- **Design:** Midnight blue by default, optional black-and-gold Obsidian, and a full-size founder portrait link.
+- **Design:** Midnight blue by default, plus optional black-and-gold Obsidian and champagne-gold Champagne palettes, and a full-size founder portrait link.
 - **Enquiry operations:** validated submissions go to a private database; Brevo sends reference-only email alerts. A missed email does not erase a saved enquiry.
 - **Measurement:** Vercel Web Analytics and Speed Insights run on Vercel production deployments when enabled. A merged change is not evidence of a live deployment or successful delivery.
 

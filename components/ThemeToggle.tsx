@@ -2,19 +2,31 @@
 
 import { useEffect, useState } from 'react';
 
+const PALETTES = ['midnight', 'obsidian', 'champagne'] as const;
+type Palette = (typeof PALETTES)[number];
+
+const LABELS: Record<Palette, string> = {
+  midnight: 'Midnight',
+  obsidian: 'Obsidian',
+  champagne: 'Champagne',
+};
+
 export default function ThemeToggle() {
-  const [midnight, setMidnight] = useState(true);
+  const [palette, setPalette] = useState<Palette>('midnight');
 
   useEffect(() => {
-    setMidnight(document.documentElement.dataset.palette === 'midnight');
+    const current = document.documentElement.dataset.palette;
+    if (current === 'obsidian' || current === 'champagne') {
+      setPalette(current);
+    }
   }, []);
 
-  function toggle() {
-    const next = !midnight;
-    document.documentElement.dataset.palette = next ? 'midnight' : 'obsidian';
-    setMidnight(next);
+  function cycle() {
+    const next = PALETTES[(PALETTES.indexOf(palette) + 1) % PALETTES.length];
+    document.documentElement.dataset.palette = next;
+    setPalette(next);
     try {
-      localStorage.setItem('kerifem-palette-v2', next ? 'midnight' : 'obsidian');
+      localStorage.setItem('kerifem-palette-v2', next);
     } catch {
       // The palette remains available when storage is blocked.
     }
@@ -24,12 +36,12 @@ export default function ThemeToggle() {
     <button
       type="button"
       className="kv-palette"
-      aria-label="Midnight blue theme"
-      aria-pressed={midnight}
-      onClick={toggle}
+      aria-label={`Switch colour palette. Current theme: ${LABELS[palette]}.`}
+      title={`Theme: ${LABELS[palette]} — click to switch`}
+      onClick={cycle}
     >
       <span className="kv-palette-swatch" aria-hidden="true" />
-      <span>Midnight</span>
+      <span>{LABELS[palette]}</span>
     </button>
   );
 }
