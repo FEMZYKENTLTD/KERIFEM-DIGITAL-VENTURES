@@ -16,18 +16,29 @@ export type Enquiry = {
 
 export { notifyOwner, type NotifyResult };
 
+function enquiryStoreConfig() {
+  // Prefer the integration-managed pair, without combining credentials from different projects.
+  const integrationUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const integrationKey = process.env.SUPABASE_SECRET_KEY;
+  if (integrationUrl && integrationKey) return { url: integrationUrl, key: integrationKey };
+  const url = process.env.SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  return url && key ? { url, key } : null;
+}
+
 export function enquiryStoreConfigured() {
-  return Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY);
+  return Boolean(enquiryStoreConfig());
 }
 
 async function enquiryApi(path: string, init: RequestInit = {}) {
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!key || !process.env.SUPABASE_URL) throw new Error('Enquiry storage is not configured');
-  const response = await fetch(`${process.env.SUPABASE_URL.replace(/\/$/, '')}/rest/v1/${path}`, {
+  const config = enquiryStoreConfig();
+  if (!config) throw new Error('Enquiry storage is not configured');
+  const response = await fetch(`${config.url.replace(/\/$/, '')}/rest/v1/${path}`, {
     ...init,
     headers: {
-      apikey: key,
-      Authorization: `Bearer ${key}`,
+      apikey: config.key,
+      // New secret keys are not JWTs; legacy service-role JWTs still need a bearer header.
+      ...(!config.key.startsWith('sb_secret_') ? { Authorization: `Bearer ${config.key}` } : {}),
       'Content-Type': 'application/json',
       ...init.headers,
     },

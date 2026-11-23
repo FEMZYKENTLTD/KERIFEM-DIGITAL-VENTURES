@@ -3,7 +3,11 @@ import { Database, Mail, Sparkles, ShieldCheck } from 'lucide-react';
 import { requireOwner } from '@/lib/admin-auth';
 export default async function SettingsPage() {
   const db = await requireOwner();
-  const { error } = await db.from('growth_prospects').select('id', { count: 'exact', head: true });
+  const [foundation, intelligence] = await Promise.all([
+    db.from('growth_prospects').select('id', { count: 'exact', head: true }),
+    db.from('growth_evidence').select('id', { count: 'exact', head: true }),
+  ]);
+  const error = foundation.error || intelligence.error;
   return (
     <div className="growth-content">
       <div className="page-heading">
@@ -27,7 +31,8 @@ export default async function SettingsPage() {
             </span>
             <p>
               Uses the existing owner session and dedicated, row-level secured GrowthOS tables.
-              Apply the repository migration in a safe preview database first.
+              Apply all GrowthOS migrations in a safe preview database first. This check does not
+              verify the import function.
             </p>
           </div>
         </section>
@@ -46,10 +51,15 @@ export default async function SettingsPage() {
           <Sparkles className="gold" size={22} />
           <div>
             <h2>AI & discovery</h2>
-            <span className="status-warning">Not implemented</span>
+            <span className="status-warning">
+              {process.env.OPENAI_API_KEY
+                ? 'Key configured; connection untested'
+                : 'OpenAI key not configured'}
+            </span>
             <p>
-              Prospects and research are entered manually. No discovery, verification, AI generation
-              or reply classification provider is connected.
+              Service matching can use OpenAI after server-side setup. Prospects and evidence are
+              entered manually; discovery, verification and reply classification are not
+              implemented.
             </p>
           </div>
         </section>

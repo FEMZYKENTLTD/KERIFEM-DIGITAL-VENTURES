@@ -52,11 +52,17 @@ export default async function ProspectsPage({
           <Plus size={17} /> Add prospect
         </Link>
       </div>
+      {params.notice === 'deleted' && (
+        <div className="success-alert" role="status">
+          Prospect deleted.
+        </div>
+      )}
       <section className="growth-panel">
         <div className="panel-heading">
           <div>
             <div className="kicker">YOUR PROSPECTS</div>
             <h2>All businesses</h2>
+            <Link href="/admin/growth-os/prospects/import">Import CSV →</Link>
           </div>
           <span className="muted">{error ? 'Unavailable' : `${count ?? 0} records`}</span>
         </div>
