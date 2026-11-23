@@ -244,7 +244,7 @@ function BrevoHealth() {
       </ul>
       <p className="admin-hint">
         {ready
-          ? 'Configuration looks complete. Provider acceptance is still not the same as inbox delivery.'
+          ? 'Configuration looks complete. If alerts still fail with HTTP 401 and an unrecognised IP, turn off authorised IPs in Brevo. Vercel does not use a fixed IP on this plan. Provider acceptance is still not the same as inbox delivery.'
           : 'Fix the items above in Vercel for both Preview and Production, then redeploy before retrying alerts.'}
       </p>
     </section>

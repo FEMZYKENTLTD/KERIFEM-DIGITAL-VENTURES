@@ -11,6 +11,7 @@ export type NotificationStatus = (typeof NOTIFICATION_STATUSES)[number];
 export type NotificationCategory =
   | 'configuration'
   | 'authentication'
+  | 'ip_restriction'
   | 'sender'
   | 'provider'
   | 'timeout'
@@ -94,6 +95,13 @@ export function classifyFailure(input: {
 }): { status: NotificationStatus; category: NotificationCategory } {
   const blob = `${input.code ?? ''} ${input.message ?? ''}`.toLowerCase();
   if (input.timedOut) return { status: 'ambiguous', category: 'timeout' };
+  if (
+    /unrecognised ip|unrecognized ip|authorised_ips|authorized_ips|authorised ip|authorized ip/.test(
+      blob,
+    )
+  ) {
+    return { status: 'failed', category: 'ip_restriction' };
+  }
   if (
     input.httpStatus === 401 ||
     input.httpStatus === 403 ||

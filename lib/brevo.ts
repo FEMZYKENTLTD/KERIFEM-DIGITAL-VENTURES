@@ -166,13 +166,15 @@ export async function notifyOwner(id: string, submittedAt?: string): Promise<Not
         message,
       });
       const hint =
-        keyFormat === 'smtp'
-          ? ' The configured key looks like a Brevo SMTP key, not a transactional API key.'
-          : keyFormat === 'other'
-            ? ' The configured key does not look like a Brevo transactional API key (xkeysib-).'
-            : classified.category === 'sender'
-              ? ' Confirm BREVO_SENDER_EMAIL is a verified transactional sender in Brevo.'
-              : '';
+        classified.category === 'ip_restriction'
+          ? ' Disable authorised IPs in Brevo Security. Vercel function addresses change, so allowlisting one IP will fail again.'
+          : keyFormat === 'smtp'
+            ? ' The configured key looks like a Brevo SMTP key, not a transactional API key.'
+            : keyFormat === 'other'
+              ? ' The configured key does not look like a Brevo transactional API key (xkeysib-).'
+              : classified.category === 'sender'
+                ? ' Confirm BREVO_SENDER_EMAIL is a verified transactional sender in Brevo.'
+                : '';
       logSafe('Brevo HTTP rejection', {
         httpStatus: response.status,
         code,
@@ -276,7 +278,9 @@ export function categoryHint(category: NotificationCategory) {
     case 'configuration':
       return 'Add BREVO_API_KEY and BREVO_SENDER_EMAIL for this environment, then retry.';
     case 'authentication':
-      return 'Use a Brevo transactional API key (SMTP & API → API keys), not an SMTP key.';
+      return 'The API key was rejected. Confirm it is a transactional API key from Brevo → SMTP & API → API keys.';
+    case 'ip_restriction':
+      return 'Brevo authorised-IP restriction is blocking Vercel. Open https://app.brevo.com/security/authorised_ips and turn authorised IPs off. Do not allowlist a single Vercel address.';
     case 'sender':
       return 'Verify the sender in Brevo and confirm it is allowed for transactional email.';
     case 'timeout':
