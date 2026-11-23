@@ -3,6 +3,7 @@ import { enquiryMetrics } from '@/lib/enquiry-store';
 import { WORKFLOW_STATUSES, workflowLabel } from '@/lib/workflow';
 
 import { ChartDistribution, Distribution } from './ChartDistribution';
+import { MonthChart } from './MonthChart';
 
 const monthLabel = new Intl.DateTimeFormat('en-GB', {
   month: 'short',
@@ -38,7 +39,6 @@ export async function DashboardCharts() {
   ]);
   const months = data.months ?? [];
   const max = Math.max(1, ...data.days.map(({ count }) => count));
-  const monthMax = Math.max(1, ...months.map(({ count }) => count));
   const leaders = services.filter(([, value]) => value > 0 && value === services[0]?.[1]);
   const zero = services.filter(([, value]) => value === 0);
   const total = data.days.reduce((sum, day) => sum + day.count, 0);
@@ -77,35 +77,7 @@ export async function DashboardCharts() {
           <p className="admin-hint">
             {yearTotal} in the last 12 calendar months · Africa/Lagos, including this month
           </p>
-          <div
-            className="admin-months"
-            role="img"
-            aria-label="Monthly enquiry counts for twelve months"
-          >
-            {months.map((row) => {
-              const height = Math.max(8, (100 * row.count) / monthMax);
-              return (
-                <div key={row.month} className="admin-month">
-                  <div
-                    className="admin-month-stack"
-                    style={{ height: `${height}%` }}
-                    title={`${monthLabel.format(new Date(`${row.month}T00:00:00+01:00`))}: ${row.count} total · ${row.pending} pending · ${row.completed} completed · ${row.cancelled} cancelled`}
-                  >
-                    {row.count === 0 ? (
-                      <i className="admin-month-empty" />
-                    ) : (
-                      <>
-                        <i data-workflow="cancelled" style={{ flexGrow: row.cancelled || 0 }} />
-                        <i data-workflow="completed" style={{ flexGrow: row.completed || 0 }} />
-                        <i data-workflow="pending" style={{ flexGrow: row.pending || 0 }} />
-                      </>
-                    )}
-                  </div>
-                  <span>{monthLabel.format(new Date(`${row.month}T00:00:00+01:00`))}</span>
-                </div>
-              );
-            })}
-          </div>
+          <MonthChart months={months} />
           <ul className="admin-month-key">
             <li>
               <i data-workflow="pending" /> Pending
