@@ -47,7 +47,15 @@ export async function enquiryMetrics() {
   return (await response.json()) as {
     services: Record<string, number>;
     budgets: Record<string, number>;
+    orders?: Record<string, number>;
     days: { day: string; count: number }[];
+    months?: {
+      month: string;
+      count: number;
+      pending: number;
+      completed: number;
+      cancelled: number;
+    }[];
   };
 }
 

@@ -1,7 +1,14 @@
 import { BUDGET_OPTIONS, SERVICE_OPTIONS } from '@/lib/content';
 import { enquiryMetrics } from '@/lib/enquiry-store';
+import { WORKFLOW_STATUSES, workflowLabel } from '@/lib/workflow';
 
-import { ChartDistribution } from './ChartDistribution';
+import { ChartDistribution, Distribution } from './ChartDistribution';
+
+const monthLabel = new Intl.DateTimeFormat('en-GB', {
+  month: 'short',
+  year: '2-digit',
+  timeZone: 'Africa/Lagos',
+});
 
 export async function DashboardCharts() {
   let data;
@@ -25,15 +32,24 @@ export async function DashboardCharts() {
     label,
     data.budgets[label] || 0,
   ]);
+  const orders = WORKFLOW_STATUSES.map((status): [string, number] => [
+    workflowLabel(status),
+    data.orders?.[status] || 0,
+  ]);
+  const months = data.months ?? [];
   const max = Math.max(1, ...data.days.map(({ count }) => count));
+  const monthMax = Math.max(1, ...months.map(({ count }) => count));
   const leaders = services.filter(([, value]) => value > 0 && value === services[0]?.[1]);
   const zero = services.filter(([, value]) => value === 0);
   const total = data.days.reduce((sum, day) => sum + day.count, 0);
+  const yearTotal = months.reduce((sum, month) => sum + month.count, 0);
+  const leadingOrder = [...orders].sort((a, b) => b[1] - a[1])[0];
   return (
     <section className="admin-insights" aria-labelledby="insights-title">
       <h2 id="insights-title">Enquiry analytics</h2>
       <p className="admin-hint">
-        Charts include the whole inbox. Budget bands are visitor estimates, not sales or revenue.
+        Charts exclude the recycle bin. Budget bands are visitor estimates, not sales or revenue.
+        Order status is the owner mark on each enquiry.
       </p>
       <ChartDistribution services={services} budgets={budgets}>
         <p className="admin-hint">
@@ -46,9 +62,80 @@ export async function DashboardCharts() {
         </p>
       </ChartDistribution>
       <div className="admin-charts admin-trend-grid">
+        <section className="admin-panel">
+          <h3>Order status</h3>
+          <p className="admin-hint">Active enquiries · pending, completed and cancelled</p>
+          <Distribution rows={orders} showBars showPie unit="ORDERS" />
+          <p className="admin-hint">
+            {leadingOrder?.[1]
+              ? `${leadingOrder[0]} is currently the largest share of the inbox.`
+              : 'Mark enquiries pending, completed or cancelled to populate this chart.'}
+          </p>
+        </section>
+        <section className="admin-panel admin-year">
+          <h3>Twelve months</h3>
+          <p className="admin-hint">
+            {yearTotal} in the last 12 calendar months · Africa/Lagos, including this month
+          </p>
+          <div
+            className="admin-months"
+            role="img"
+            aria-label="Monthly enquiry counts for twelve months"
+          >
+            {months.map((row) => {
+              const height = Math.max(8, (100 * row.count) / monthMax);
+              return (
+                <div key={row.month} className="admin-month">
+                  <div
+                    className="admin-month-stack"
+                    style={{ height: `${height}%` }}
+                    title={`${monthLabel.format(new Date(`${row.month}T00:00:00+01:00`))}: ${row.count} total · ${row.pending} pending · ${row.completed} completed · ${row.cancelled} cancelled`}
+                  >
+                    {row.count === 0 ? (
+                      <i className="admin-month-empty" />
+                    ) : (
+                      <>
+                        <i data-workflow="cancelled" style={{ flexGrow: row.cancelled || 0 }} />
+                        <i data-workflow="completed" style={{ flexGrow: row.completed || 0 }} />
+                        <i data-workflow="pending" style={{ flexGrow: row.pending || 0 }} />
+                      </>
+                    )}
+                  </div>
+                  <span>{monthLabel.format(new Date(`${row.month}T00:00:00+01:00`))}</span>
+                </div>
+              );
+            })}
+          </div>
+          <ul className="admin-month-key">
+            <li>
+              <i data-workflow="pending" /> Pending
+            </li>
+            <li>
+              <i data-workflow="completed" /> Completed
+            </li>
+            <li>
+              <i data-workflow="cancelled" /> Cancelled
+            </li>
+          </ul>
+          <details>
+            <summary>View monthly counts</summary>
+            <ul className="admin-day-list">
+              {months.map((row) => (
+                <li key={row.month}>
+                  {monthLabel.format(new Date(`${row.month}T00:00:00+01:00`))}: {row.count} (
+                  {row.pending} pending, {row.completed} completed, {row.cancelled} cancelled)
+                </li>
+              ))}
+            </ul>
+          </details>
+        </section>
+      </div>
+      <div className="admin-charts admin-trend-grid">
         <section className="admin-panel admin-trend">
           <h3>Enquiry activity</h3>
-          <p className="admin-hint">{total} in the last 30 calendar days · UTC, including today</p>
+          <p className="admin-hint">
+            {total} in the last 30 calendar days · Africa/Lagos, including today
+          </p>
           <div className="admin-columns" aria-hidden="true">
             {data.days.map(({ day, count }) => (
               <div

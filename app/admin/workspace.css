@@ -326,6 +326,87 @@
 .admin-trend-grid {
   margin-top: 12px;
 }
+.admin-year {
+  min-width: 0;
+}
+.admin-months {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 8px;
+  align-items: end;
+  height: 190px;
+  margin-top: 8px;
+}
+.admin-month {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  height: 100%;
+  align-content: end;
+  justify-items: center;
+}
+.admin-month-stack {
+  display: flex;
+  flex-direction: column-reverse;
+  width: 100%;
+  min-height: 8px;
+  border-radius: 8px 8px 2px 2px;
+  overflow: hidden;
+  background: #2e405c;
+}
+.admin-month-stack > i {
+  display: block;
+  min-height: 0;
+  width: 100%;
+}
+.admin-month-stack > i[data-workflow='pending'],
+.admin-month-key i[data-workflow='pending'] {
+  background: linear-gradient(#ffd9a0, #d7a45a);
+}
+.admin-month-stack > i[data-workflow='completed'],
+.admin-month-key i[data-workflow='completed'] {
+  background: linear-gradient(#8ef0d6, #3aa78f);
+}
+.admin-month-stack > i[data-workflow='cancelled'],
+.admin-month-key i[data-workflow='cancelled'] {
+  background: linear-gradient(#ffb3c0, #c45b6a);
+}
+.admin-month-empty {
+  flex: 1 1 auto;
+  background: #2e405c;
+}
+.admin-month span {
+  font-size: 0.68rem;
+  letter-spacing: 0.02em;
+  color: #c8d9fa;
+  text-align: center;
+  line-height: 1.2;
+}
+.admin-month-key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 18px;
+  margin: 12px 0 8px;
+  font-size: 0.85rem;
+  color: #c8d9fa;
+}
+.admin-month-key i {
+  display: inline-block;
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 2px;
+  margin-right: 6px;
+  vertical-align: -1px;
+}
+@media (max-width: 720px) {
+  .admin-months {
+    gap: 4px;
+    height: 160px;
+  }
+  .admin-month span {
+    font-size: 0.58rem;
+  }
+}
 
 .admin-distribution {
   container-type: inline-size;
