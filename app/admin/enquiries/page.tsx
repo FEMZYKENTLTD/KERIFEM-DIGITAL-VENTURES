@@ -112,6 +112,7 @@ export default async function InboxPage({
         <p role="alert">
           The database is temporarily unavailable. Check the server configuration and try again.
         </p>
+        <Link href="/admin/growth-os">Open GrowthOS</Link>
       </section>
     );
   }
@@ -125,6 +126,7 @@ export default async function InboxPage({
           <p>{OWNER_EMAIL} · Owner access</p>
         </div>
         <nav aria-label="Workspace actions">
+          <Link href="/admin/growth-os">✦ GrowthOS</Link>
           <Link href="/admin/enquiries/new">+ New enquiry</Link>
           <Link href="/admin/enquiries/bin">Recycle bin ({data.bin})</Link>
           <Link href="/admin/account">Change password</Link>
