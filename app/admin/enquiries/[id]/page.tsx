@@ -13,7 +13,16 @@ import {
   type NotificationCategory,
   type NotificationDetail,
 } from '@/lib/notification';
-import { deleteEnquiry, refreshDelivery, retryAlert, saveEnquiry } from '../../actions';
+import {
+  moveToBin,
+  purgeEnquiry,
+  refreshDelivery,
+  restoreEnquiry,
+  retryAlert,
+  saveEnquiry,
+  setWorkflowStatus,
+} from '../../actions';
+import { WORKFLOW_STATUSES, workflowLabel } from '@/lib/workflow';
 
 const fields = [
   ['name', 'Full name', 120, true, 'text'],
@@ -45,7 +54,7 @@ export default async function EnquiryPage({
     if (!z.string().uuid().safeParse(id).success) notFound();
     try {
       const response = await enquiryStore(
-        `?id=eq.${id}&select=id,created_at,payload,notification,notification_detail,notification_message_id`,
+        `?id=eq.${id}&select=id,created_at,payload,notification,notification_detail,notification_message_id,workflow_status,deleted_at`,
       );
       [row] = (await response.json()) as Enquiry[];
     } catch {
@@ -61,13 +70,38 @@ export default async function EnquiryPage({
   }
   return (
     <section className="admin-panel">
-      <Link href="/admin/enquiries">← Back to inbox</Link>
+      <Link href={row?.deleted_at ? '/admin/enquiries/bin' : '/admin/enquiries'}>
+        {row?.deleted_at ? '← Back to recycle bin' : '← Back to inbox'}
+      </Link>
       <h1>{row ? row.payload.projectTitle || 'Enquiry details' : 'New enquiry'}</h1>
       {row && (
         <p>
-          {row.id} · Alert: {notificationLabel(row.notification)} ·{' '}
+          {row.id} · Order: {workflowLabel(row.workflow_status || 'pending')} · Alert:{' '}
+          {notificationLabel(row.notification)} ·{' '}
           <time dateTime={row.created_at}>{formatSubmissionTime(row.created_at)}</time>
         </p>
+      )}
+      {row?.deleted_at && (
+        <p className="admin-notice" role="status">
+          This enquiry is in the recycle bin. Restore it to return it to the inbox, or delete it
+          permanently.
+        </p>
+      )}
+      {row && !row.deleted_at && (
+        <form action={setWorkflowStatus.bind(null, id)} className="admin-workflow">
+          <p className="admin-hint">Mark this order:</p>
+          {WORKFLOW_STATUSES.map((status) => (
+            <button
+              key={status}
+              name="workflow"
+              value={status}
+              className={row.workflow_status === status ? undefined : 'admin-secondary'}
+              aria-pressed={row.workflow_status === status}
+            >
+              {workflowLabel(status)}
+            </button>
+          ))}
+        </form>
       )}
       {row && <AlertDiagnostics enquiry={row} />}
       {row && ['failed', 'not_configured', 'ambiguous'].includes(row.notification) && (
@@ -104,11 +138,15 @@ export default async function EnquiryPage({
                     ? 'Brevo reports that the message was delivered to the mailbox provider. Confirm the inbox separately.'
                     : notice === 'delivery-unknown'
                       ? 'Delivery could not be confirmed yet. Check Brevo logs and the business inbox.'
-                      : notice === 'invalid'
-                        ? 'Some fields did not meet the quote form requirements. Check the required fields and project description.'
-                        : notice === 'confirm'
-                          ? 'Confirm permanent deletion before continuing.'
-                          : 'The change could not be confirmed. Check the inbox before retrying.'}
+                      : notice === 'status'
+                        ? 'Order status updated.'
+                        : notice === 'restored'
+                          ? 'Enquiry restored to the inbox.'
+                          : notice === 'invalid'
+                            ? 'Some fields did not meet the quote form requirements. Check the required fields and project description.'
+                            : notice === 'confirm'
+                              ? 'Confirm the recycle bin or permanent deletion step before continuing.'
+                              : 'The change could not be confirmed. Check the inbox before retrying.'}
         </p>
       )}
       <form action={saveEnquiry.bind(null, id)} className="admin-editor">
@@ -151,17 +189,34 @@ export default async function EnquiryPage({
           <p className="admin-hint">Manual edits and new records do not send an email alert.</p>
         </div>
       </form>
-      {row && (
+      {row && !row.deleted_at && (
         <details className="admin-danger">
-          <summary>Delete this enquiry</summary>
-          <form action={deleteEnquiry.bind(null, id)}>
+          <summary>Move to recycle bin</summary>
+          <form action={moveToBin.bind(null, id)}>
             <label>
-              <input name="confirmDelete" value="yes" type="checkbox" required /> I understand this
-              permanently deletes the record.
+              <input name="confirmDelete" value="yes" type="checkbox" required /> Move this enquiry
+              to the recycle bin. It can be restored later.
             </label>
-            <button>Delete permanently</button>
+            <button>Move to recycle bin</button>
           </form>
         </details>
+      )}
+      {row?.deleted_at && (
+        <>
+          <form action={restoreEnquiry.bind(null, id)}>
+            <button className="admin-secondary">Restore to inbox</button>
+          </form>
+          <details className="admin-danger">
+            <summary>Delete permanently</summary>
+            <form action={purgeEnquiry.bind(null, id)}>
+              <label>
+                <input name="confirmDelete" value="yes" type="checkbox" required /> I understand
+                this permanently deletes the record. This cannot be undone.
+              </label>
+              <button>Delete permanently</button>
+            </form>
+          </details>
+        </>
       )}
     </section>
   );

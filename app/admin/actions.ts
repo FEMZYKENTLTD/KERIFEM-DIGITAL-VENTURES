@@ -8,6 +8,7 @@ import { schema } from '@/lib/enquiry';
 import { enquiryStore, notifyOwner, recordNotification } from '@/lib/enquiry-store';
 import { isRecoveryToken } from '@/lib/recovery-token';
 import { SITE_URL } from '@/lib/site';
+import { isWorkflowStatus } from '@/lib/workflow';
 
 export async function signIn(fields: FormData) {
   const auth = await adminAuth();
@@ -81,12 +82,63 @@ export async function saveEnquiry(id: string, fields: FormData) {
   redirect('/admin/enquiries?notice=saved');
 }
 
-export async function deleteEnquiry(id: string, fields: FormData) {
+export async function setWorkflowStatus(id: string, fields: FormData) {
+  await requireOwner();
+  if (!z.string().uuid().safeParse(id).success) redirect('/admin/enquiries');
+  const status = String(fields.get('workflow') || '');
+  if (!isWorkflowStatus(status)) redirect(`/admin/enquiries/${id}?notice=invalid`);
+  try {
+    const response = await enquiryStore(`?id=eq.${id}&select=id`, {
+      method: 'PATCH',
+      headers: { Prefer: 'return=representation' },
+      body: JSON.stringify({ workflow_status: status }),
+    });
+    if (!(await response.json())[0]?.id) throw new Error('Status not confirmed');
+  } catch {
+    redirect(`/admin/enquiries/${id}?notice=failed`);
+  }
+  redirect(`/admin/enquiries/${id}?notice=status`);
+}
+
+export async function moveToBin(id: string, fields: FormData) {
   await requireOwner();
   if (!z.string().uuid().safeParse(id).success) redirect('/admin/enquiries');
   if (fields.get('confirmDelete') !== 'yes') redirect(`/admin/enquiries/${id}?notice=confirm`);
   try {
-    const response = await enquiryStore(`?id=eq.${id}&select=id`, {
+    const response = await enquiryStore(`?id=eq.${id}&deleted_at=is.null&select=id`, {
+      method: 'PATCH',
+      headers: { Prefer: 'return=representation' },
+      body: JSON.stringify({ deleted_at: new Date().toISOString() }),
+    });
+    if (!(await response.json())[0]?.id) throw new Error('Move not confirmed');
+  } catch {
+    redirect(`/admin/enquiries/${id}?notice=failed`);
+  }
+  redirect('/admin/enquiries?notice=binned');
+}
+
+export async function restoreEnquiry(id: string) {
+  await requireOwner();
+  if (!z.string().uuid().safeParse(id).success) redirect('/admin/enquiries/bin');
+  try {
+    const response = await enquiryStore(`?id=eq.${id}&deleted_at=not.is.null&select=id`, {
+      method: 'PATCH',
+      headers: { Prefer: 'return=representation' },
+      body: JSON.stringify({ deleted_at: null }),
+    });
+    if (!(await response.json())[0]?.id) throw new Error('Restore not confirmed');
+  } catch {
+    redirect(`/admin/enquiries/${id}?notice=failed`);
+  }
+  redirect(`/admin/enquiries/${id}?notice=restored`);
+}
+
+export async function purgeEnquiry(id: string, fields: FormData) {
+  await requireOwner();
+  if (!z.string().uuid().safeParse(id).success) redirect('/admin/enquiries/bin');
+  if (fields.get('confirmDelete') !== 'yes') redirect(`/admin/enquiries/${id}?notice=confirm`);
+  try {
+    const response = await enquiryStore(`?id=eq.${id}&deleted_at=not.is.null&select=id`, {
       method: 'DELETE',
       headers: { Prefer: 'return=representation' },
     });
@@ -94,7 +146,7 @@ export async function deleteEnquiry(id: string, fields: FormData) {
   } catch {
     redirect(`/admin/enquiries/${id}?notice=failed`);
   }
-  redirect('/admin/enquiries?notice=deleted');
+  redirect('/admin/enquiries/bin?notice=purged');
 }
 
 export async function retryAlert(id: string) {

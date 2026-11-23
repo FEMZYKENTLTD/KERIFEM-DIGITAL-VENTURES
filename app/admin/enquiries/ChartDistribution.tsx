@@ -18,14 +18,16 @@ type Rows = [string, number][];
 const format = new Intl.NumberFormat('en-GB');
 const percent = new Intl.NumberFormat('en-GB', { style: 'percent', maximumFractionDigits: 1 });
 
-function Distribution({
+export function Distribution({
   rows,
   showBars,
   showPie,
+  unit = 'ENQUIRIES',
 }: {
   rows: Rows;
   showBars: boolean;
   showPie: boolean;
+  unit?: string;
 }) {
   const max = Math.max(1, ...rows.map(([, value]) => value));
   const total = rows.reduce((sum, [, value]) => sum + value, 0);
@@ -47,7 +49,7 @@ function Distribution({
           >
             <div className="admin-pie-center">
               <strong>{format.format(total)}</strong>
-              <small>ENQUIRIES</small>
+              <small>{unit}</small>
             </div>
           </div>
         ) : (

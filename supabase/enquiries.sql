@@ -5,9 +5,13 @@ create table public.enquiries (
   payload jsonb not null,
   notification text not null default 'pending' check (notification in ('pending', 'accepted', 'failed', 'not_configured', 'ambiguous')),
   notification_detail jsonb not null default '{}'::jsonb,
-  notification_message_id text
+  notification_message_id text,
+  workflow_status text not null default 'pending' check (workflow_status in ('pending', 'completed', 'cancelled')),
+  deleted_at timestamptz
 );
 create index enquiries_created_at_idx on public.enquiries (created_at desc);
+create index enquiries_deleted_at_idx on public.enquiries (deleted_at);
+create index enquiries_workflow_status_idx on public.enquiries (workflow_status);
 alter table public.enquiries enable row level security;
 revoke all on public.enquiries from public, anon, authenticated;
 grant select, insert, update, delete on public.enquiries to service_role;

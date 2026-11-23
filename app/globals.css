@@ -1052,6 +1052,11 @@ body.bg-ink {
   display: flex;
   align-items: center;
   gap: 12px;
+  color: inherit;
+  text-decoration: none;
+}
+.kv-footer-brand:hover strong {
+  color: var(--kv-accent, #e0bf72);
 }
 .kv-footer-brand img {
   width: 44px;

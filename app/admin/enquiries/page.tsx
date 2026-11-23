@@ -5,6 +5,12 @@ import { brevoHealth } from '@/lib/brevo';
 import { enquiryStore, type Enquiry } from '@/lib/enquiry-store';
 import { SERVICE_OPTIONS } from '@/lib/content';
 import { NOTIFICATION_STATUSES, notificationLabel } from '@/lib/notification';
+import {
+  ACTIVE_ENQUIRIES,
+  WORKFLOW_STATUSES,
+  isWorkflowStatus,
+  workflowLabel,
+} from '@/lib/workflow';
 import { DashboardCharts } from './DashboardCharts';
 import { signOut } from '../actions';
 
@@ -38,9 +44,13 @@ export default async function InboxPage({
     ? requestedStatus
     : '';
   const service = SERVICE_OPTIONS.find((item) => item === params.service) || '';
+  const requestedWorkflow = single(params.workflow);
+  const workflow = isWorkflowStatus(requestedWorkflow) ? requestedWorkflow : '';
   const page = Math.max(1, Math.min(10000, Number.parseInt(single(params.page), 10) || 1));
   const filters = new URLSearchParams();
+  filters.set('deleted_at', 'is.null');
   if (status) filters.set('notification', `eq.${status}`);
+  if (workflow) filters.set('workflow_status', `eq.${workflow}`);
   if (service) filters.set('payload->>service', `eq.${service}`);
   if (search)
     filters.set(
@@ -51,18 +61,34 @@ export default async function InboxPage({
   let data;
   try {
     const recent = new Date(Date.now() - 7 * 86400000).toISOString();
-    const [total, lastWeek, accepted, failed, waiting, matched] = await Promise.all([
-      count(),
-      count(`&created_at=gte.${recent}`),
-      count('&notification=eq.accepted'),
-      count('&notification=eq.failed'),
-      count('&notification=in.(pending,not_configured,ambiguous)'),
+    const active = `&${ACTIVE_ENQUIRIES}`;
+    const [
+      total,
+      lastWeek,
+      accepted,
+      failed,
+      waiting,
+      pending,
+      completed,
+      cancelled,
+      bin,
+      matched,
+    ] = await Promise.all([
+      count(active),
+      count(`${active}&created_at=gte.${recent}`),
+      count(`${active}&notification=eq.accepted`),
+      count(`${active}&notification=eq.failed`),
+      count(`${active}&notification=in.(pending,not_configured,ambiguous)`),
+      count(`${active}&workflow_status=eq.pending`),
+      count(`${active}&workflow_status=eq.completed`),
+      count(`${active}&workflow_status=eq.cancelled`),
+      count('&deleted_at=not.is.null'),
       count(filter),
     ]);
     const last = Math.max(1, Math.ceil(matched / PAGE_SIZE));
     const current = Math.min(page, last);
     const response = await enquiryStore(
-      `?select=id,created_at,payload,notification&order=created_at.desc,id.desc&limit=${PAGE_SIZE}&offset=${(current - 1) * PAGE_SIZE}${filter}`,
+      `?select=id,created_at,payload,notification,workflow_status,deleted_at&order=created_at.desc,id.desc&limit=${PAGE_SIZE}&offset=${(current - 1) * PAGE_SIZE}${filter}`,
     );
     data = {
       total,
@@ -70,6 +96,10 @@ export default async function InboxPage({
       accepted,
       failed,
       waiting,
+      pending,
+      completed,
+      cancelled,
+      bin,
       matched,
       last,
       current,
@@ -86,7 +116,7 @@ export default async function InboxPage({
     );
   }
   const link = (number: number) =>
-    `/admin/enquiries?${new URLSearchParams({ page: String(number), q: search, service, status })}`;
+    `/admin/enquiries?${new URLSearchParams({ page: String(number), q: search, service, status, workflow })}`;
   return (
     <>
       <header className="admin-header">
@@ -96,6 +126,7 @@ export default async function InboxPage({
         </div>
         <nav aria-label="Workspace actions">
           <Link href="/admin/enquiries/new">+ New enquiry</Link>
+          <Link href="/admin/enquiries/bin">Recycle bin ({data.bin})</Link>
           <Link href="/admin/account">Change password</Link>
           <form action={signOut}>
             <button className="admin-secondary">Sign out</button>
@@ -104,8 +135,11 @@ export default async function InboxPage({
       </header>
       <dl className="admin-metrics">
         {[
-          ['Total enquiries', data.total],
+          ['Active enquiries', data.total],
           ['Last 7 days', data.lastWeek],
+          ['Pending', data.pending],
+          ['Completed', data.completed],
+          ['Cancelled', data.cancelled],
           ['Alerts accepted', data.accepted],
           ['Alerts failed', data.failed],
           ['Pending / no alert', data.waiting],
@@ -117,16 +151,18 @@ export default async function InboxPage({
         ))}
       </dl>
       <p className="admin-hint">
-        Metrics cover the whole inbox. “Accepted” means the email provider accepted the request, not
-        that the business inbox received it.
+        Metrics exclude the recycle bin. “Accepted” means the email provider accepted the request,
+        not that the business inbox received it.
       </p>
       <BrevoHealth />
       <DashboardCharts />
       <section className="admin-panel" aria-labelledby="submissions">
         <h2 id="submissions">Submissions</h2>
-        {['saved', 'deleted'].includes(single(params.notice)) && (
+        {['saved', 'binned'].includes(single(params.notice)) && (
           <p className="admin-notice" role="status">
-            {params.notice === 'saved' ? 'Enquiry saved.' : 'Enquiry permanently deleted.'}
+            {params.notice === 'saved'
+              ? 'Enquiry saved.'
+              : 'Enquiry moved to the recycle bin. Restore it from Recycle bin if needed.'}
           </p>
         )}
         <form className="admin-filters">
@@ -149,9 +185,20 @@ export default async function InboxPage({
             </select>
           </label>
           <label>
+            Order status
+            <select name="workflow" defaultValue={workflow}>
+              <option value="">All orders</option>
+              {WORKFLOW_STATUSES.map((value) => (
+                <option key={value} value={value}>
+                  {workflowLabel(value)}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
             Alert status
             <select name="status" defaultValue={status}>
-              <option value="">All statuses</option>
+              <option value="">All alerts</option>
               {notifications.map((value) => (
                 <option key={value} value={value}>
                   {notificationLabel(value)}
@@ -174,6 +221,7 @@ export default async function InboxPage({
                   <th scope="col">Service</th>
                   <th scope="col">Budget</th>
                   <th scope="col">Submitted (WAT)</th>
+                  <th scope="col">Order</th>
                   <th scope="col">Alert</th>
                 </tr>
               </thead>
@@ -190,6 +238,11 @@ export default async function InboxPage({
                     <td>{row.payload.budget || '—'}</td>
                     <td>
                       <time dateTime={row.created_at}>{formatSubmissionTime(row.created_at)}</time>
+                    </td>
+                    <td>
+                      <span className="admin-chip" data-workflow={row.workflow_status || 'pending'}>
+                        {workflowLabel(row.workflow_status || 'pending')}
+                      </span>
                     </td>
                     <td>
                       <span className="admin-chip" data-status={row.notification}>

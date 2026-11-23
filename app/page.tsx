@@ -7,7 +7,7 @@ import { Capabilities, Quote, SectionTitle, Work } from '@/components/Corporate'
 export default function HomePage() {
   return (
     <>
-      <section className="kv-wrap kv-hero" id="top">
+      <section className="kv-wrap kv-hero">
         <div className="kv-hero-copy">
           <p className="kv-label">
             <span className="kv-dot" /> TECHNOLOGY & DIGITAL SOLUTIONS

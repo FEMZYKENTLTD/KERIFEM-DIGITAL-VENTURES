@@ -25,7 +25,7 @@ export function Intro({ label, title, copy }: { label: string; title: string; co
 }
 export function CorporateNav() {
   return (
-    <header className="kv-nav">
+    <header className="kv-nav" id="top">
       <div className="kv-wrap kv-nav-inner">
         <Link href="/" className="kv-brand">
           <Image
@@ -63,13 +63,13 @@ export function CorporateFooter() {
     <footer className="kv-footer">
       <div className="kv-wrap">
         <div className="kv-footer-top">
-          <div className="kv-footer-brand">
+          <a href="#top" className="kv-footer-brand" aria-label="Back to top">
             <Image src="/brand/kerifem-mark.webp" width={144} height={136} sizes="44px" alt="" />
             <div>
               <strong>{BRAND.name}</strong>
               <p>Digital solutions. Intelligent systems. Real-world impact.</p>
             </div>
-          </div>
+          </a>
           <div className="kv-links">
             <a href={CONTACT.social.github}>
               <Github size={16} aria-hidden />
