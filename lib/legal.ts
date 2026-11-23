@@ -1,17 +1,6 @@
 import { BRAND } from './site';
 
-/**
- * LEGAL PLACEHOLDER COPY — not legal advice.
- *
- * Every page renders a visible notice telling the client these documents must be
- * reviewed and customised with a legal professional before launch. The wording is
- * standard boilerplate written to match how this site actually behaves (private enquiry storage and email notifications
- */
-
-export const LEGAL_LAST_UPDATED = '20 November 2026';
-
-export const LEGAL_DISCLAIMER =
-  'This is a placeholder document. Please consult a legal professional for compliant policies.';
+export const LEGAL_LAST_UPDATED = '22 November 2026';
 
 export type LegalSection = {
   heading: string;
