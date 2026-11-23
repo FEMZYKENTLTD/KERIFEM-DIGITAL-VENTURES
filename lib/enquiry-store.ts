@@ -1,5 +1,6 @@
 import type { FormValues } from './enquiry';
 import type { NotificationDetail, NotificationStatus } from './notification';
+import type { WorkflowStatus } from './workflow';
 import { notifyOwner, type NotifyResult } from './brevo';
 
 export type Enquiry = {
@@ -9,6 +10,8 @@ export type Enquiry = {
   notification: NotificationStatus | string;
   notification_detail?: NotificationDetail | Record<string, never> | null;
   notification_message_id?: string | null;
+  workflow_status?: WorkflowStatus | string;
+  deleted_at?: string | null;
 };
 
 export { notifyOwner, type NotifyResult };

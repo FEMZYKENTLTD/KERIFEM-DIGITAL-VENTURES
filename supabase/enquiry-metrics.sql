@@ -6,6 +6,7 @@ returns jsonb language sql stable security invoker set search_path = '' as $$
            coalesce(nullif(payload->>'budget', ''), 'Not provided') as budget,
            (created_at at time zone 'UTC')::date as day
     from public.enquiries
+    where deleted_at is null
   ), days as (
     select (now() at time zone 'UTC')::date - n as day
     from generate_series(29, 0, -1) as n

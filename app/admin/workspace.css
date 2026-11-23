@@ -152,6 +152,26 @@
 .admin-chip[data-status='ambiguous'] {
   background: #4a3a28;
 }
+.admin-chip[data-workflow='pending'] {
+  background: #3d3a2a;
+}
+.admin-chip[data-workflow='completed'] {
+  background: #214c42;
+}
+.admin-chip[data-workflow='cancelled'] {
+  background: #633039;
+}
+.admin-workflow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin: 12px 0 18px;
+}
+.admin-workflow .admin-hint {
+  width: 100%;
+  margin: 0;
+}
 .admin-health {
   margin: 18px 0 8px;
 }
