@@ -1,6 +1,12 @@
+import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { OWNER_EMAIL, ownerSession } from '@/lib/admin-auth';
 import { requestReset, signIn } from '../actions';
+
+export const metadata: Metadata = {
+  title: 'Admin sign in',
+  robots: { index: false, follow: false },
+};
 
 const messages: Record<string, string> = {
   invalid: 'Could not sign in. Check your password and confirm the owner account is active.',

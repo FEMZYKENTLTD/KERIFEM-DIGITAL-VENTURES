@@ -3,6 +3,7 @@ import { enquiryMetrics } from '@/lib/enquiry-store';
 import { WORKFLOW_STATUSES, workflowLabel } from '@/lib/workflow';
 
 import { ChartDistribution, Distribution } from './ChartDistribution';
+import { DayChart } from './DayChart';
 import { MonthChart } from './MonthChart';
 
 const monthLabel = new Intl.DateTimeFormat('en-GB', {
@@ -38,7 +39,6 @@ export async function DashboardCharts() {
     data.orders?.[status] || 0,
   ]);
   const months = data.months ?? [];
-  const max = Math.max(1, ...data.days.map(({ count }) => count));
   const leaders = services.filter(([, value]) => value > 0 && value === services[0]?.[1]);
   const zero = services.filter(([, value]) => value === 0);
   const total = data.days.reduce((sum, day) => sum + day.count, 0);
@@ -108,15 +108,7 @@ export async function DashboardCharts() {
           <p className="admin-hint">
             {total} in the last 30 calendar days · Africa/Lagos, including today
           </p>
-          <div className="admin-columns" aria-hidden="true">
-            {data.days.map(({ day, count }) => (
-              <div
-                key={day}
-                title={`${day}: ${count}`}
-                style={{ height: `${Math.max(2, (100 * count) / max)}%` }}
-              />
-            ))}
-          </div>
+          <DayChart days={data.days} />
           <div className="admin-trend-axis">
             <span>{data.days[0]?.day}</span>
             <span>{data.days.at(-1)?.day}</span>

@@ -330,7 +330,7 @@ export default function ContactForm({ initialService = '' }: { initialService?: 
             <legend className="field-label">
               Preferred Contact Method <span className="text-gold">*</span>
             </legend>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-1 gap-2 min-[420px]:grid-cols-3">
               {CONTACT_METHODS.map((method) => (
                 <label
                   key={method}
