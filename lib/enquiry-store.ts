@@ -1,7 +1,17 @@
 import type { FormValues } from './enquiry';
-import { BRAND, CONTACT } from './site';
+import type { NotificationDetail, NotificationStatus } from './notification';
+import { notifyOwner, type NotifyResult } from './brevo';
 
-export type Enquiry = { id: string; created_at: string; payload: FormValues; notification: string };
+export type Enquiry = {
+  id: string;
+  created_at: string;
+  payload: FormValues;
+  notification: NotificationStatus | string;
+  notification_detail?: NotificationDetail | Record<string, never> | null;
+  notification_message_id?: string | null;
+};
+
+export { notifyOwner, type NotifyResult };
 
 export function enquiryStoreConfigured() {
   return Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY);
@@ -38,41 +48,25 @@ export async function enquiryMetrics() {
   };
 }
 
-export async function notifyOwner(id: string) {
-  const key = process.env.BREVO_API_KEY?.trim();
-  const sender = process.env.BREVO_SENDER_EMAIL?.trim();
-  if (!key || !sender) {
-    console.warn('[enquiry-alert] Brevo is not configured');
-    return 'not_configured';
-  }
+export async function recordNotification(id: string, result: NotifyResult) {
+  const body = {
+    notification: result.status,
+    notification_detail: result.detail,
+    notification_message_id: result.detail.messageId ?? null,
+  };
   try {
-    const response = await fetch('https://api.brevo.com/v3/smtp/email', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json', 'api-key': key },
-      body: JSON.stringify({
-        sender: { name: BRAND.name, email: sender },
-        to: [{ email: CONTACT.email.primary }],
-        subject: `New quote request — ${BRAND.name}`,
-        textContent: `A new enquiry was saved. Reference: ${id}. Sign in at /admin/enquiries to view the details.`,
-      }),
-      signal: AbortSignal.timeout(5000),
-      cache: 'no-store',
+    await enquiryStore(`?id=eq.${encodeURIComponent(id)}`, {
+      method: 'PATCH',
+      body: JSON.stringify(body),
     });
-    if (!response.ok) {
-      console.warn('[enquiry-alert] Brevo HTTP rejection:', response.status);
-      return 'failed';
+  } catch {
+    try {
+      await enquiryStore(`?id=eq.${encodeURIComponent(id)}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ notification: result.status }),
+      });
+    } catch {
+      console.warn('[enquiry] Notification status could not be recorded');
     }
-    const result = await response.json();
-    if (typeof result?.messageId === 'string' && result.messageId.length > 0) return 'accepted';
-    console.warn('[enquiry-alert] Brevo did not confirm acceptance');
-    return 'failed';
-  } catch (error) {
-    console.warn(
-      '[enquiry-alert]',
-      error instanceof Error && error.name === 'TimeoutError'
-        ? 'Brevo timed out'
-        : 'Brevo transport or response error',
-    );
-    return 'failed';
   }
 }

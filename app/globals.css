@@ -684,7 +684,8 @@
 }
 .kv-credentials h2 {
   font:
-    clamp(26px, 4vw, 44px) / 1.1 Georgia,
+    clamp(26px, 4vw, 44px) / 1.1 var(--font-display),
+    Georgia,
     serif;
   margin: 10px 0 24px;
 }
@@ -726,7 +727,8 @@
 }
 .kv-service h2 {
   font:
-    clamp(28px, 4vw, 50px) / 1.1 Georgia,
+    clamp(28px, 4vw, 50px) / 1.1 var(--font-display),
+    Georgia,
     serif;
   margin: 12px 0;
   color: #faf6eb;

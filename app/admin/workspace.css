@@ -145,6 +145,46 @@
 .admin-chip[data-status='accepted'] {
   background: #214c42;
 }
+.admin-chip[data-status='not_configured'],
+.admin-chip[data-status='pending'] {
+  background: #3d3a2a;
+}
+.admin-chip[data-status='ambiguous'] {
+  background: #4a3a28;
+}
+.admin-health {
+  margin: 18px 0 8px;
+}
+.admin-health ul {
+  display: grid;
+  gap: 6px;
+  margin: 10px 0 0;
+  padding-left: 1.1rem;
+}
+.admin-diagnostics {
+  margin: 16px 0 20px;
+  padding: 16px;
+  border: 1px solid #455773;
+  border-radius: 10px;
+  background: #10192a;
+}
+.admin-diagnostics h2 {
+  font-size: 1.15rem;
+}
+.admin-diagnostics dl {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+.admin-diagnostics dl > div {
+  display: grid;
+  grid-template-columns: minmax(7.5rem, 11rem) minmax(0, 1fr);
+  gap: 8px;
+}
+.admin-diagnostics dt {
+  color: #c8d9fa;
+  font-weight: 600;
+}
 .admin-pagination {
   margin-top: 16px;
 }

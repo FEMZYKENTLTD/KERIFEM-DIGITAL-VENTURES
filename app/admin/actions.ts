@@ -3,8 +3,9 @@
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
 import { adminAuth, OWNER_EMAIL, requireOwner } from '@/lib/admin-auth';
+import { lookupDelivery } from '@/lib/brevo';
 import { schema } from '@/lib/enquiry';
-import { enquiryStore, notifyOwner } from '@/lib/enquiry-store';
+import { enquiryStore, notifyOwner, recordNotification } from '@/lib/enquiry-store';
 import { isRecoveryToken } from '@/lib/recovery-token';
 import { SITE_URL } from '@/lib/site';
 
@@ -104,7 +105,7 @@ export async function retryAlert(id: string) {
   try {
     // Claim atomically so two clicks cannot send the same retry concurrently.
     const result = await enquiryStore(
-      `?id=eq.${id}&notification=in.(failed,not_configured)&select=id`,
+      `?id=eq.${id}&notification=in.(failed,not_configured,ambiguous)&select=id`,
       {
         method: 'PATCH',
         headers: { Prefer: 'return=representation' },
@@ -113,14 +114,48 @@ export async function retryAlert(id: string) {
     );
     if ((await result.json())[0]?.id === id) {
       const notification = await notifyOwner(id);
-      await enquiryStore(`?id=eq.${id}&notification=eq.pending`, {
-        method: 'PATCH',
-        body: JSON.stringify({ notification }),
-      });
-      notice = notification === 'accepted' ? 'alert-accepted' : 'alert-failed';
+      await recordNotification(id, notification);
+      notice =
+        notification.status === 'accepted'
+          ? 'alert-accepted'
+          : notification.status === 'ambiguous'
+            ? 'alert-ambiguous'
+            : 'alert-failed';
     }
   } catch {
     console.warn('[enquiry-alert] Could not confirm retry status');
+  }
+  redirect(`${path}?notice=${notice}`);
+}
+
+export async function refreshDelivery(id: string) {
+  await requireOwner();
+  if (!z.string().uuid().safeParse(id).success) redirect('/admin/enquiries');
+  const path = `/admin/enquiries/${id}`;
+  let notice = 'delivery-unknown';
+  try {
+    const response = await enquiryStore(
+      `?id=eq.${id}&select=id,notification,notification_detail,notification_message_id`,
+    );
+    const [row] = (await response.json()) as {
+      id: string;
+      notification: string;
+      notification_detail?: { delivery?: string; messageId?: string } | null;
+      notification_message_id?: string | null;
+    }[];
+    const messageId = row?.notification_message_id || row?.notification_detail?.messageId;
+    if (row?.id === id && messageId) {
+      const delivery = await lookupDelivery(messageId);
+      await enquiryStore(`?id=eq.${id}`, {
+        method: 'PATCH',
+        body: JSON.stringify({
+          notification_detail: { ...(row.notification_detail ?? {}), delivery },
+        }),
+      });
+      notice = delivery === 'delivered' ? 'delivery-reported' : 'delivery-unknown';
+    }
+  } catch {
+    console.warn('[enquiry-alert] Could not confirm delivery status');
   }
   redirect(`${path}?notice=${notice}`);
 }

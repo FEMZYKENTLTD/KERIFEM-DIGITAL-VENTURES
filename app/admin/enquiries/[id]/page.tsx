@@ -3,9 +3,17 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { z } from 'zod';
 import { requireOwner } from '@/lib/admin-auth';
+import { categoryHint } from '@/lib/brevo';
 import { enquiryStore, type Enquiry } from '@/lib/enquiry-store';
 import { BUDGET_OPTIONS, CONTACT_METHODS, SERVICE_OPTIONS, TIMELINES } from '@/lib/content';
-import { deleteEnquiry, retryAlert, saveEnquiry } from '../../actions';
+import {
+  DELIVERY_LABELS,
+  notificationLabel,
+  type DeliveryEvent,
+  type NotificationCategory,
+  type NotificationDetail,
+} from '@/lib/notification';
+import { deleteEnquiry, refreshDelivery, retryAlert, saveEnquiry } from '../../actions';
 
 const fields = [
   ['name', 'Full name', 120, true, 'text'],
@@ -36,7 +44,9 @@ export default async function EnquiryPage({
   if (id !== 'new') {
     if (!z.string().uuid().safeParse(id).success) notFound();
     try {
-      const response = await enquiryStore(`?id=eq.${id}&select=id,created_at,payload,notification`);
+      const response = await enquiryStore(
+        `?id=eq.${id}&select=id,created_at,payload,notification,notification_detail,notification_message_id`,
+      );
       [row] = (await response.json()) as Enquiry[];
     } catch {
       return (
@@ -55,14 +65,29 @@ export default async function EnquiryPage({
       <h1>{row ? row.payload.projectTitle || 'Enquiry details' : 'New enquiry'}</h1>
       {row && (
         <p>
-          {row.id} · Alert: {row.notification.replaceAll('_', ' ')} ·{' '}
+          {row.id} · Alert: {notificationLabel(row.notification)} ·{' '}
           <time dateTime={row.created_at}>{formatSubmissionTime(row.created_at)}</time>
         </p>
       )}
-      {row && ['failed', 'not_configured'].includes(row.notification) && (
+      {row && <AlertDiagnostics enquiry={row} />}
+      {row && ['failed', 'not_configured', 'ambiguous'].includes(row.notification) && (
         <form action={retryAlert.bind(null, id)}>
           <button className="admin-secondary">Retry email alert</button>
-          <p className="admin-hint">Only a reference is sent, not the customer’s details.</p>
+          <p className="admin-hint">
+            Only a reference is sent, not the customer’s details.
+            {row.notification === 'ambiguous'
+              ? ' The previous attempt was unconfirmed, so check the inbox before retrying.'
+              : ''}
+          </p>
+        </form>
+      )}
+      {row && (row.notification_message_id || row.notification_detail?.messageId) && (
+        <form action={refreshDelivery.bind(null, id)}>
+          <button className="admin-secondary">Check delivery status</button>
+          <p className="admin-hint">
+            This asks Brevo whether the accepted message was delivered, bounced or blocked. It does
+            not send another email.
+          </p>
         </form>
       )}
       {notice && (
@@ -71,13 +96,19 @@ export default async function EnquiryPage({
             ? 'Brevo accepted the retry. Check the business inbox for delivery.'
             : notice === 'alert-failed'
               ? 'The alert was not accepted. The enquiry is still saved.'
-              : notice === 'alert-unavailable'
-                ? 'The retry could not be confirmed. Check the alert status and mailbox before retrying.'
-                : notice === 'invalid'
-                  ? 'Some fields did not meet the quote form requirements. Check the required fields and project description.'
-                  : notice === 'confirm'
-                    ? 'Confirm permanent deletion before continuing.'
-                    : 'The change could not be confirmed. Check the inbox before retrying.'}
+              : notice === 'alert-ambiguous'
+                ? 'The retry did not confirm acceptance. Check the inbox before sending again.'
+                : notice === 'alert-unavailable'
+                  ? 'The retry could not be confirmed. Check the alert status and mailbox before retrying.'
+                  : notice === 'delivery-reported'
+                    ? 'Brevo reports that the message was delivered to the mailbox provider. Confirm the inbox separately.'
+                    : notice === 'delivery-unknown'
+                      ? 'Delivery could not be confirmed yet. Check Brevo logs and the business inbox.'
+                      : notice === 'invalid'
+                        ? 'Some fields did not meet the quote form requirements. Check the required fields and project description.'
+                        : notice === 'confirm'
+                          ? 'Confirm permanent deletion before continuing.'
+                          : 'The change could not be confirmed. Check the inbox before retrying.'}
         </p>
       )}
       <form action={saveEnquiry.bind(null, id)} className="admin-editor">
@@ -133,5 +164,40 @@ export default async function EnquiryPage({
         </details>
       )}
     </section>
+  );
+}
+
+function AlertDiagnostics({ enquiry }: { enquiry: Enquiry }) {
+  const detail = (enquiry.notification_detail ?? {}) as Partial<NotificationDetail>;
+  const category = detail.category as NotificationCategory | undefined;
+  const delivery = (detail.delivery as DeliveryEvent | undefined) ?? 'unknown';
+  const items = [
+    ['Status', notificationLabel(enquiry.notification)],
+    category ? ['Category', category.replaceAll('_', ' ')] : null,
+    detail.httpStatus ? ['HTTP status', String(detail.httpStatus)] : null,
+    detail.code ? ['Provider code', detail.code] : null,
+    detail.keyFormat ? ['Key format', detail.keyFormat] : null,
+    enquiry.notification_message_id || detail.messageId
+      ? ['Provider reference', 'Recorded (not shown in full in the list)']
+      : null,
+    enquiry.notification === 'accepted' || detail.messageId
+      ? ['Delivery', DELIVERY_LABELS[delivery]]
+      : null,
+    detail.message ? ['Diagnostic', detail.message] : null,
+    detail.at ? ['Checked', formatSubmissionTime(detail.at)] : null,
+  ].filter(Boolean) as [string, string][];
+  return (
+    <div className="admin-diagnostics">
+      <h2>Notification diagnostics</h2>
+      <dl>
+        {items.map(([label, value]) => (
+          <div key={label}>
+            <dt>{label}</dt>
+            <dd>{value}</dd>
+          </div>
+        ))}
+      </dl>
+      {category ? <p className="admin-hint">{categoryHint(category)}</p> : null}
+    </div>
   );
 }
