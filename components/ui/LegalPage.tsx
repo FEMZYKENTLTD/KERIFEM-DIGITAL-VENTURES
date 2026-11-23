@@ -2,11 +2,10 @@ import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 
 import JsonLd from '@/components/seo/JsonLd';
-import { ALL_LEGAL_DOCS, LEGAL_DISCLAIMER, LEGAL_LAST_UPDATED, type LegalDoc } from '@/lib/legal';
+import { ALL_LEGAL_DOCS, LEGAL_LAST_UPDATED, type LegalDoc } from '@/lib/legal';
 import { BRAND, CONTACT, INDEXABLE } from '@/lib/site';
 import { breadcrumbSchema } from '@/lib/schema';
 
-/** Shared renderer for the three placeholder legal documents. */
 export default function LegalPage({ doc }: { doc: LegalDoc }) {
   const others = ALL_LEGAL_DOCS.filter((item) => item.slug !== doc.slug);
 
@@ -30,20 +29,7 @@ export default function LegalPage({ doc }: { doc: LegalDoc }) {
             <span>{BRAND.name}</span>
             <span aria-hidden="true" className="hidden h-3 w-px bg-white/15 sm:block" />
             <span>Last updated: {LEGAL_LAST_UPDATED}</span>
-            <span aria-hidden="true" className="hidden h-3 w-px bg-white/15 sm:block" />
-            <span>Status: placeholder draft</span>
           </div>
-
-          <aside
-            role="note"
-            className="mt-8 flex gap-3 rounded-xl border border-gold/30 bg-gold/[0.05] px-5 py-4"
-          >
-            <span aria-hidden="true" className="mt-1 h-2 w-2 shrink-0 rounded-full bg-gold" />
-            <p className="text-sm leading-relaxed text-gold">
-              {LEGAL_DISCLAIMER} The text below is standard boilerplate written to match how this
-              website currently operates, and must be reviewed and personalised before launch.
-            </p>
-          </aside>
 
           <p className="mt-10 text-pretty text-lede leading-relaxed text-white/85">{doc.intro}</p>
 

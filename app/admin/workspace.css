@@ -273,15 +273,26 @@
 }
 .admin-columns {
   display: grid;
-  grid-template-columns: repeat(30, minmax(0, 1fr));
+  grid-template-columns: repeat(30, minmax(1.1rem, 1fr));
   gap: 4px;
   align-items: end;
   height: 130px;
   border-bottom: 1px solid #667995;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  scrollbar-width: thin;
 }
-.admin-columns div {
+.admin-wrap .admin-day {
+  min-width: 1.1rem;
+  min-height: 8px;
+  padding: 0;
+  align-self: end;
   background: linear-gradient(#a9e6e5, #567dd0);
   border-radius: 4px 4px 0 0;
+}
+.admin-wrap .admin-day[aria-pressed='true'] {
+  outline: 2px solid #d2e4ff;
+  outline-offset: 1px;
 }
 .admin-trend-axis {
   display: flex;

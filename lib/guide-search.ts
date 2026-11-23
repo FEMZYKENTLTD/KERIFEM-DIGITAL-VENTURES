@@ -2,7 +2,7 @@ import { guideTokens as tokens } from './guide-language';
 import { aboutContent, founderStudies } from './about-content';
 import { cases } from './cases';
 import { faq, processSteps } from './commercial';
-import { ALL_LEGAL_DOCS, LEGAL_DISCLAIMER } from './legal';
+import { ALL_LEGAL_DOCS } from './legal';
 import { serviceDetails } from './service-details';
 import { services } from './services';
 import { BRAND, CONTACT } from './site';
@@ -34,7 +34,7 @@ const documents: GuideResult[] = [
     sections.map((section) => ({
       title: `${title}: ${section.heading}`,
       href: path,
-      answer: `${[...(section.paragraphs || []), ...(section.bullets || [])].join(' ')} ${LEGAL_DISCLAIMER}`,
+      answer: `${[...(section.paragraphs || []), ...(section.bullets || [])].join(' ')}`,
     })),
   ),
   {

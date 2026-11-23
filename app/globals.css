@@ -625,7 +625,10 @@
     gap: 14px;
   }
   .kv-nav nav a {
-    padding-block: 6px;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding-block: 10px;
   }
   .kv-hero,
   .kv-contact {
