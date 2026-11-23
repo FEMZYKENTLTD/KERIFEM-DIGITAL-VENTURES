@@ -1,13 +1,13 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
+import { supabaseAuthConfig } from './lib/supabase-auth-config';
 
 export async function middleware(request: NextRequest) {
-  const url = process.env.SUPABASE_URL;
-  const key = process.env.SUPABASE_PUBLISHABLE_KEY;
-  if (!url || !key || request.nextUrl.pathname === '/admin/callback') return NextResponse.next();
+  const config = supabaseAuthConfig();
+  if (!config || request.nextUrl.pathname === '/admin/callback') return NextResponse.next();
 
   let response = NextResponse.next({ request });
-  const client = createServerClient(url, key, {
+  const client = createServerClient(config.url, config.key, {
     cookies: {
       getAll: () => request.cookies.getAll(),
       setAll: (entries) => {

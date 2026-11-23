@@ -4,19 +4,23 @@ import assert from 'node:assert/strict';
 const db = new PGlite();
 try {
   // Emulate the relevant Supabase auth claims locally. This is not a substitute for testing real Supabase.
-  await db.exec(`create role anon; create role authenticated; create schema auth;
+  await db.exec(`create role anon; create role authenticated; create role service_role; create schema auth;
     create table auth.users(id uuid primary key,email text,email_confirmed_at timestamptz);
     create function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('request.jwt.claim.sub', true),'')::uuid $$;
     grant usage on schema auth to authenticated,anon; grant execute on function auth.uid() to authenticated,anon;
     insert into auth.users values ('11111111-1111-4111-8111-111111111111','femzykenterprisesltd@gmail.com',now()),('22222222-2222-4222-8222-222222222222','other@example.com',now());`);
   await db.exec(
-    `alter default privileges in schema public grant execute on functions to anon, authenticated;`,
+    `alter default privileges in schema public grant execute on functions to anon, authenticated, service_role;
+     alter default privileges in schema public grant all on tables to service_role;
+     alter default privileges in schema public grant all on sequences to service_role;`,
   );
   for (const file of [
     '20261123000000_growthos_foundation.sql',
     '20261123010000_growthos_intelligence.sql',
     '20261123020000_growthos_csv_import.sql',
     '20261123030000_growthos_function_privileges.sql',
+    '20261123040000_growthos_restrict_service_role.sql',
+    '20261123050000_growthos_delete_prospect.sql',
   ])
     await db.exec(await readFile(`supabase/migrations/${file}`, 'utf8'));
   const grants = await db.query(
@@ -24,6 +28,23 @@ try {
   );
   assert.equal(grants.rows[0].anon_execute, false);
   assert.equal(grants.rows[0].owner_role_execute, true);
+  const serviceRoleGrants = await db.query(`
+    select count(*)::integer as remaining from (
+      select p.oid from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+       where n.nspname = 'public' and p.proname like 'growth_%'
+         and has_function_privilege('service_role', p.oid, 'execute')
+      union all
+      select c.oid from pg_class c join pg_namespace n on n.oid = c.relnamespace
+       cross join unnest(array['SELECT','INSERT','UPDATE','DELETE','TRUNCATE','REFERENCES','TRIGGER']) priv
+       where n.nspname = 'public' and c.relname in ('growth_prospects','growth_activity','growth_evidence','growth_tasks','growth_agent_runs','growth_deletion_audit')
+         and has_table_privilege('service_role', c.oid, priv)
+      union all
+      select c.oid from pg_class c join pg_namespace n on n.oid = c.relnamespace
+       cross join unnest(array['USAGE','SELECT','UPDATE']) priv
+       where n.nspname = 'public' and c.relname in ('growth_activity_id_seq','growth_deletion_audit_id_seq')
+         and has_sequence_privilege('service_role', c.oid, priv)
+    ) remaining_grants`);
+  assert.equal(serviceRoleGrants.rows[0].remaining, 0);
   await db.exec(
     `set role authenticated; select set_config('request.jwt.claim.sub','11111111-1111-4111-8111-111111111111',false)`,
   );
@@ -109,8 +130,62 @@ try {
   await assert.rejects(() =>
     db.query(`select public.growth_import_prospects($1)`, [JSON.stringify(rows)]),
   );
+  await assert.rejects(() => db.query(`select public.growth_delete_prospect($1)`, [id]));
+  assert.equal((await db.query(`select * from public.growth_deletion_audit`)).rows.length, 0);
+  await db.exec(
+    `select set_config('request.jwt.claim.sub','11111111-1111-4111-8111-111111111111',false)`,
+  );
+  await assert.rejects(() => db.query(`delete from public.growth_prospects where id=$1`, [id]));
+  await db.query(`update public.growth_prospects set stage='suppressed' where id=$1`, [id]);
+  assert.equal(
+    (await db.query(`select public.growth_delete_prospect($1) as ok`, [id])).rows[0].ok,
+    false,
+  );
+  await db.query(`update public.growth_prospects set stage='new' where id=$1`, [id]);
+  assert.equal(
+    (await db.query(`select public.growth_delete_prospect($1) as ok`, [id])).rows[0].ok,
+    true,
+  );
+  assert.equal(
+    (await db.query(`select public.growth_delete_prospect($1) as ok`, [id])).rows[0].ok,
+    false,
+  );
+  for (const table of [
+    'growth_prospects',
+    'growth_evidence',
+    'growth_tasks',
+    'growth_agent_runs',
+    'growth_activity',
+  ]) {
+    const column = table === 'growth_prospects' ? 'id' : 'prospect_id';
+    assert.equal(
+      (
+        await db.query(`select count(*)::integer as n from public.${table} where ${column}=$1`, [
+          id,
+        ])
+      ).rows[0].n,
+      0,
+    );
+  }
+  assert.equal(
+    (
+      await db.query(
+        `select count(*)::integer as n from public.growth_deletion_audit where prospect_id=$1`,
+        [id],
+      )
+    ).rows[0].n,
+    1,
+  );
+  assert.equal(
+    (
+      await db.query(
+        `select has_function_privilege('anon','public.growth_delete_prospect(uuid)','execute') as permitted`,
+      )
+    ).rows[0].permitted,
+    false,
+  );
   console.log(
-    'In-memory Postgres: migrations, owner access, RLS, audit, rate limit, idempotent finish and atomic import passed.',
+    'In-memory Postgres: migrations, owner access, RLS, audit, deletion, rate limit, idempotent finish and atomic import passed.',
   );
 } finally {
   await db.close();

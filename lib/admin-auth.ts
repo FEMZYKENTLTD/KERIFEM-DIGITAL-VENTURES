@@ -1,15 +1,15 @@
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
+import { supabaseAuthConfig } from './supabase-auth-config';
 
 export const OWNER_EMAIL = 'femzykenterprisesltd@gmail.com';
 
 export async function adminAuth() {
-  const url = process.env.SUPABASE_URL;
-  const key = process.env.SUPABASE_PUBLISHABLE_KEY;
-  if (!url || !key) return null;
+  const config = supabaseAuthConfig();
+  if (!config) return null;
   const jar = await cookies();
-  return createServerClient(url, key, {
+  return createServerClient(config.url, config.key, {
     cookies: {
       getAll: () => jar.getAll(),
       setAll: (entries) => {

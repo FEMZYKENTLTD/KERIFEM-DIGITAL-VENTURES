@@ -13,6 +13,7 @@
     "format:check": "prettier --check .",
     "test:smoke": "node scripts/smoke.mjs",
     "test:guide": "node scripts/guide-check.mjs",
+    "test:supabase-config": "tsx scripts/supabase-config-check.ts",
     "test:growthos": "tsx scripts/growthos-intelligence-check.ts && node scripts/growthos-db-check.mjs"
   },
   "dependencies": {

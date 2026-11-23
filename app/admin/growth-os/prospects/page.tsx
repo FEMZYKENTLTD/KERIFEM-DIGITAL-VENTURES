@@ -52,6 +52,11 @@ export default async function ProspectsPage({
           <Plus size={17} /> Add prospect
         </Link>
       </div>
+      {params.notice === 'deleted' && (
+        <div className="success-alert" role="status">
+          Prospect deleted.
+        </div>
+      )}
       <section className="growth-panel">
         <div className="panel-heading">
           <div>

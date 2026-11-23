@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { ArrowLeft, ExternalLink } from 'lucide-react';
 import { requireOwner } from '@/lib/admin-auth';
 import { stageLabel, stages, type Prospect } from '@/lib/growthos';
-import { changeStage, saveProspect } from '../../actions';
+import { changeStage, deleteProspect, saveProspect } from '../../actions';
 
 type Entry = { detail: string; id: number; created_at: string };
 export default async function ProspectPage({
@@ -70,7 +70,11 @@ export default async function ProspectPage({
             ? 'Your changes were saved.'
             : notice === 'invalid'
               ? 'Please check your entries. URLs must start with http:// or https:// and email addresses must be valid.'
-              : 'Could not save. Check the database connection and try again.'}
+              : notice === 'delete-confirm'
+                ? 'Type DELETE exactly to confirm removal.'
+                : notice === 'delete-failed'
+                  ? 'Could not delete this prospect. Suppressed prospects cannot be deleted; otherwise check the database connection and migration.'
+                  : 'Could not save. Check the database connection and try again.'}
         </div>
       )}
       <div className="profile-grid">
@@ -192,6 +196,28 @@ export default async function ProspectPage({
               configured provider and human review. This workspace will not send email.
             </p>
           </section>
+          {prospect && (
+            <section className="growth-panel">
+              <div className="kicker">REMOVE PROSPECT</div>
+              <h2>Delete permanently</h2>
+              <p className="muted">
+                This permanently deletes the prospect, research, tasks, agent runs and profile
+                activity. A minimal deletion audit is retained. Suppressed prospects cannot be
+                deleted.
+              </p>
+              {prospect.stage !== 'suppressed' && (
+                <form action={deleteProspect.bind(null, id)} className="profile-form">
+                  <label>
+                    Type DELETE to confirm
+                    <input name="confirmation" required pattern="DELETE" autoComplete="off" />
+                  </label>
+                  <button className="outline-button" type="submit">
+                    Delete prospect
+                  </button>
+                </form>
+              )}
+            </section>
+          )}
           {prospect && (
             <section className="growth-panel">
               <div className="kicker">AUDIT TRAIL</div>

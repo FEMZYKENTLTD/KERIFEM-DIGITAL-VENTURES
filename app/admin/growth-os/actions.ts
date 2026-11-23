@@ -25,6 +25,17 @@ export async function saveProspect(id: string, fields: FormData) {
   revalidatePath('/admin/growth-os', 'layout');
   redirect(`/admin/growth-os/prospects/${result.data.id}?notice=saved`);
 }
+export async function deleteProspect(id: string, fields: FormData) {
+  const client = await requireOwner();
+  if (!z.string().uuid().safeParse(id).success) redirect('/admin/growth-os/prospects');
+  const path = `/admin/growth-os/prospects/${id}`;
+  if (fields.get('confirmation') !== 'DELETE') redirect(`${path}?notice=delete-confirm`);
+  const { data, error } = await client.rpc('growth_delete_prospect', { p_prospect: id });
+  if (error || data !== true) redirect(`${path}?notice=delete-failed`);
+  revalidatePath('/admin/growth-os', 'layout');
+  redirect('/admin/growth-os/prospects?notice=deleted');
+}
+
 export async function changeStage(id: string, fields: FormData) {
   const client = await requireOwner();
   if (!z.string().uuid().safeParse(id).success) redirect('/admin/growth-os/prospects');
