@@ -14,7 +14,7 @@ import { stageLabel, type Activity, type Prospect } from '@/lib/growthos';
 
 export default async function GrowthOverview() {
   const db = await requireOwner();
-  const [total, qualified, review, won, recent, activity] = await Promise.all([
+  const [total, qualified, review, won, recent, activity, dueTasks] = await Promise.all([
     db.from('growth_prospects').select('*', { count: 'exact', head: true }),
     db
       .from('growth_prospects')
@@ -31,13 +31,23 @@ export default async function GrowthOverview() {
       .select('id,prospect_id,event,detail,created_at,growth_prospects(name)')
       .order('created_at', { ascending: false })
       .limit(5),
+    db
+      .from('growth_tasks')
+      .select('*', { count: 'exact', head: true })
+      .eq('status', 'open')
+      .lte('due_date', new Date().toISOString().slice(0, 10)),
   ]);
   const unavailable = [total, qualified, review, won, recent, activity].some((x) => x.error);
   const cards = [
     ['Total prospects', total.count, ContactRound, 'Your prospect universe'],
     ['Qualified prospects', qualified.count, Target, 'Marked qualified by you'],
     ['Needs research', review.count, ListChecks, 'New or researching'],
-    ['Deals won', won.count, Workflow, 'Manually marked won'],
+    [
+      'Tasks due',
+      dueTasks.error ? null : dueTasks.count,
+      Workflow,
+      'Open, due today or earlier (UTC)',
+    ],
   ] as const;
   return (
     <div className="growth-content">
@@ -69,7 +79,7 @@ export default async function GrowthOverview() {
               <span>{label}</span>
               <Icon size={18} />
             </div>
-            <strong>{unavailable ? '—' : value?.toLocaleString('en-GB')}</strong>
+            <strong>{unavailable || value === null ? '—' : value?.toLocaleString('en-GB')}</strong>
             <small>{help}</small>
           </div>
         ))}
@@ -195,8 +205,8 @@ export default async function GrowthOverview() {
         <div>
           <b>Built around responsible outreach</b>
           <p>
-            Email sending, discovery and AI are not connected in this foundation. No outreach is
-            sent automatically.
+            Service matching requires a configured AI provider and human review. Discovery and email
+            sending are not implemented; no outreach is sent automatically.
           </p>
         </div>
         <Link href="/admin/growth-os/settings">

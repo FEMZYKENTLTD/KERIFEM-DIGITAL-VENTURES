@@ -142,6 +142,18 @@ export default async function ProspectPage({
         <div className="profile-aside">
           {prospect && (
             <section className="growth-panel">
+              <div className="kicker">INTELLIGENCE</div>
+              <h2>Research & service fit</h2>
+              <p className="muted">
+                Capture sourced evidence and review AI-assisted recommendations.
+              </p>
+              <Link
+                className="external-link"
+                href={`/admin/growth-os/prospects/${id}/intelligence`}
+              >
+                Open research workspace →
+              </Link>
+              <div className="mini-divider" />
               <div className="kicker">WORKFLOW</div>
               <h2>Pipeline stage</h2>
               <p className="muted">Update this manually as your relationship progresses.</p>
@@ -176,8 +188,8 @@ export default async function ProspectPage({
             </p>
             <div className="mini-divider" />
             <p className="muted">
-              Outreach, verification and AI research are not yet connected. This workspace will not
-              send email.
+              Outreach and contact verification are not connected. AI service matching requires a
+              configured provider and human review. This workspace will not send email.
             </p>
           </section>
           {prospect && (

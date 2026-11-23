@@ -1,5 +1,7 @@
 # GrowthOS foundation: audit and deployment
 
+> Historical Phase 1 report. For the current implementation, testing and deployment status, see [GrowthOS intelligence milestone](growthos-intelligence.md).
+
 ## Audit baseline
 
 Next.js 15 / React 19 App Router. Public pages include home, about, services and service details, portfolio and project details, contact and thank-you, legal pages, robots and sitemap. The quote API validates the request, saves to `enquiries` using a server-only service-role key, then records the Brevo notification result; a failed notification does not remove the enquiry. The owner workspace uses Supabase Auth and `requireOwner`, which verifies the confirmed owner email server-side. Existing admin routes include sign-in, recovery, account, enquiries, enquiry detail and bin. Middleware refreshes sessions; individual pages and actions enforce authorization. The live Supabase schema inspected on 2026-11-23 contained `public.enquiries` with RLS enabled. Vercel is connected to the existing Next.js project; production is on main. No production changes or deployment were made by this work.

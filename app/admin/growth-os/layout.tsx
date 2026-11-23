@@ -5,6 +5,7 @@ import {
   BarChart3,
   ContactRound,
   LayoutDashboard,
+  ListTodo,
   Settings2,
   ShieldCheck,
   Workflow,
@@ -18,6 +19,7 @@ export default async function GrowthLayout({ children }: { children: React.React
     ['/admin/growth-os', 'Overview', LayoutDashboard],
     ['/admin/growth-os/prospects', 'Prospects', ContactRound],
     ['/admin/growth-os/pipeline', 'Pipeline', Workflow],
+    ['/admin/growth-os/tasks', 'Follow-up tasks', ListTodo],
     ['/admin/growth-os/analytics', 'Analytics', BarChart3],
     ['/admin/growth-os/settings', 'Connections & safety', Settings2],
   ] as const;

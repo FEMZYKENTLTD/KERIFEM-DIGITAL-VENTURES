@@ -908,3 +908,50 @@ body:has(.growth-shell) > .kv-footer {
     display: none;
   }
 }
+.recommendation {
+  border-top: 1px solid #34362f;
+  padding: 17px 0;
+}
+.recommendation p,
+.recommendation li,
+.unknown-list li {
+  color: #b6b9ae;
+  font-size: 12px;
+  line-height: 1.7;
+  margin: 8px 0;
+}
+.recommendation li a {
+  color: #d3bb86;
+  text-decoration: underline;
+}
+.recommendation ul,
+.unknown-list {
+  padding-left: 18px;
+  list-style: disc;
+}
+.recommendation .panel-heading {
+  margin-bottom: 8px;
+}
+.task-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-top: 1px solid #30312c;
+  padding: 15px 0;
+}
+.task-row b {
+  font-size: 12px;
+}
+.task-row p {
+  color: #a0a298;
+  font-size: 11px;
+  margin-top: 6px;
+}
+.task-row a {
+  color: #d3bb86;
+}
+.growth-shell button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}

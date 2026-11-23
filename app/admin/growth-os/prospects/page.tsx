@@ -57,6 +57,7 @@ export default async function ProspectsPage({
           <div>
             <div className="kicker">YOUR PROSPECTS</div>
             <h2>All businesses</h2>
+            <Link href="/admin/growth-os/prospects/import">Import CSV →</Link>
           </div>
           <span className="muted">{error ? 'Unavailable' : `${count ?? 0} records`}</span>
         </div>
