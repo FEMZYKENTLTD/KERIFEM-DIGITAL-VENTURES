@@ -23,12 +23,12 @@ export default async function SignInPage({
 }: {
   searchParams: Promise<{ notice?: string }>;
 }) {
-  if (await ownerSession()) redirect('/admin/enquiries');
+  if (await ownerSession()) redirect('/admin');
   const { notice } = await searchParams;
   return (
     <section className="admin-panel admin-auth">
       <h1>Admin sign in</h1>
-      <p>Manage enquiries and review email notification activity.</p>
+      <p>Sign in to manage enquiries and open your GrowthOS workspace.</p>
       {notice && Object.hasOwn(messages, notice) && (
         <p role="status" className="admin-notice">
           {messages[notice]}
