@@ -1,12 +1,17 @@
 import Link from 'next/link';
 import { Database, Mail, Sparkles, ShieldCheck } from 'lucide-react';
 import { requireOwner } from '@/lib/admin-auth';
-export default async function SettingsPage() {
+import { gmailConfig } from '@/lib/growth/gmail-oauth';
+import { disconnectGmail } from '../gmail/actions';
+export default async function SettingsPage({ searchParams }: { searchParams: Promise<{ gmail?: string }> }) {
   const db = await requireOwner();
-  const [foundation, intelligence] = await Promise.all([
+  const { gmail: notice } = await searchParams;
+  const [foundation, intelligence, gmail] = await Promise.all([
     db.from('growth_prospects').select('id', { count: 'exact', head: true }),
     db.from('growth_evidence').select('id', { count: 'exact', head: true }),
+    db.rpc('growth_gmail_status'),
   ]);
+  const gmailReady = !!gmailConfig() && !gmail.error;
   const error = foundation.error || intelligence.error;
   return (
     <div className="growth-content">
@@ -21,6 +26,7 @@ export default async function SettingsPage() {
           <p>Know what is connected, what is not, and what needs attention.</p>
         </div>
       </div>
+      {notice && <div role="status" className={notice === 'connected' || notice === 'disconnected' ? 'success-alert' : 'alert'}>{notice === 'connected' ? 'Gmail authorization stored. Sending is not implemented.' : notice === 'disconnected' ? 'The local Gmail credential was removed. Revoke access in Google account security to revoke the provider grant.' : 'Gmail authorization could not be completed. Check setup and try again.'}</div>}
       <div className="settings-grid">
         <section className="growth-panel setting-card">
           <Database className="gold" size={22} />
@@ -39,12 +45,16 @@ export default async function SettingsPage() {
         <section className="growth-panel setting-card">
           <Mail className="gold" size={22} />
           <div>
-            <h2>Outbound email</h2>
-            <span className="status-warning">Not implemented</span>
+            <h2>Gmail for GrowthOS</h2>
+            <span className={gmail.error ? 'status-warning' : gmail.data ? 'status-good' : 'status-warning'}>
+              {gmail.error ? 'Connection storage unavailable' : gmail.data ? 'Authorization stored; sending disabled' : 'Not connected'}
+            </span>
             <p>
-              No mailbox or sending provider is connected. The website’s Brevo transactional
-              integration is separate and is not used for outreach.
+              Connect only kerifemdigitalventures@gmail.com. Google consent requests email identity and Gmail send permission; it does not grant inbox reading. The application cannot send yet: approval, suppression and delivery controls must come first. The Arena Gmail connector and Brevo are separate.
             </p>
+            {gmailReady ? <Link className="gold-button" prefetch={false} href="/admin/growth-os/gmail/connect">{gmail.data ? 'Reconnect Gmail' : 'Connect Gmail'}</Link> : <p className="field-hint">Google OAuth server settings and the reviewed database storage are required before connecting.</p>}
+            {!gmail.error && gmail.data && <form action={disconnectGmail}><button className="outline-button">Remove local credential</button></form>}
+            <p className="field-hint">Removing the local credential does not revoke Google’s grant; revoke it in your Google account security settings too.</p>
           </div>
         </section>
         <section className="growth-panel setting-card">
@@ -57,9 +67,10 @@ export default async function SettingsPage() {
                 : 'OpenAI key not configured'}
             </span>
             <p>
-              Service matching can use OpenAI after server-side setup. Prospects and evidence are
-              entered manually; discovery, verification and reply classification are not
-              implemented.
+              Service matching can use OpenAI after server-side setup. Hunter company discovery
+              requires its server key, explicit enablement and a reviewed database limiter; access
+              remains unverified until tested. Email finding, verification and reply classification
+              are not implemented.
             </p>
           </div>
         </section>

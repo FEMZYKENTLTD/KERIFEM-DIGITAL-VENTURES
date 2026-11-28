@@ -3,6 +3,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, Globe2 } from 'lucide-react';
 import { Capabilities, Quote, SectionTitle, Work } from '@/components/Corporate';
+import Workstation from '@/components/Workstation';
+import ImmersiveScene from '@/components/ImmersiveScene';
 
 export default function HomePage() {
   return (
@@ -28,29 +30,7 @@ export default function HomePage() {
             </Link>
           </div>
         </div>
-        <figure className="kv-hero-figure">
-          <a
-            className="kv-portrait-board kv-portrait-zoom"
-            href="/founder/studio-portrait.webp"
-            target="_blank"
-            rel="noopener"
-            aria-label="Open the full-size founder portrait in a new tab"
-          >
-            <Image
-              src="/founder/studio-portrait.webp"
-              width={832}
-              height={1248}
-              alt="Portrait of Olufemi Benua Keripe in a white shirt against a dark blue background"
-              priority
-              sizes="(max-width: 760px) 94vw, (max-width: 1300px) 48vw, 600px"
-            />
-            <span className="kv-portrait-zoom-label">View full-size portrait ↗</span>
-          </a>
-          <figcaption>
-            <span>FIG. 01 / KERIFEM</span>
-            <span>OLUFEMI BENUA KERIPE / FOUNDER</span>
-          </figcaption>
-        </figure>
+        <Workstation />
       </section>
       <div className="kv-strip">
         <div className="kv-wrap">
@@ -62,6 +42,70 @@ export default function HomePage() {
           </span>
         </div>
       </div>
+      <section className="kv-wrap studio-statement" aria-labelledby="studio-statement-title">
+        <div className="studio-statement-orbit" aria-hidden="true">
+          <span>✳</span>
+        </div>
+        <div>
+          <p className="kv-label">THE KERIFEM STUDIO / BUILT WITH PURPOSE</p>
+          <h2 id="studio-statement-title">
+            Thoughtful by design.
+            <br />
+            <em>Made to move ideas forward.</em>
+          </h2>
+        </div>
+        <div className="studio-statement-copy">
+          <p>
+            From the first conversation to the finished product, we bring design, development and
+            practical thinking together.
+          </p>
+          <Link className="kv-text-link" href="/about">
+            Get to know us <ArrowRight size={16} aria-hidden />
+          </Link>
+        </div>
+      </section>
+      <div className="studio-ticker" aria-hidden="true">
+        <div>
+          <span>
+            SOFTWARE <i>✳</i> WEBSITES <i>✳</i> AUTOMATION <i>✳</i> DESIGN <i>✳</i>{' '}
+          </span>
+          <span>
+            SOFTWARE <i>✳</i> WEBSITES <i>✳</i> AUTOMATION <i>✳</i> DESIGN <i>✳</i>{' '}
+          </span>
+        </div>
+      </div>
+      <section className="kv-wrap immersive-section" aria-labelledby="immersive-heading">
+        <div className="immersive-copy">
+          <p className="kv-label">THE DIGITAL STUDIO / AN INTERACTIVE STUDY</p>
+          <h2 id="immersive-heading">
+            Ideas are just the <em>beginning.</em>
+          </h2>
+          <p>
+            We connect creative thinking with the technology to bring it to life — from a clear idea
+            to a useful digital experience.
+          </p>
+          <div className="immersive-actions">
+            <Link className="kv-button" href="/services">
+              Explore our capabilities <ArrowRight size={16} aria-hidden />
+            </Link>
+            <Link className="kv-text-link" href="/portfolio">
+              See the work <ArrowRight size={16} aria-hidden />
+            </Link>
+          </div>
+          <div className="immersive-index" aria-hidden="true">
+            <span>01 / THINK</span>
+            <span>02 / BUILD</span>
+            <span>03 / CONNECT</span>
+          </div>
+        </div>
+        <div className="immersive-visual">
+          <ImmersiveScene />
+          <div className="immersive-visual-label" aria-hidden="true">
+            <span>KERIFEM / DIGITAL FORM</span>
+            <span>INTERACTIVE STUDY — 01</span>
+          </div>
+        </div>
+      </section>
       <section className="kv-wrap kv-section" id="services">
         <SectionTitle
           label="01 / CAPABILITIES"
@@ -94,6 +138,20 @@ export default function HomePage() {
           <Link className="kv-text-link" href="/about">
             Read our story <ArrowRight size={16} aria-hidden />
           </Link>
+          <a
+            className="kv-founder-inline"
+            href="/founder/studio-portrait.webp"
+            target="_blank"
+            rel="noopener"
+            aria-label="Open the full-size portrait of founder Olufemi Benua Keripe in a new tab"
+          >
+            <Image src="/founder/studio-portrait.webp" width={72} height={72} alt="" sizes="72px" />
+            <span>
+              <small>FOUNDER / KERIFEM</small>
+              <strong>Olufemi Benua Keripe</strong>
+              <span>View portrait ↗</span>
+            </span>
+          </a>
         </div>
       </section>
       <section className="kv-wrap kv-section">

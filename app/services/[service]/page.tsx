@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { services } from '@/lib/services';
 import { serviceDetails } from '@/lib/service-details';
+import { serviceExpanded } from '@/lib/service-expanded';
 import { pageMetadata } from '@/lib/metadata';
 
 type Props = { params: Promise<{ service: string }> };
@@ -66,9 +67,22 @@ export default async function ServiceDetail({ params }: Props) {
           ))}
         </div>
       </section>
+      <section className="kv-section" aria-labelledby="service-depth">
+        <p className="kv-label">03 / A CLOSER LOOK</p>
+        <h2 id="service-depth">What this service can mean for you</h2>
+        <p className="mt-5 max-w-3xl">{serviceExpanded[id].introduction}</p>
+        <div className="kv-grid mt-6">
+          {serviceExpanded[id].sections.map(({ title: heading, text }) => (
+            <article key={heading} className="kv-card">
+              <h3>{heading}</h3>
+              <p>{text}</p>
+            </article>
+          ))}
+        </div>
+      </section>
       <section className="kv-section kv-split">
         <div>
-          <p className="kv-label">03 / NEXT STEP</p>
+          <p className="kv-label">04 / NEXT STEP</p>
           <h2>Get a scoped quote</h2>
         </div>
         <div>

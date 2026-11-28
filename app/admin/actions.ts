@@ -16,7 +16,7 @@ export async function signIn(fields: FormData) {
   if (!auth || !password || password.length > 128) redirect('/admin/sign-in?notice=invalid');
   const { data, error } = await auth.auth.signInWithPassword({ email: OWNER_EMAIL, password });
   if (error || !data.user?.email_confirmed_at) redirect('/admin/sign-in?notice=invalid');
-  redirect('/admin/enquiries');
+  redirect('/admin');
 }
 
 export async function requestReset() {

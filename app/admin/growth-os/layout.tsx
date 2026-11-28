@@ -6,6 +6,7 @@ import {
   ContactRound,
   LayoutDashboard,
   ListTodo,
+  Search,
   Settings2,
   ShieldCheck,
   Workflow,
@@ -16,8 +17,10 @@ import './growth.css';
 export default async function GrowthLayout({ children }: { children: React.ReactNode }) {
   await requireOwner();
   const links = [
+    ['/admin', 'Owner dashboard', ArrowLeft],
     ['/admin/growth-os', 'Overview', LayoutDashboard],
     ['/admin/growth-os/prospects', 'Prospects', ContactRound],
+    ['/admin/growth-os/discovery', 'Company discovery', Search],
     ['/admin/growth-os/pipeline', 'Pipeline', Workflow],
     ['/admin/growth-os/tasks', 'Follow-up tasks', ListTodo],
     ['/admin/growth-os/analytics', 'Analytics', BarChart3],
